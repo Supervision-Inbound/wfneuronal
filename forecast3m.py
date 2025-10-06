@@ -21,7 +21,7 @@ ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
 
 MODELS_DIR = "models"
-# --- ¡NUEVA RUTA PARA EL CSV! ---
+# --- Rutas de salida, incluyendo el nuevo CSV ---
 OUT_CSV_DATAOUT = "data_out/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
 OUT_JSON_ERLANG = "public/erlang_forecast.json"
@@ -29,7 +29,7 @@ OUT_JSON_DATAOUT = "data_out/predicciones.json"
 OUT_JSON_ERLANG_DO = "data_out/erlang_forecast.json"
 STAMP_JSON = "public/last_update.json"
 
-# --- Parámetros de Fechas (YA NO SE USA HOURS_AHEAD) ---
+# --- Parámetros de Fechas ---
 TIMEZONE = "America/Santiago"
 FREQ     = "H"
 TARGET_LLAMADAS = "recibidos"
@@ -113,21 +113,21 @@ def main():
     training_cols_ll = scaler_ll.get_feature_names_out()
     training_cols_tmo = scaler_tmo.get_feature_names_out()
 
-    # 3) --- LÓGICA DE FECHAS MODIFICADA ---
+    # 3) === LÓGICA DE FECHAS MODIFICADA ===
     # Calcula el rango: mes anterior, mes actual y mes siguiente.
     print("Generando rango de fechas dinámico...")
     today = pd.Timestamp.now(tz=TIMEZONE)
     # Primer día del mes anterior a las 00:00
-    start_date = (today.to_period('M') - pd.DateOffset(months=1)).to_timestamp(how='start')
+    start_date = (today.to_period('M') - 1).to_timestamp(how='start').tz_convert(TIMEZONE)
     # Primer día del mes posterior al siguiente a las 00:00 (límite exclusivo)
-    end_date = (today.to_period('M') + pd.DateOffset(months=2)).to_timestamp(how='start')
+    end_date_exclusive = (today.to_period('M') + 2).to_timestamp(how='start').tz_convert(TIMEZONE)
     
     # Generamos el rango de fechas horario
-    future_dates = pd.date_range(start=start_date, end=end_date, freq=FREQ, inclusive='left')
+    prediction_dates = pd.date_range(start=start_date, end=end_date_exclusive, freq=FREQ, inclusive='left')
     
-    df_pred = pd.DataFrame({"ts": future_dates})
+    df_pred = pd.DataFrame({"ts": prediction_dates})
     df_pred["dow"] = df_pred["ts"].dt.dayofweek; df_pred["month"] = df_pred["ts"].dt.month; df_pred["hour"] = df_pred["ts"].dt.hour
-
+    
     # 4) Construir matrices, escalar y predecir
     print("Construyendo características y generando predicciones...")
     X_pred_ll = build_feature_matrix_nn(df_pred.copy(), TARGET_LLAMADAS, training_cols_ll)
@@ -139,14 +139,14 @@ def main():
     
     # 5) Ensamblar predicciones
     out = pd.DataFrame({
-        "ts": future_dates.strftime("%Y-%m-%d %H:%M:%S"),
+        "ts": prediction_dates.strftime("%Y-%m-%d %H:%M:%S"),
         "pred_llamadas": np.round(np.maximum(0, pred_ll)).astype(int),
         "pred_tmo_seg": np.round(np.maximum(0, pred_tmo)).astype(int)
     })
     
-    # 6) --- GUARDAR PREDICCIONES EN CSV Y JSON ---
+    # 6) === GUARDAR PREDICCIONES EN CSV Y JSON ===
     print(f"Guardando {len(out)} predicciones en archivos...")
-    # Guardamos el nuevo archivo CSV
+    # Guardamos el nuevo archivo CSV en la carpeta data_out
     out.to_csv(OUT_CSV_DATAOUT, index=False, encoding="utf-8")
     
     out_dict = out.to_dict(orient="records")
