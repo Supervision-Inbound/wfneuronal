@@ -11,26 +11,34 @@ permissions:
 jobs:
   run-forecast:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Run inference script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python forecast3m.py
+
+      # --- PASO MODIFICADO ---
+      # Añadimos el nuevo archivo CSV a la lista de archivos a guardar
       - name: Commit & push output files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Añadimos todos los archivos de salida generados
           git add .
           git diff --quiet && git diff --staged --quiet || git commit -m "chore(forecast): actualización automática de predicciones con modelos NN"
           git push
