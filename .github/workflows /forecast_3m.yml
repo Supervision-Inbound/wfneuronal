@@ -1,49 +1,78 @@
+# ==========================================================
+# Archivo de Workflow para el Pronóstico del Call Center
+# ==========================================================
 name: forecast3m
 
 # ==========================================================
-# Disparadores (Triggers) del Workflow
+# DISPARADORES (TRIGGERS)
+# Define CUÁNDO se ejecutará esta acción
 # ==========================================================
 on:
-  # 1. PERMITE LA EJECUCIÓN MANUAL DESDE LA PESTAÑA "ACTIONS"
+  # --- DISPARADOR MANUAL ---
+  # Esta línea es la que hace que aparezca el botón "Run workflow"
+  # en la pestaña de Actions de GitHub. Es crucial.
   workflow_dispatch:
 
-  # 2. EJECUCIÓN AUTOMÁTICA PROGRAMADA
+  # --- DISPARADOR AUTOMÁTICO ---
+  # Se ejecuta según un horario programado.
   schedule:
-    - cron: "15 6 * * *"  # Se ejecuta todos los días a las 06:15 UTC
+    # Formato CRON: Minuto Hora Día Mes DíaDeLaSemana
+    # "15 6 * * *" = todos los días a las 06:15 UTC.
+    - cron: "15 6 * * *"
 
-# Permisos para que la Action pueda escribir en el repositorio
+# ==========================================================
+# PERMISOS
+# Le damos permiso a la acción para que pueda escribir (hacer "commit")
+# los archivos JSON generados de vuelta en el repositorio.
+# ==========================================================
 permissions:
   contents: write
 
+# ==========================================================
+# TAREAS (JOBS)
+# Define QUÉ se ejecutará
+# ==========================================================
 jobs:
   run-forecast:
+    # Usamos la última versión de Ubuntu como sistema operativo
     runs-on: ubuntu-latest
 
+    # Pasos que se ejecutarán en orden
     steps:
+      # 1. Descarga el código del repositorio a la máquina virtual
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Configura el entorno de Python
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # 3. Instala las librerías necesarias desde el archivo requirements.txt
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 4. Ejecuta el script de Python que hace las predicciones
       - name: Run inference script
         env:
+          # El GITHUB_TOKEN es un secreto que se pasa automáticamente
+          # para permitir que el script se autentique con la API de GitHub.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python forecast3m.py
 
+      # 5. Guarda los archivos generados (predicciones.json, etc.) en el repositorio
       - name: Commit & push output files
         run: |
+          # Configura el usuario de Git para el bot de actions
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Añade todos los archivos modificados o nuevos
           git add .
-          # El siguiente comando solo hace commit si detecta cambios reales en los archivos
+          # Solo crea un commit si realmente hay cambios, para evitar commits vacíos
           git diff --quiet && git diff --staged --quiet || git commit -m "chore(forecast): actualización automática de predicciones con modelos NN"
+          # Sube los cambios al repositorio
           git push
