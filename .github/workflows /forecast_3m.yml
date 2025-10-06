@@ -1,0 +1,44 @@
+name: forecast3m
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 6 * * *"  # 06:15 UTC diario
+
+permissions:
+  contents: write
+
+jobs:
+  run-forecast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # --- PASO MODIFICADO ---
+      # Ahora simplemente instala desde requirements.txt, que ya tiene todo lo necesario
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run inference (download models from Release)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python forecast3m.py # El nombre de tu script de inferencia
+
+      - name: Commit & push outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          # El siguiente comando solo hace commit si detecta cambios en los archivos
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore(forecast): actualización automática de predicciones con modelos NN"
+          git push
