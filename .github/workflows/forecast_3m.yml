@@ -11,7 +11,6 @@ permissions:
 jobs:
   run-forecast:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,13 +31,11 @@ jobs:
         run: |
           python forecast3m.py
 
-      # --- PASO MODIFICADO ---
-      # Añadimos el nuevo archivo CSV a la lista de archivos a guardar
       - name: Commit & push output files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Añadimos todos los archivos de salida generados
+          # Este comando añade todos los archivos nuevos o modificados, incluyendo el nuevo CSV
           git add .
-          git diff --quiet && git diff --staged --quiet || git commit -m "chore(forecast): actualización automática de predicciones con modelos NN"
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore(forecast): actualización automática de predicciones (rango dinámico + csv)"
           git push
