@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN FINAL CON CSV Y RANGO DE FECHAS DINÁMICO)
+# forecast3m.py (VERSIÓN CORREGIDA Y MEJORADA)
 # =======================================================================
 
 import os
@@ -21,7 +21,6 @@ ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
 
 MODELS_DIR = "models"
-# --- Rutas de salida, incluyendo el nuevo CSV ---
 OUT_CSV_DATAOUT = "data_out/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
 OUT_JSON_ERLANG = "public/erlang_forecast.json"
@@ -113,16 +112,14 @@ def main():
     training_cols_ll = scaler_ll.get_feature_names_out()
     training_cols_tmo = scaler_tmo.get_feature_names_out()
 
-    # 3) === LÓGICA DE FECHAS MODIFICADA ===
-    # Calcula el rango: mes anterior, mes actual y mes siguiente.
+    # 3) === LÓGICA DE FECHAS CORREGIDA ===
     print("Generando rango de fechas dinámico...")
     today = pd.Timestamp.now(tz=TIMEZONE)
-    # Primer día del mes anterior a las 00:00
-    start_date = (today.to_period('M') - 1).to_timestamp(how='start').tz_convert(TIMEZONE)
+    # Primer día del mes anterior a las 00:00. Usamos tz_localize para asignar la zona horaria.
+    start_date = (today.to_period('M') - 1).to_timestamp(how='start').tz_localize(TIMEZONE)
     # Primer día del mes posterior al siguiente a las 00:00 (límite exclusivo)
-    end_date_exclusive = (today.to_period('M') + 2).to_timestamp(how='start').tz_convert(TIMEZONE)
+    end_date_exclusive = (today.to_period('M') + 2).to_timestamp(how='start').tz_localize(TIMEZONE)
     
-    # Generamos el rango de fechas horario
     prediction_dates = pd.date_range(start=start_date, end=end_date_exclusive, freq=FREQ, inclusive='left')
     
     df_pred = pd.DataFrame({"ts": prediction_dates})
@@ -137,24 +134,22 @@ def main():
     X_pred_tmo_scaled = scaler_tmo.transform(X_pred_tmo)
     pred_tmo = model_tmo.predict(X_pred_tmo_scaled).flatten()
     
-    # 5) Ensamblar predicciones
+    # 5) Ensamblar predicciones y guardar
     out = pd.DataFrame({
         "ts": prediction_dates.strftime("%Y-%m-%d %H:%M:%S"),
         "pred_llamadas": np.round(np.maximum(0, pred_ll)).astype(int),
         "pred_tmo_seg": np.round(np.maximum(0, pred_tmo)).astype(int)
     })
     
-    # 6) === GUARDAR PREDICCIONES EN CSV Y JSON ===
     print(f"Guardando {len(out)} predicciones en archivos...")
-    # Guardamos el nuevo archivo CSV en la carpeta data_out
     out.to_csv(OUT_CSV_DATAOUT, index=False, encoding="utf-8")
-    
     out_dict = out.to_dict(orient="records")
     with open(OUT_JSON_PUBLIC, "w", encoding="utf-8") as f: json.dump(out_dict, f, ensure_ascii=False, indent=2)
     with open(OUT_JSON_DATAOUT, "w", encoding="utf-8") as f: json.dump(out_dict, f, ensure_ascii=False, indent=2)
 
-    # 7) Calcular dimensionamiento con Erlang
+    # 6) Calcular dimensionamiento con Erlang
     print("Calculando dimensionamiento de agentes...")
+    # ... (El resto del código de Erlang no necesita cambios)
     erlang_rows = []
     prod_factor = get_prod_factor(SHIFT_HOURS, LUNCH_HOURS, BREAKS_MIN)
     derived_shrinkage = 1 - prod_factor
@@ -182,7 +177,7 @@ def main():
     with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f: json.dump(erlang_rows, f, ensure_ascii=False, indent=2)
     with open(OUT_JSON_ERLANG_DO, "w", encoding="utf-8") as f: json.dump(erlang_rows, f, ensure_ascii=False, indent=2)
 
-    # 8) Timestamp de actualización
+    # 7) Timestamp de actualización
     stamp = {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")}
     with open(STAMP_JSON, "w") as f: json.dump(stamp, f)
 
