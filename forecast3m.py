@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN FINAL PARA EL MODELO "TREND + PEAK FEATURE")
+# forecast3m.py (VERSIÓN CON CORRECCIÓN FINAL DE ZONA HORARIA)
 # =======================================================================
 
 import os
@@ -14,12 +14,12 @@ from utils_release import download_asset_from_latest
 OWNER = "Supervision-Inbound"
 REPO  = "wf-Analytics-AI2.5"
 
-# --- NOMBRES DE LOS ARCHIVOS DE MODELO A DESCARGAR ---
+# --- NOMBRES DE LOS ARCHIVOS DE MODELO ---
 ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
 ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
 ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
-ASSET_LAST_INDEX = "last_time_index.txt"  # <-- Nuevo archivo importante
+ASSET_LAST_INDEX = "last_time_index.txt" # Incluido por si usas el modelo de Tendencia
 
 MODELS_DIR = "models"
 OUT_CSV_DATAOUT = "data_out/predicciones.csv"
@@ -41,49 +41,28 @@ LUNCH_HOURS = 1.0; BREAKS_MIN = [15, 15]; AUX_RATE = 0.15; ABSENTEEISM_RATE = 0.
 USE_ERLANG_A = True; MEAN_PATIENCE_S = 60.0; ABANDON_MAX = 0.06;
 AWT_MAX_S = 120.0; INTERCALL_GAP_S = 10.0;
 
-# --- FUNCIÓN DE FEATURES (ADAPTADA PARA TENDENCIA Y PICOS) ---
 def build_feature_matrix_nn(df, target_col, training_columns):
-    """
-    Construye la matriz de características para la inferencia, asegurando que
-    tenga exactamente las mismas columnas que durante el entrenamiento.
-    """
-    # Features cíclicas
     df["sin_hour"] = np.sin(2 * np.pi * df["hour"] / 24)
     df["cos_hour"] = np.cos(2 * np.pi * df["hour"] / 24)
     df["sin_dow"] = np.sin(2 * np.pi * df["dow"] / 7)
     df["cos_dow"] = np.cos(2 * np.pi * df["dow"] / 7)
-
-    # Features de rolling (placeholders para la inferencia)
-    df[f"{target_col}_lag24"] = 0
-    df[f"{target_col}_ma24"] = 0
-    df[f"{target_col}_ma168"] = 0
-    
-    # Feature de pico (asumimos que el futuro no tiene picos para el pronóstico base)
+    df[f"{target_col}_lag24"] = 0; df[f"{target_col}_ma24"] = 0; df[f"{target_col}_ma168"] = 0
     df["is_peak"] = 0
     
-    # Lista completa de características que el modelo espera
-    base_feats = [
-        "sin_hour", "cos_hour", "sin_dow", "cos_dow",
-        f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168",
-        "is_peak",
-        "time_index"  # La nueva característica de tendencia ya debe existir en el DataFrame de entrada
-    ]
+    base_feats = ["sin_hour", "cos_hour", "sin_dow", "cos_dow", f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168", "is_peak"]
+    # Si el modelo de tendencia está en uso, 'time_index' estará en training_columns
+    if 'time_index' in training_columns:
+        base_feats.append('time_index')
+        
     cat_feats = ["dow", "month"]
     df_dummies = pd.get_dummies(df[cat_feats], columns=cat_feats, drop_first=False)
-    
     X = pd.concat([df[base_feats], df_dummies], axis=1)
     
-    # Alinear columnas con las del entrenamiento para evitar errores
     missing_cols = set(training_columns) - set(X.columns)
-    for c in missing_cols:
-        X[c] = 0
-    
-    # Asegurar el mismo orden de columnas que en el entrenamiento
+    for c in missing_cols: X[c] = 0
     X = X[training_columns]
-    
     return X.fillna(0)
 
-# --- Funciones de Erlang (SIN CAMBIOS) ---
 def erlang_c(R, N):
     if N <= R: return 0.0
     inv_erlang_b = 1.0
@@ -118,39 +97,45 @@ def get_prod_factor(shift_h, lunch_h, breaks_m):
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True); os.makedirs("data_out", exist_ok=True); os.makedirs("public", exist_ok=True)
 
-    # 1) Descargar todos los artefactos, incluyendo el nuevo last_time_index.txt
     print("Descargando artefactos desde el último Release...")
     assets_to_download = [ASSET_LLAMADAS, ASSET_SCALER_LLAMADAS, ASSET_TMO, ASSET_SCALER_TMO, ASSET_LAST_INDEX]
     for asset_name in assets_to_download:
-        download_asset_from_latest(OWNER, REPO, asset_name, MODELS_DIR)
+        try:
+            download_asset_from_latest(OWNER, REPO, asset_name, MODELS_DIR)
+        except Exception as e:
+            print(f"Advertencia: No se pudo descargar '{asset_name}'. Puede que no sea necesario para este modelo. Error: {e}")
 
-    # 2) Cargar modelos, scalers y el nuevo last_time_index
     print("Cargando artefactos en memoria...")
     model_ll = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_LLAMADAS))
     scaler_ll = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_LLAMADAS))
     model_tmo = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_TMO))
     scaler_tmo = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_TMO))
     
-    with open(os.path.join(MODELS_DIR, ASSET_LAST_INDEX), 'r') as f:
-        last_time_index = int(f.read().strip())
+    last_time_index = 0
+    if os.path.exists(os.path.join(MODELS_DIR, ASSET_LAST_INDEX)):
+        with open(os.path.join(MODELS_DIR, ASSET_LAST_INDEX), 'r') as f:
+            last_time_index = int(f.read().strip())
         
     training_cols_ll = scaler_ll.get_feature_names_out()
     training_cols_tmo = scaler_tmo.get_feature_names_out()
 
-    # 3) Generar rango de fechas dinámico
     print("Generando rango de fechas dinámico...")
     today = pd.Timestamp.now(tz=TIMEZONE)
+    
+    # === CORRECCIÓN APLICADA AQUÍ ===
+    # Usamos .tz_localize() para ASIGNAR la zona horaria a una fecha "ingenua"
     start_date = (today.to_period('M') - 1).to_timestamp(how='start').tz_localize(TIMEZONE)
     end_date_exclusive = (today.to_period('M') + 2).to_timestamp(how='start').tz_localize(TIMEZONE)
+    
     prediction_dates = pd.date_range(start=start_date, end=end_date_exclusive, freq=FREQ, inclusive='left')
     
     df_pred = pd.DataFrame({"ts": prediction_dates})
     df_pred["dow"] = df_pred["ts"].dt.dayofweek; df_pred["month"] = df_pred["ts"].dt.month; df_pred["hour"] = df_pred["ts"].dt.hour
     
-    # --- CREACIÓN DE LA CARACTERÍSTICA DE TENDENCIA PARA EL FUTURO ---
-    df_pred['time_index'] = range(last_time_index + 1, last_time_index + 1 + len(df_pred))
+    if 'time_index' in training_cols_ll:
+        print("Añadiendo característica de tendencia a las fechas futuras...")
+        df_pred['time_index'] = range(last_time_index + 1, last_time_index + 1 + len(df_pred))
     
-    # 4) Construir matrices, escalar y predecir
     print("Generando predicciones...")
     X_pred_ll = build_feature_matrix_nn(df_pred.copy(), TARGET_LLAMADAS, training_cols_ll)
     X_pred_ll_scaled = scaler_ll.transform(X_pred_ll)
@@ -160,7 +145,6 @@ def main():
     X_pred_tmo_scaled = scaler_tmo.transform(X_pred_tmo)
     pred_tmo = model_tmo.predict(X_pred_tmo_scaled).flatten()
     
-    # 5) Ensamblar y guardar predicciones
     out = pd.DataFrame({
         "ts": prediction_dates.strftime("%Y-%m-%d %H:%M:%S"),
         "pred_llamadas": np.round(np.maximum(0, pred_ll)).astype(int),
@@ -176,7 +160,6 @@ def main():
     with open(OUT_JSON_PUBLIC, "w", encoding="utf-8") as f: json.dump(predicciones_final, f, ensure_ascii=False, indent=2)
     with open(OUT_JSON_DATAOUT, "w", encoding="utf-8") as f: json.dump(predicciones_final, f, ensure_ascii=False, indent=2)
 
-    # 6) Calcular dimensionamiento con Erlang
     print("Calculando dimensionamiento de agentes...")
     erlang_rows = []
     prod_factor = get_prod_factor(SHIFT_HOURS, LUNCH_HOURS, BREAKS_MIN)
@@ -207,7 +190,6 @@ def main():
     with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f: json.dump(erlang_final, f, ensure_ascii=False, indent=2)
     with open(OUT_JSON_ERLANG_DO, "w", encoding="utf-8") as f: json.dump(erlang_final, f, ensure_ascii=False, indent=2)
 
-    # 7) Timestamp de actualización
     stamp = {"generated_at_utc": timestamp_str}
     with open(STAMP_JSON, "w") as f: json.dump(stamp, f)
 
