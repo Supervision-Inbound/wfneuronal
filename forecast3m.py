@@ -1,6 +1,5 @@
 # =======================================================================
-# forecast3m.py (Inferencia NN con totales diarios y calibración de lag/MA)
-# Salidas en /public
+# forecast3m.py (VERSIÓN CORREGIDA: todas las salidas en /public)
 # =======================================================================
 
 import os
@@ -28,7 +27,7 @@ OUT_CSV_DATAOUT   = "public/predicciones.csv"
 OUT_JSON_PUBLIC   = "public/predicciones.json"
 OUT_JSON_ERLANG   = "public/erlang_forecast.json"
 STAMP_JSON        = "public/last_update.json"
-OUT_CSV_DAILY     = "public/llamadas_por_dia.csv"   # totales diarios
+OUT_CSV_DAILY     = "public/llamadas_por_dia.csv"   # <- nuevo: totales diarios
 
 # --- Parámetros de Fechas ---
 TIMEZONE = "America/Santiago"
@@ -42,53 +41,27 @@ LUNCH_HOURS = 1.0; BREAKS_MIN = [15, 15]; AUX_RATE = 0.15; ABSENTEEISM_RATE = 0.
 USE_ERLANG_A = True; MEAN_PATIENCE_S = 60.0; ABANDON_MAX = 0.06
 AWT_MAX_S = 120.0; INTERCALL_GAP_S = 10.0
 
-# --- Util: mapear medias del scaler por nombre de columna ---
-def scaler_means_dict(scaler):
-    # soporta scikit-learn >=1.0 (get_feature_names_out) o antiguo (feature_names_in_)
-    if hasattr(scaler, "get_feature_names_out"):
-        cols = list(scaler.get_feature_names_out())
-    elif hasattr(scaler, "feature_names_in_"):
-        cols = list(scaler.feature_names_in_)
-    else:
-        raise AttributeError("El scaler no expone los nombres de columnas. Reentrena con scikit-learn >=1.0.")
-    return {c: m for c, m in zip(cols, scaler.mean_)}
-
-# --- Función de Features (coincidir con entrenamiento) ---
-def build_feature_matrix_nn(df, target_col, training_columns, training_means):
-    # trigonométricas
+# --- Función de Features (debe coincidir con entrenamiento) ---
+def build_feature_matrix_nn(df, target_col, training_columns):
     df["sin_hour"] = np.sin(2 * np.pi * df["hour"] / 24)
     df["cos_hour"] = np.cos(2 * np.pi * df["hour"] / 24)
-    df["sin_dow"]  = np.sin(2 * np.pi * df["dow"]  / 7)
-    df["cos_dow"]  = np.cos(2 * np.pi * df["dow"]  / 7)
-    # columnas de rolling/lag (placeholder)
-    lag_col = f"{target_col}_lag24"
-    ma24_col = f"{target_col}_ma24"
-    ma168_col = f"{target_col}_ma168"
-    df[lag_col]   = 0.0
-    df[ma24_col]  = 0.0
-    df[ma168_col] = 0.0
+    df["sin_dow"]  = np.sin(2 * np.pi * df["dow"] / 7)
+    df["cos_dow"]  = np.cos(2 * np.pi * df["dow"] / 7)
+    df[f"{target_col}_lag24"]  = 0
+    df[f"{target_col}_ma24"]   = 0
+    df[f"{target_col}_ma168"]  = 0
 
-    base_feats = ["sin_hour","cos_hour","sin_dow","cos_dow", lag_col, ma24_col, ma168_col]
+    base_feats = ["sin_hour","cos_hour","sin_dow","cos_dow",
+                  f"{target_col}_lag24",f"{target_col}_ma24",f"{target_col}_ma168"]
     cat_feats  = ["dow","month"]
 
     df_dummies = pd.get_dummies(df[cat_feats], columns=cat_feats, drop_first=False)
     X = pd.concat([df[base_feats], df_dummies], axis=1)
 
-    # Asegurar columnas requeridas por el scaler
     missing_cols = set(training_columns) - set(X.columns)
-    for c in missing_cols:
-        # columnas dummy ausentes → 0; numéricas ausentes → media
-        X[c] = training_means.get(c, 0.0)
-
-    # Ordenar columnas exactamente como en entrenamiento
+    for c in missing_cols: X[c] = 0
     X = X[training_columns]
-
-    # *** CLAVE: inyectar las medias de entrenamiento en lag/MA ***
-    for c in (lag_col, ma24_col, ma168_col):
-        if c in X.columns and c in training_means:
-            X[c] = training_means[c]
-
-    return X.fillna(0.0)
+    return X.fillna(0)
 
 # --- Erlang ---
 def erlang_c(R, N):
@@ -152,21 +125,10 @@ def main():
     scaler_ll = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_LLAMADAS))
     model_tmo = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_TMO))
     scaler_tmo = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_TMO))
+    training_cols_ll  = scaler_ll.get_feature_names_out()
+    training_cols_tmo = scaler_tmo.get_feature_names_out()
 
-    # columnas usadas en entrenamiento y sus medias
-    if hasattr(scaler_ll, "get_feature_names_out"):
-        training_cols_ll  = list(scaler_ll.get_feature_names_out())
-    else:
-        training_cols_ll  = list(scaler_ll.feature_names_in_)
-    if hasattr(scaler_tmo, "get_feature_names_out"):
-        training_cols_tmo = list(scaler_tmo.get_feature_names_out())
-    else:
-        training_cols_tmo = list(scaler_tmo.feature_names_in_)
-
-    means_ll  = scaler_means_dict(scaler_ll)
-    means_tmo = scaler_means_dict(scaler_tmo)
-
-    # 3) Rango de fechas: 1 mes anterior → fin de mes siguiente (exclusivo)
+    # 3) Rango de fechas: 1 mes anterior hasta fin de mes siguiente (exclusivo el inicio del subsiguiente)
     print("Generando rango de fechas…")
     today = pd.Timestamp.now(tz=TIMEZONE)
     start_date = (today.to_period('M') - 1).to_timestamp(how='start').tz_localize(TIMEZONE)
@@ -178,13 +140,13 @@ def main():
     df_pred["month"] = df_pred["ts"].dt.month
     df_pred["hour"]  = df_pred["ts"].dt.hour
 
-    # 4) Features, escalar y predecir (con medias en lag/MA)
+    # 4) Features, escala y predice
     print("Construyendo features y prediciendo…")
-    X_pred_ll = build_feature_matrix_nn(df_pred.copy(), TARGET_LLAMADAS, training_cols_ll, means_ll)
+    X_pred_ll = build_feature_matrix_nn(df_pred.copy(), TARGET_LLAMADAS, training_cols_ll)
     X_pred_ll_scaled = scaler_ll.transform(X_pred_ll)
     pred_ll = model_ll.predict(X_pred_ll_scaled).flatten()
 
-    X_pred_tmo = build_feature_matrix_nn(df_pred.copy(), TARGET_TMO, training_cols_tmo, means_tmo)
+    X_pred_tmo = build_feature_matrix_nn(df_pred.copy(), TARGET_TMO, training_cols_tmo)
     X_pred_tmo_scaled = scaler_tmo.transform(X_pred_tmo)
     pred_tmo = model_tmo.predict(X_pred_tmo_scaled).flatten()
 
