@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN CORREGIDA Y MEJORADA)
+# forecast3m.py (VERSIÓN ADAPTADA PARA EL MODELO "PEAK FEATURE")
 # =======================================================================
 
 import os
@@ -14,7 +14,7 @@ from utils_release import download_asset_from_latest
 OWNER = "Supervision-Inbound"
 REPO  = "wf-Analytics-AI2.5"
 
-# --- NOMBRES DE LOS ARCHIVOS DE MODELO ---
+# Estos nombres de archivo son correctos para el modelo MLP
 ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
 ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
 ASSET_TMO = "modelo_tmo_nn.h5"
@@ -28,35 +28,37 @@ OUT_JSON_DATAOUT = "data_out/predicciones.json"
 OUT_JSON_ERLANG_DO = "data_out/erlang_forecast.json"
 STAMP_JSON = "public/last_update.json"
 
-# --- Parámetros de Fechas ---
-TIMEZONE = "America/Santiago"
-FREQ     = "H"
-TARGET_LLAMADAS = "recibidos"
-TARGET_TMO      = "tmo_seg"
-
-# --- Parámetros de operación (Erlang) - Sin cambios ---
+TIMEZONE = "America/Santiago"; FREQ = "H"; TARGET_LLAMADAS = "recibidos"; TARGET_TMO = "tmo_seg"
 SLA_TARGET = 0.90; ASA_TARGET_S = 22; MAX_OCC = 0.85; SHIFT_HOURS = 10.0;
 LUNCH_HOURS = 1.0; BREAKS_MIN = [15, 15]; AUX_RATE = 0.15; ABSENTEEISM_RATE = 0.23;
 USE_ERLANG_A = True; MEAN_PATIENCE_S = 60.0; ABANDON_MAX = 0.06;
 AWT_MAX_S = 120.0; INTERCALL_GAP_S = 10.0;
 
-# --- Función de Features (IDÉNTICA A LA DEL ENTRENAMIENTO) ---
+# === FUNCIÓN DE FEATURES MODIFICADA ===
 def build_feature_matrix_nn(df, target_col, training_columns):
     df["sin_hour"] = np.sin(2 * np.pi * df["hour"] / 24)
     df["cos_hour"] = np.cos(2 * np.pi * df["hour"] / 24)
     df["sin_dow"] = np.sin(2 * np.pi * df["dow"] / 7)
     df["cos_dow"] = np.cos(2 * np.pi * df["dow"] / 7)
     df[f"{target_col}_lag24"] = 0; df[f"{target_col}_ma24"] = 0; df[f"{target_col}_ma168"] = 0
-    base_feats = ["sin_hour", "cos_hour", "sin_dow", "cos_dow", f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168"]
+    
+    # --- CAMBIO CRUCIAL ---
+    # Añadimos la columna 'is_peak'. Para el futuro, asumimos que no hay picos.
+    df["is_peak"] = 0
+    
+    base_feats = ["sin_hour", "cos_hour", "sin_dow", "cos_dow", f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168", "is_peak"]
     cat_feats = ["dow", "month"]
     df_dummies = pd.get_dummies(df[cat_feats], columns=cat_feats, drop_first=False)
     X = pd.concat([df[base_feats], df_dummies], axis=1)
+    
+    # Alinear columnas con las del entrenamiento
     missing_cols = set(training_columns) - set(X.columns)
     for c in missing_cols: X[c] = 0
     X = X[training_columns]
+    
     return X.fillna(0)
 
-# --- Funciones de Erlang (SIN CAMBIOS) ---
+# ... (El resto de las funciones de Erlang y auxiliares no cambian) ...
 def erlang_c(R, N):
     if N <= R: return 0.0
     inv_erlang_b = 1.0
@@ -77,12 +79,7 @@ def calculate_agents(llamadas, tmo_seg, sla_target, asa_target_s):
     erlangs = (llamadas * tmo_seg) / 3600.0
     min_agents = int(np.ceil(erlangs)) + 1
     for agents in range(min_agents, min_agents + 100):
-        if USE_ERLANG_A:
-            sla, _, asa = erlang_a(erlangs, agents, asa_target_s, tmo_seg)
-        else:
-            p_wait = erlang_c(erlangs, agents)
-            asa = (p_wait * tmo_seg) / (agents - erlangs) if p_wait > 0 else 0
-            sla = 1 - p_wait * np.exp(-(agents - erlangs) * asa_target_s / tmo_seg) if p_wait > 0 else 1.0
+        sla, _, asa = erlang_a(erlangs, agents, asa_target_s, tmo_seg)
         if sla >= sla_target and asa <= asa_target_s:
             return agents
     return min_agents + 100
@@ -96,14 +93,12 @@ def get_prod_factor(shift_h, lunch_h, breaks_m):
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True); os.makedirs("data_out", exist_ok=True); os.makedirs("public", exist_ok=True)
 
-    # 1) Descargar artefactos
-    print("Descargando modelos y scalers desde el último Release...")
+    print("Descargando modelos y scalers...")
     assets_to_download = [ASSET_LLAMADAS, ASSET_SCALER_LLAMADAS, ASSET_TMO, ASSET_SCALER_TMO]
     for asset_name in assets_to_download:
         download_asset_from_latest(OWNER, REPO, asset_name, MODELS_DIR)
 
-    # 2) Cargar modelos y scalers
-    print("Cargando modelos y scalers en memoria...")
+    print("Cargando modelos y scalers...")
     model_ll = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_LLAMADAS))
     scaler_ll = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_LLAMADAS))
     model_tmo = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_TMO))
@@ -112,21 +107,16 @@ def main():
     training_cols_ll = scaler_ll.get_feature_names_out()
     training_cols_tmo = scaler_tmo.get_feature_names_out()
 
-    # 3) === LÓGICA DE FECHAS CORREGIDA ===
     print("Generando rango de fechas dinámico...")
     today = pd.Timestamp.now(tz=TIMEZONE)
-    # Primer día del mes anterior a las 00:00. Usamos tz_localize para asignar la zona horaria.
     start_date = (today.to_period('M') - 1).to_timestamp(how='start').tz_localize(TIMEZONE)
-    # Primer día del mes posterior al siguiente a las 00:00 (límite exclusivo)
     end_date_exclusive = (today.to_period('M') + 2).to_timestamp(how='start').tz_localize(TIMEZONE)
-    
     prediction_dates = pd.date_range(start=start_date, end=end_date_exclusive, freq=FREQ, inclusive='left')
     
     df_pred = pd.DataFrame({"ts": prediction_dates})
     df_pred["dow"] = df_pred["ts"].dt.dayofweek; df_pred["month"] = df_pred["ts"].dt.month; df_pred["hour"] = df_pred["ts"].dt.hour
     
-    # 4) Construir matrices, escalar y predecir
-    print("Construyendo características y generando predicciones...")
+    print("Generando predicciones...")
     X_pred_ll = build_feature_matrix_nn(df_pred.copy(), TARGET_LLAMADAS, training_cols_ll)
     X_pred_ll_scaled = scaler_ll.transform(X_pred_ll)
     pred_ll = model_ll.predict(X_pred_ll_scaled).flatten()
@@ -134,7 +124,6 @@ def main():
     X_pred_tmo_scaled = scaler_tmo.transform(X_pred_tmo)
     pred_tmo = model_tmo.predict(X_pred_tmo_scaled).flatten()
     
-    # 5) Ensamblar predicciones y guardar
     out = pd.DataFrame({
         "ts": prediction_dates.strftime("%Y-%m-%d %H:%M:%S"),
         "pred_llamadas": np.round(np.maximum(0, pred_ll)).astype(int),
@@ -143,19 +132,24 @@ def main():
     
     print(f"Guardando {len(out)} predicciones en archivos...")
     out.to_csv(OUT_CSV_DATAOUT, index=False, encoding="utf-8")
-    out_dict = out.to_dict(orient="records")
-    with open(OUT_JSON_PUBLIC, "w", encoding="utf-8") as f: json.dump(out_dict, f, ensure_ascii=False, indent=2)
-    with open(OUT_JSON_DATAOUT, "w", encoding="utf-8") as f: json.dump(out_dict, f, ensure_ascii=False, indent=2)
+    
+    timestamp_str = pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    predicciones_final = {
+        "generated_at_utc": timestamp_str,
+        "forecast_data": out.to_dict(orient="records")
+    }
+    with open(OUT_JSON_PUBLIC, "w", encoding="utf-8") as f: json.dump(predicciones_final, f, ensure_ascii=False, indent=2)
+    with open(OUT_JSON_DATAOUT, "w", encoding="utf-8") as f: json.dump(predicciones_final, f, ensure_ascii=False, indent=2)
 
-    # 6) Calcular dimensionamiento con Erlang
     print("Calculando dimensionamiento de agentes...")
-    # ... (El resto del código de Erlang no necesita cambios)
     erlang_rows = []
+    # ... (el resto del bucle de Erlang no cambia)
     prod_factor = get_prod_factor(SHIFT_HOURS, LUNCH_HOURS, BREAKS_MIN)
     derived_shrinkage = 1 - prod_factor
     effective_shrinkage = 1 - (prod_factor * (1 - ABSENTEEISM_RATE))
     
-    for row in out_dict:
+    for row in predicciones_final["forecast_data"]:
         llamadas = row["pred_llamadas"]; tmo = row["pred_tmo_seg"]
         agentes_prod = calculate_agents(llamadas, tmo, SLA_TARGET, ASA_TARGET_S)
         agentes_agendados = int(np.ceil(agentes_prod / (1 - effective_shrinkage))) if effective_shrinkage < 1 else agentes_prod
@@ -174,11 +168,12 @@ def main():
                         "AWT_MAX_S": AWT_MAX_S, "INTERCALL_GAP_S": INTERCALL_GAP_S, "ABSENTEEISM_RATE": ABSENTEEISM_RATE, 
                         "EFFECTIVE_SHRINKAGE": round(effective_shrinkage, 4) }
         })
-    with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f: json.dump(erlang_rows, f, ensure_ascii=False, indent=2)
-    with open(OUT_JSON_ERLANG_DO, "w", encoding="utf-8") as f: json.dump(erlang_rows, f, ensure_ascii=False, indent=2)
+        
+    erlang_final = { "generated_at_utc": timestamp_str, "erlang_forecast": erlang_rows }
+    with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f: json.dump(erlang_final, f, ensure_ascii=False, indent=2)
+    with open(OUT_JSON_ERLANG_DO, "w", encoding="utf-8") as f: json.dump(erlang_final, f, ensure_ascii=False, indent=2)
 
-    # 7) Timestamp de actualización
-    stamp = {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")}
+    stamp = {"generated_at_utc": timestamp_str}
     with open(STAMP_JSON, "w") as f: json.dump(stamp, f)
 
     print("Proceso de inferencia completado.")
