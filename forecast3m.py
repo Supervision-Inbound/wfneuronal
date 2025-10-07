@@ -12,7 +12,7 @@ from utils_release import download_asset_from_latest
 
 # ---------- Parámetros ----------
 OWNER = "Supervision-Inbound"
-REPO  = "wf-Analytics-AI2.5"
+REPO  = "wfneuronal"
 
 # --- NOMBRES DE LOS ARCHIVOS DE MODELO ---
 ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
