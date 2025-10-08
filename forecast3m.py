@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN CORREGIDA: con desnormalización de Y)
+# forecast3m.py (VERSIÓN CORREGIDA: todas las salidas en /public)
 # =======================================================================
 
 import os
@@ -17,7 +17,6 @@ REPO  = "wfneuronal"
 # --- NOMBRES DE LOS ARCHIVOS DE MODELO ---
 ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
 ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
-ASSET_Y_NORM = "y_norm_params.pkl"  # <- NUEVO
 ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
 
@@ -28,7 +27,7 @@ OUT_CSV_DATAOUT   = "public/predicciones.csv"
 OUT_JSON_PUBLIC   = "public/predicciones.json"
 OUT_JSON_ERLANG   = "public/erlang_forecast.json"
 STAMP_JSON        = "public/last_update.json"
-OUT_CSV_DAILY     = "public/llamadas_por_dia.csv"
+OUT_CSV_DAILY     = "public/llamadas_por_dia.csv"   # <- nuevo: totales diarios
 
 # --- Parámetros de Fechas ---
 TIMEZONE = "America/Santiago"
@@ -48,27 +47,12 @@ def build_feature_matrix_nn(df, target_col, training_columns):
     df["cos_hour"] = np.cos(2 * np.pi * df["hour"] / 24)
     df["sin_dow"]  = np.sin(2 * np.pi * df["dow"] / 7)
     df["cos_dow"]  = np.cos(2 * np.pi * df["dow"] / 7)
-    
-    # IMPORTANTE: Los lags ya vienen calculados desde afuera
-    # Solo inicializamos si no existen
-    if f"{target_col}_lag24" not in df.columns:
-        df[f"{target_col}_lag24"]  = 0
-    if f"{target_col}_ma24" not in df.columns:
-        df[f"{target_col}_ma24"]   = 0
-    if f"{target_col}_ma168" not in df.columns:
-        df[f"{target_col}_ma168"]  = 0
-    
-    # NUEVO: Agregar is_peak si está en las columnas de entrenamiento
-    if "is_peak" in training_columns:
-        df["is_peak"] = 0
+    df[f"{target_col}_lag24"]  = 0
+    df[f"{target_col}_ma24"]   = 0
+    df[f"{target_col}_ma168"]  = 0
 
     base_feats = ["sin_hour","cos_hour","sin_dow","cos_dow",
                   f"{target_col}_lag24",f"{target_col}_ma24",f"{target_col}_ma168"]
-    
-    # Agregar is_peak a las features base si existe
-    if "is_peak" in training_columns:
-        base_feats.append("is_peak")
-    
     cat_feats  = ["dow","month"]
 
     df_dummies = pd.get_dummies(df[cat_feats], columns=cat_feats, drop_first=False)
@@ -124,7 +108,7 @@ def main():
 
     # 1) Descargar artefactos
     print(f"Descargando modelos desde: {OWNER}/{REPO}")
-    assets = [ASSET_LLAMADAS, ASSET_SCALER_LLAMADAS, ASSET_Y_NORM, ASSET_TMO, ASSET_SCALER_TMO]  # <- AGREGADO y_norm_params
+    assets = [ASSET_LLAMADAS, ASSET_SCALER_LLAMADAS, ASSET_TMO, ASSET_SCALER_TMO]
     for asset_name in assets:
         download_asset_from_latest(OWNER, REPO, asset_name, MODELS_DIR)
         path = os.path.join(MODELS_DIR, asset_name)
@@ -139,7 +123,6 @@ def main():
     print("Cargando modelos y scalers…")
     model_ll = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_LLAMADAS))
     scaler_ll = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_LLAMADAS))
-    y_norm_params = joblib.load(os.path.join(MODELS_DIR, ASSET_Y_NORM))  # <- NUEVO
     model_tmo = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_TMO))
     scaler_tmo = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_TMO))
     training_cols_ll  = scaler_ll.get_feature_names_out()
@@ -157,87 +140,15 @@ def main():
     df_pred["month"] = df_pred["ts"].dt.month
     df_pred["hour"]  = df_pred["ts"].dt.hour
 
-    # 4) Predicción iterativa de LLAMADAS (con lags reales)
-    print("Construyendo features y prediciendo LLAMADAS iterativamente…")
-    
-    # Inicializamos con un promedio histórico razonable (puedes ajustar este valor)
-    INITIAL_AVG_LLAMADAS = 80  # Promedio por hora aproximado
-    
-    # Creamos arrays para almacenar predicciones
-    pred_ll = np.zeros(len(df_pred))
-    
-    # Predecimos hora por hora, usando las predicciones anteriores
-    for i in range(len(df_pred)):
-        df_temp = df_pred.iloc[[i]].copy()
-        
-        # Calcular lag24: predicción de 24 horas atrás
-        if i >= 24:
-            df_temp[f"{TARGET_LLAMADAS}_lag24"] = pred_ll[i-24]
-        else:
-            df_temp[f"{TARGET_LLAMADAS}_lag24"] = INITIAL_AVG_LLAMADAS
-        
-        # Calcular ma24: promedio móvil de últimas 24 horas
-        if i >= 24:
-            df_temp[f"{TARGET_LLAMADAS}_ma24"] = np.mean(pred_ll[max(0, i-24):i])
-        else:
-            df_temp[f"{TARGET_LLAMADAS}_ma24"] = INITIAL_AVG_LLAMADAS
-        
-        # Calcular ma168: promedio móvil de última semana (168 horas)
-        if i >= 168:
-            df_temp[f"{TARGET_LLAMADAS}_ma168"] = np.mean(pred_ll[max(0, i-168):i])
-        else:
-            df_temp[f"{TARGET_LLAMADAS}_ma168"] = INITIAL_AVG_LLAMADAS
-        
-        # Construir features
-        X_temp = build_feature_matrix_nn(df_temp, TARGET_LLAMADAS, training_cols_ll)
-        X_temp_scaled = scaler_ll.transform(X_temp)
-        
-        # Predecir y desnormalizar
-        pred_norm = model_ll.predict(X_temp_scaled, verbose=0).flatten()[0]
-        pred_ll[i] = pred_norm * y_norm_params['y_std'] + y_norm_params['y_mean']
-        
-        # Asegurar valores no negativos
-        pred_ll[i] = max(0, pred_ll[i])
-        
-        if (i + 1) % 100 == 0:
-            print(f"  Procesadas {i+1}/{len(df_pred)} horas...")
-    
-    print(f"Predicciones completadas - Min: {pred_ll.min():.0f}, Max: {pred_ll.max():.0f}, Media: {pred_ll.mean():.0f}")
+    # 4) Features, escala y predice
+    print("Construyendo features y prediciendo…")
+    X_pred_ll = build_feature_matrix_nn(df_pred.copy(), TARGET_LLAMADAS, training_cols_ll)
+    X_pred_ll_scaled = scaler_ll.transform(X_pred_ll)
+    pred_ll = model_ll.predict(X_pred_ll_scaled).flatten()
 
-    # Predice TMO iterativamente
-    print("Prediciendo TMO iterativamente…")
-    INITIAL_AVG_TMO = 180  # TMO inicial en segundos (ajustar según tu operación)
-    
-    pred_tmo = np.zeros(len(df_pred))
-    
-    for i in range(len(df_pred)):
-        df_temp = df_pred.iloc[[i]].copy()
-        
-        # Calcular lags y promedios móviles para TMO
-        if i >= 24:
-            df_temp[f"{TARGET_TMO}_lag24"] = pred_tmo[i-24]
-        else:
-            df_temp[f"{TARGET_TMO}_lag24"] = INITIAL_AVG_TMO
-        
-        if i >= 24:
-            df_temp[f"{TARGET_TMO}_ma24"] = np.mean(pred_tmo[max(0, i-24):i])
-        else:
-            df_temp[f"{TARGET_TMO}_ma24"] = INITIAL_AVG_TMO
-        
-        if i >= 168:
-            df_temp[f"{TARGET_TMO}_ma168"] = np.mean(pred_tmo[max(0, i-168):i])
-        else:
-            df_temp[f"{TARGET_TMO}_ma168"] = INITIAL_AVG_TMO
-        
-        # Construir features y predecir
-        X_temp = build_feature_matrix_nn(df_temp, TARGET_TMO, training_cols_tmo)
-        X_temp_scaled = scaler_tmo.transform(X_temp)
-        pred_tmo[i] = max(0, model_tmo.predict(X_temp_scaled, verbose=0).flatten()[0])
-        
-        if (i + 1) % 100 == 0:
-            print(f"  Procesadas {i+1}/{len(df_pred)} horas...")
-    
-    print(f"TMO completado - Min: {pred_tmo.min():.0f}, Max: {pred_tmo.max():.0f}, Media: {pred_tmo.mean():.0f}")
+    X_pred_tmo = build_feature_matrix_nn(df_pred.copy(), TARGET_TMO, training_cols_tmo)
+    X_pred_tmo_scaled = scaler_tmo.transform(X_pred_tmo)
+    pred_tmo = model_tmo.predict(X_pred_tmo_scaled).flatten()
 
     # 5) Ensamblar y guardar (en /public)
     out = pd.DataFrame({
@@ -262,7 +173,6 @@ def main():
                  .rename(columns={"pred_llamadas": "total_llamadas"}))
     daily.to_csv(OUT_CSV_DAILY, index=False, encoding="utf-8")
     print(f"Guardado: {OUT_CSV_DAILY} ({len(daily)} filas)")
-    print(f"Total llamadas predichas por día - Min: {daily['total_llamadas'].min()}, Max: {daily['total_llamadas'].max()}, Media: {daily['total_llamadas'].mean():.0f}")
 
     # 6) Dimensionamiento Erlang (JSON en /public)
     print("Calculando dimensionamiento de agentes…")
