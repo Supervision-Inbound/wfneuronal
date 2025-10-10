@@ -1,44 +1,37 @@
-name: forecast3m
+name: Forecast 3.0
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 6 * * *"
-
-permissions:
-  contents: write
+    - cron: "0 6 * * *"  # corre diario 06:00 UTC (ajusta si quieres)
 
 jobs:
   run-forecast:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Setup Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install deps (TF/Keras 2.15 para .h5)
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements_infer_tf215.txt
 
-      - name: Run inference script
+      - name: Ejecutar inferencia
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # opcional; útil si el repo es privado
         run: |
           python forecast3m.py
 
-      # --- PASO MODIFICADO ---
-      # Se ha cambiado el comando de git para que SIEMPRE haga commit
-      - name: Commit & push output files
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          # Este comando ahora forzará un commit incluso si no hay cambios en los archivos.
-          git commit -m "chore(forecast): actualización automática de predicciones" --allow-empty
-          git push
+      - name: Publicar artefactos (carpeta public)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public
+          path: public
