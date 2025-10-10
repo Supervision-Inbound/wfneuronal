@@ -1,7 +1,10 @@
-tensorflow==2.15.0
-keras==2.15.0
+# Usa una versión de TensorFlow que soporte Keras 3 (2.16 o superior)
+tensorflow>=2.16.0
+# Keras 3 es ahora un paquete separado
+keras>=3.0.0
 h5py==3.10.0
 
+# El resto de las dependencias pueden mantenerse igual
 pandas==2.2.2
 numpy==1.26.4
 scikit-learn==1.2.2
