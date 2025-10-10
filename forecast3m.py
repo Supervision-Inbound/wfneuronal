@@ -2,7 +2,7 @@
 # forecast3m.py (tolerante a nombres y a 1 solo scaler)
 # - Usa últimos 90 días desde data/Hosting ia.xlsx
 # - Predice 90 días futuros y publica /public/*
-# - Carga modelos con fallback (Keras 3, tf.keras y compat.v1)
+# - Carga modelos con fallback (Keras 3, tf.keras y compat.v1) con FIX
 #   Requiere: TF 2.17 + Keras 3 (ver requirements.txt)
 # =======================================================================
 
@@ -102,33 +102,40 @@ def get_prod_factor(shift_hours, lunch_hours, breaks_min):
     work_h = shift_hours - lunch_hours - sum(breaks_min)/60.0
     return max(0.0, work_h/shift_hours)*(1-AUX_RATE)
 
-# ---------- Carga robusta de modelos ----------
+# ---------- Carga robusta de modelos (FIX) ----------
 def load_any_keras_model(path):
+    e1 = e2 = e3 = None  # evitar UnboundLocalError en el raise final
     # 1) Keras 3 nativo (safe_mode=False relaja validaciones del config legacy)
     try:
         m = keras.models.load_model(path, compile=False, safe_mode=False)
         print(f"[LOAD] Keras3 OK: {os.path.basename(path)}")
         return m
-    except Exception as e1:
+    except Exception as _e1:
+        e1 = _e1
         print(f"[WARN] Keras3 load falló para {path}: {e1}")
     # 2) tf.keras
     try:
         m = tf.keras.models.load_model(path, compile=False)
         print(f"[LOAD] tf.keras OK: {os.path.basename(path)}")
         return m
-    except Exception as e2:
+    except Exception as _e2:
+        e2 = _e2
         print(f"[WARN] tf.keras load falló para {path}: {e2}")
     # 3) compat v1
     try:
         m = tf.compat.v1.keras.models.load_model(path, compile=False)
         print(f"[LOAD] tf.compat.v1 OK: {os.path.basename(path)}")
         return m
-    except Exception as e3:
+    except Exception as _e3:
+        e3 = _e3
         raise RuntimeError(
-            f"No pude cargar el modelo '{path}'. "
-            f"Errores:\n- Keras3: {e1}\n- tf.keras: {e2}\n- compat.v1: {e3}\n\n"
-            "Solución rápida (sin re-entrenar): convierte el .h5 a .keras:\n"
-            "  import tensorflow as tf; m=tf.keras.models.load_model('modelo.h5', compile=False); m.save('modelo.keras')"
+            "No pude cargar el modelo '{}'.\n"
+            "- Keras3: {}\n- tf.keras: {}\n- compat.v1: {}\n\n"
+            "Solución sin re-entrenar: convierte el .h5 a .keras y súbelo al release:\n"
+            "  import tensorflow as tf\n"
+            "  m=tf.keras.models.load_model('modelo_llamadas_tf.h5', compile=False); m.save('modelo_llamadas.keras')\n"
+            "  m=tf.keras.models.load_model('modelo_tmo_tf.h5', compile=False);        m.save('modelo_tmo.keras')\n"
+            .format(path, e1, e2, e3)
         )
 
 # ---------- Descarga tolerante a nombres ----------
@@ -277,3 +284,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
