@@ -19,23 +19,22 @@ def _download_stream(url, target_path, headers=None, chunk_size=8192, retries=3,
                         if chunk:
                             f.write(chunk)
             return
-        except Exception as e:
+        except Exception:
             if attempt == retries:
                 raise
             time.sleep(backoff ** attempt)
 
 def download_asset_from_latest(owner, repo, asset_name, target_dir):
     """
-    Descarga un asset del último Release público de GitHub.
-    - Usa `browser_download_url` para evitar depender del GITHUB_TOKEN.
-    - Si el repo es privado, puedes pasar GITHUB_TOKEN en el entorno y seguirá funcionando.
+    Descarga un asset del último Release público de GitHub usando browser_download_url.
+    Si el repo es privado, define GITHUB_TOKEN en el entorno y seguirá funcionando.
     """
     token = os.getenv("GITHUB_TOKEN")
     headers = {"Authorization": f"token {token}"} if token else {}
     if not token:
-        print("INFO: GITHUB_TOKEN no definido. Intentaré descarga pública (browser_download_url).")
+        print("INFO: GITHUB_TOKEN no definido. Intentaré descarga pública.")
 
-    print(f"Buscando el último release en {owner}/{repo}...")
+    print(f"Buscando el último release en {owner}/{repo}…")
     release_data = _get_latest_release_json(owner, repo, headers=headers)
     assets = release_data.get("assets", []) or []
 
@@ -53,13 +52,10 @@ def download_asset_from_latest(owner, repo, asset_name, target_dir):
         )
 
     target_path = os.path.join(target_dir, asset_name)
-    print(f"Descargando '{asset_name}' desde release…")
-    _download_stream(browser_url, target_path, headers=None)  # descarga directa pública
+    print(f"Descargando '{asset_name}'…")
+    _download_stream(browser_url, target_path, headers=None)
     print(f"OK: '{asset_name}' descargado en '{target_path}'")
     return target_path
 
 if __name__ == '__main__':
-    # Uso de prueba (ajusta si quieres testear localmente)
-    # download_asset_from_latest("Supervision-Inbound", "wfneuronal", "modelo_llamadas_tf.h5", "models_test")
     pass
-
