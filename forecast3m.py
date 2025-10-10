@@ -1,6 +1,7 @@
 # =======================================================================
-# forecast3m.py (Transformer temporal, usa últimos 90 días de /data/Hosting ia.xlsx)
-# Salidas intactas en /public (predicciones.csv/json, llamadas_por_dia.csv, erlang_forecast.json, last_update.json)
+# forecast3m.py (tolerante a nombres y a 1 solo scaler)
+# - Usa últimos 90 días desde data/Hosting ia.xlsx
+# - Predice 90 días futuros y publica /public/*
 # =======================================================================
 
 import os, json
@@ -10,47 +11,39 @@ import tensorflow as tf
 import joblib
 from utils_release import download_asset_from_latest
 
-# ---------- Parámetros ----------
+# ---------- Parámetros del repo ----------
 OWNER = "Supervision-Inbound"
 REPO  = "wfneuronal"
 
-# Assets (mismos nombres que la versión previa)
-ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
-ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
-ASSET_TMO = "modelo_tmo_nn.h5"
-ASSET_SCALER_TMO = "scaler_tmo.pkl"
-
-# Directorios
+# ---------- Directorios ----------
 MODELS_DIR = "models"
 DATA_DIR   = "data"
 
-# Entradas de datos
-HOSTING_FILE = os.path.join(DATA_DIR, "Hosting ia.xlsx")
-FERIADOS_FILE = os.path.join(DATA_DIR, "Feriados_Chile_2023_2027.xlsx")
+# ---------- Entradas de data ----------
+HOSTING_FILE   = os.path.join(DATA_DIR, "Hosting ia.xlsx")
+FERIADOS_FILE  = os.path.join(DATA_DIR, "Feriados_Chile_2023_2027.xlsx")  # (opcional por ahora)
 
-# --- SALIDAS (todas en /public) ---
-OUT_CSV_DATAOUT   = "public/predicciones.csv"
-OUT_JSON_PUBLIC   = "public/predicciones.json"
-OUT_JSON_ERLANG   = "public/erlang_forecast.json"
-STAMP_JSON        = "public/last_update.json"
-OUT_CSV_DAILY     = "public/llamadas_por_dia.csv"
+# ---------- Salidas ----------
+OUT_CSV_DATAOUT = "public/predicciones.csv"
+OUT_JSON_PUBLIC = "public/predicciones.json"
+OUT_JSON_ERLANG = "public/erlang_forecast.json"
+STAMP_JSON      = "public/last_update.json"
+OUT_CSV_DAILY   = "public/llamadas_por_dia.csv"
 
-# --- Parámetros ---
-TIMEZONE = "America/Santiago"
-FREQ     = "H"
-SEQ_LEN  = 24*90   # 90 días de historia
-HORIZON  = 24*90   # 90 días futuros
+# ---------- Parámetros de ventana/horizonte ----------
+SEQ_LEN  = 24*90
+HORIZON  = 24*90
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO      = "tmo (segundos)"
 
-# --- Erlang configuraciones (se mantienen) ---
+# ---------- Erlang (igual que siempre) ----------
 SLA_TARGET = 0.90; ASA_TARGET_S = 22
 MAX_OCC = 0.85; SHIFT_HOURS = 10.0
 LUNCH_HOURS = 1.0; BREAKS_MIN = [15, 15]; AUX_RATE = 0.15; ABSENTEEISM_RATE = 0.23
 USE_ERLANG_A = True; MEAN_PATIENCE_S = 60.0; ABANDON_MAX = 0.06
 AWT_MAX_S = 120.0; INTERCALL_GAP_S = 10.0
 
-# ----------------- Utilidades -----------------
+# ---------- Utilidades ----------
 def parse_tmo_to_seconds(val):
     if pd.isna(val): return np.nan
     if isinstance(val, (int,float)): return float(val)
@@ -91,9 +84,7 @@ def calculate_agents(llamadas, tmo_seg, sla_target, asa_target_s):
         p_wait = erlang_c(R, N)
         asa = (p_wait * aht_s) / max(N - R, 1e-6)
         sla = 1 - p_wait * np.exp(-AWT_MAX_S * (N - R) / aht_s)
-        abn = 0.0
-    n = N
-    iterations = 0
+    n = N; iterations = 0
     while ((sla < sla_target) or (asa > asa_target_s)) and iterations < 200:
         n += 1; iterations += 1
         if USE_ERLANG_A:
@@ -108,12 +99,26 @@ def get_prod_factor(shift_hours, lunch_hours, breaks_min):
     work_h = shift_hours - lunch_hours - sum(breaks_min)/60.0
     return max(0.0, work_h/shift_hours)*(1-AUX_RATE)
 
-# ----------------- Carga de data reciente (90 días) -----------------
+# ---------- Descarga tolerante a nombres ----------
+def fetch_first_asset(candidates, dest_dir):
+    last_err = None
+    for name in candidates:
+        try:
+            download_asset_from_latest(OWNER, REPO, name, dest_dir)
+            local_path = os.path.join(dest_dir, name)
+            if os.path.exists(local_path):
+                print(f"[OK] Asset encontrado: {name}")
+                return local_path
+        except FileNotFoundError as e:
+            last_err = e
+    raise FileNotFoundError(f"No se encontró ninguno de estos assets en el último release: {candidates}. "
+                            f"Último error: {last_err}")
+
+# ---------- Carga de historia (90 días) ----------
 def load_recent_history():
     if not os.path.exists(HOSTING_FILE):
         raise FileNotFoundError(f"No se encontró {HOSTING_FILE}.")
     df = pd.read_excel(HOSTING_FILE)
-    # columnas estándar
     df["fecha_dt"] = pd.to_datetime(df["fecha"], errors="coerce")
     if "hora" in df.columns:
         df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str)+" "+df["hora"].astype(str).str[:5], errors="coerce")
@@ -121,62 +126,78 @@ def load_recent_history():
         df["ts"] = df["fecha_dt"]
     df = df.dropna(subset=["ts"]).sort_values("ts")
     df["tmo (segundos)"] = df["tmo (segundos)"].apply(parse_tmo_to_seconds)
-    # Tomar últimos 90 días completos
     end_ts = df["ts"].max()
     start_ts = end_ts - pd.Timedelta(days=90)
     recent = df[df["ts"] > start_ts].copy()
-    # Completar huecos horarios si los hubiese
     full_rng = pd.date_range(recent["ts"].min().floor("H"), end_ts.ceil("H"), freq="H")
     recent = recent.set_index("ts").reindex(full_rng).rename_axis("ts").reset_index()
-    recent.rename(columns={"index":"ts"}, inplace=True)
-    # Rellenos simples
     for c in [TARGET_LLAMADAS, TARGET_TMO]:
         if c in recent.columns:
             recent[c] = recent[c].fillna(method="ffill").fillna(method="bfill").fillna(0)
     return recent
 
-# ----------------- Inference -----------------
+# ---------- Main ----------
 def main():
     os.makedirs("public", exist_ok=True)
     os.makedirs(MODELS_DIR, exist_ok=True)
 
-    # 1) Descargar modelos y scalers desde el último Release
-    for asset_name in [ASSET_LLAMADAS, ASSET_SCALER_LLAMADAS, ASSET_TMO, ASSET_SCALER_TMO]:
-        download_asset_from_latest(OWNER, REPO, asset_name, MODELS_DIR)
-        if not os.path.exists(os.path.join(MODELS_DIR, asset_name)):
-            raise FileNotFoundError(f"No se encontró {asset_name} en {MODELS_DIR}.")
+    # Intentar múltiples nombres por compatibilidad
+    path_ll = fetch_first_asset(
+        ["modelo_llamadas_nn.h5", "modelo_llamadas_tf.h5", "modelo_llamadas.h5"], MODELS_DIR
+    )
+    path_tmo = fetch_first_asset(
+        ["modelo_tmo_nn.h5", "modelo_tmo_tf.h5", "modelo_tmo.h5"], MODELS_DIR
+    )
 
-    # 2) Cargar
-    model_ll = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_LLAMADAS))
-    model_tmo = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_TMO))
-    scaler_ll = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_LLAMADAS))
-    scaler_tmo = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_TMO))
+    # scalers: aceptar también 'scaler.pkl'
+    candidates_scaler_ll = ["scaler_llamadas.pkl", "scaler_llamadas_tf.pkl", "scaler.pkl"]
+    candidates_scaler_tmo = ["scaler_tmo.pkl", "scaler_tmo_tf.pkl", "scaler.pkl"]
 
-    # 3) Cargar historia reciente (90 días)
+    try:
+        path_sc_ll = fetch_first_asset(candidates_scaler_ll, MODELS_DIR)
+    except FileNotFoundError:
+        path_sc_ll = None
+    try:
+        path_sc_tmo = fetch_first_asset(candidates_scaler_tmo, MODELS_DIR)
+    except FileNotFoundError:
+        path_sc_tmo = None
+
+    # Si hay solo un scaler, reutilízalo
+    if path_sc_ll is None and path_sc_tmo is None:
+        raise FileNotFoundError("No se encontró ningún scaler (busqué scaler_llamadas*, scaler_tmo*, scaler.pkl).")
+    if path_sc_ll is None and path_sc_tmo is not None:
+        print("[WARN] No hay scaler de llamadas; usaré el mismo scaler para TMO y llamadas.")
+        path_sc_ll = path_sc_tmo
+    if path_sc_tmo is None and path_sc_ll is not None:
+        print("[WARN] No hay scaler de TMO; usaré el mismo scaler que el de llamadas.")
+        path_sc_tmo = path_sc_ll
+
+    model_ll  = tf.keras.models.load_model(path_ll)
+    model_tmo = tf.keras.models.load_model(path_tmo)
+    scaler_ll  = joblib.load(path_sc_ll)
+    scaler_tmo = joblib.load(path_sc_tmo)
+
     hist = load_recent_history()
     last_ts = hist["ts"].max()
 
-    # 4) Construir secuencias de entrada (univariadas)
-    series_ll = hist[TARGET_LLAMADAS].astype(float).values.reshape(-1,1)
+    series_ll  = hist[TARGET_LLAMADAS].astype(float).values.reshape(-1,1)
     series_tmo = hist[TARGET_TMO].astype(float).values.reshape(-1,1)
 
-    seq_ll = scaler_ll.transform(series_ll).flatten()
+    seq_ll  = scaler_ll.transform(series_ll).flatten()
     seq_tmo = scaler_tmo.transform(series_tmo).flatten()
 
     if len(seq_ll) < SEQ_LEN or len(seq_tmo) < SEQ_LEN:
         raise ValueError("Historia insuficiente: se requieren 90 días completos de datos.")
 
-    x_ll = seq_ll[-SEQ_LEN:].reshape(1, SEQ_LEN, 1)
+    x_ll  = seq_ll[-SEQ_LEN:].reshape(1, SEQ_LEN, 1)
     x_tmo = seq_tmo[-SEQ_LEN:].reshape(1, SEQ_LEN, 1)
 
-    # 5) Predecir 90 días futuros (horizonte)
-    yhat_ll_s = model_ll.predict(x_ll, verbose=0)[0]
+    yhat_ll_s  = model_ll.predict(x_ll,  verbose=0)[0]
     yhat_tmo_s = model_tmo.predict(x_tmo, verbose=0)[0]
 
-    yhat_ll = scaler_ll.inverse_transform(yhat_ll_s.reshape(-1,1)).flatten()
+    yhat_ll  = scaler_ll.inverse_transform(yhat_ll_s.reshape(-1,1)).flatten()
     yhat_tmo = scaler_tmo.inverse_transform(yhat_tmo_s.reshape(-1,1)).flatten()
 
-    # 6) Construir timeline futura por hora
     future_index = pd.date_range(start=last_ts + pd.Timedelta(hours=1), periods=HORIZON, freq="H", tz=None)
     out = pd.DataFrame({
         "ts": future_index.tz_localize(None).astype(str),
@@ -184,19 +205,18 @@ def main():
         "pred_tmo_seg": np.maximum(0, np.round(yhat_tmo,0)).astype(int),
     })
 
-    # 7) Export CSV/JSON
+    # Exports
     out.to_csv(OUT_CSV_DATAOUT, index=False, encoding="utf-8")
     with open(OUT_JSON_PUBLIC, "w", encoding="utf-8") as f:
         json.dump(out.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
 
-    # 7.1) Totales diarios
     tmp = out.copy()
     tmp["ts"] = pd.to_datetime(tmp["ts"])
     daily = (tmp.assign(date=tmp["ts"].dt.date).groupby("date", as_index=False)["pred_llamadas"].sum()
              .rename(columns={"pred_llamadas":"total_llamadas"}))
     daily.to_csv(OUT_CSV_DAILY, index=False, encoding="utf-8")
 
-    # 8) Dimensionamiento Erlang
+    # Erlang
     erlang_rows = []
     prod_factor = get_prod_factor(SHIFT_HOURS, LUNCH_HOURS, BREAKS_MIN)
     derived_shrinkage   = 1 - prod_factor
@@ -212,23 +232,12 @@ def main():
             "pred_llamadas": llamadas,
             "pred_tmo_seg": tmo,
             "agents_productive": agentes_prod,
-            "agents_scheduled": agentes_agendados,
-            "params": {
-                "SLA_TARGET": SLA_TARGET, "ASA_TARGET_S": ASA_TARGET_S,
-                "MAX_OCC": MAX_OCC, "SHIFT_HOURS": SHIFT_HOURS, "LUNCH_HOURS": LUNCH_HOURS,
-                "BREAKS_MIN": BREAKS_MIN, "AUX_RATE": AUX_RATE,
-                "DERIVED_SHRINKAGE": round(derived_shrinkage,4),
-                "PRODUCTIVITY_FACTOR": round(prod_factor,4),
-                "USE_ERLANG_A": USE_ERLANG_A, "MEAN_PATIENCE_S": MEAN_PATIENCE_S,
-                "ABANDON_MAX": ABANDON_MAX, "AWT_MAX_S": AWT_MAX_S, "INTERCALL_GAP_S": INTERCALL_GAP_S,
-                "ABSENTEEISM_RATE": ABSENTEEISM_RATE, "EFFECTIVE_SHRINKAGE": round(effective_shrinkage,4)
-            }
+            "agents_scheduled": agentes_agendados
         })
 
     with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f:
         json.dump(erlang_rows, f, ensure_ascii=False, indent=2)
 
-    # 9) Timestamp
     with open(STAMP_JSON, "w") as f:
         json.dump({"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")}, f)
 
@@ -236,4 +245,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
