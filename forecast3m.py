@@ -1,16 +1,13 @@
 # =======================================================================
-# forecast3m.py (tolerante a nombres y a 1 solo scaler)
+# forecast3m.py (TF/Keras 2.15, carga directa de .h5)
 # - Usa últimos 90 días desde data/Hosting ia.xlsx
 # - Predice 90 días futuros y publica /public/*
-# - Carga modelos con fallback (Keras 3, tf.keras y compat.v1) con FIX
-#   Requiere: TF 2.17 + Keras 3 (ver requirements.txt)
 # =======================================================================
 
 import os, json
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import keras  # Keras 3 nativa
 import joblib
 from utils_release import download_asset_from_latest
 
@@ -39,7 +36,7 @@ HORIZON  = 24*90
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO      = "tmo (segundos)"
 
-# ---------- Erlang (igual que siempre) ----------
+# ---------- Erlang ----------
 SLA_TARGET = 0.90; ASA_TARGET_S = 22
 MAX_OCC = 0.85; SHIFT_HOURS = 10.0
 LUNCH_HOURS = 1.0; BREAKS_MIN = [15, 15]; AUX_RATE = 0.15; ABSENTEEISM_RATE = 0.23
@@ -102,42 +99,6 @@ def get_prod_factor(shift_hours, lunch_hours, breaks_min):
     work_h = shift_hours - lunch_hours - sum(breaks_min)/60.0
     return max(0.0, work_h/shift_hours)*(1-AUX_RATE)
 
-# ---------- Carga robusta de modelos (FIX) ----------
-def load_any_keras_model(path):
-    e1 = e2 = e3 = None  # evitar UnboundLocalError en el raise final
-    # 1) Keras 3 nativo (safe_mode=False relaja validaciones del config legacy)
-    try:
-        m = keras.models.load_model(path, compile=False, safe_mode=False)
-        print(f"[LOAD] Keras3 OK: {os.path.basename(path)}")
-        return m
-    except Exception as _e1:
-        e1 = _e1
-        print(f"[WARN] Keras3 load falló para {path}: {e1}")
-    # 2) tf.keras
-    try:
-        m = tf.keras.models.load_model(path, compile=False)
-        print(f"[LOAD] tf.keras OK: {os.path.basename(path)}")
-        return m
-    except Exception as _e2:
-        e2 = _e2
-        print(f"[WARN] tf.keras load falló para {path}: {e2}")
-    # 3) compat v1
-    try:
-        m = tf.compat.v1.keras.models.load_model(path, compile=False)
-        print(f"[LOAD] tf.compat.v1 OK: {os.path.basename(path)}")
-        return m
-    except Exception as _e3:
-        e3 = _e3
-        raise RuntimeError(
-            "No pude cargar el modelo '{}'.\n"
-            "- Keras3: {}\n- tf.keras: {}\n- compat.v1: {}\n\n"
-            "Solución sin re-entrenar: convierte el .h5 a .keras y súbelo al release:\n"
-            "  import tensorflow as tf\n"
-            "  m=tf.keras.models.load_model('modelo_llamadas_tf.h5', compile=False); m.save('modelo_llamadas.keras')\n"
-            "  m=tf.keras.models.load_model('modelo_tmo_tf.h5', compile=False);        m.save('modelo_tmo.keras')\n"
-            .format(path, e1, e2, e3)
-        )
-
 # ---------- Descarga tolerante a nombres ----------
 def fetch_first_asset(candidates, dest_dir):
     last_err = None
@@ -180,7 +141,7 @@ def main():
     os.makedirs("public", exist_ok=True)
     os.makedirs(MODELS_DIR, exist_ok=True)
 
-    # Intentar múltiples nombres por compatibilidad (prioriza .keras, luego .h5)
+    # Intentar múltiples nombres (prioriza .keras por si en el futuro los subes convertidos)
     path_ll = fetch_first_asset(
         ["modelo_llamadas.keras", "modelo_llamadas_tf.h5", "modelo_llamadas_nn.h5", "modelo_llamadas.h5"], MODELS_DIR
     )
@@ -210,9 +171,9 @@ def main():
         print("[WARN] No hay scaler de TMO; usaré el mismo scaler que el de llamadas.")
         path_sc_tmo = path_sc_ll
 
-    # Carga modelos con fallback robusto
-    model_ll  = load_any_keras_model(path_ll)
-    model_tmo = load_any_keras_model(path_tmo)
+    # Carga modelos (TF/Keras 2.15 abre .h5 sin conflicto)
+    model_ll  = tf.keras.models.load_model(path_ll,  compile=False)
+    model_tmo = tf.keras.models.load_model(path_tmo, compile=False)
     scaler_ll  = joblib.load(path_sc_ll)
     scaler_tmo = joblib.load(path_sc_tmo)
 
