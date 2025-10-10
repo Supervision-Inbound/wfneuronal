@@ -1,8 +1,7 @@
-# Core
-tensorflow-cpu==2.15.0.post1
+# Core (TF 2.17 ya viene CPU por defecto)
+tensorflow==2.17.0
 keras==3.4.1
 h5py==3.10.0
-protobuf<4
 
 # Data/ML
 pandas==2.2.2
