@@ -30,7 +30,7 @@ COL_HORA     = "hora"
 COL_LLAMADAS = "recibidos"
 COL_TMO      = "tmo (segundos)"
 
-MAD_K = 2.0              # <- TU VALOR ORIGINAL (más cercano a la realidad)
+MAD_K = 3.5              # <- TU VALOR ORIGINAL (más cercano a la realidad)
 MIN_CONSECUTIVOS = 1
 SUAVIZADO = "cap"        # <- TU MÉTODO ORIGINAL (recorta al umbral upper_cap)
 TEST_SIZE = 0.2
@@ -94,7 +94,7 @@ def robust_baseline_by_dow_hour(df, target_col):
     grp["mad"] = df.groupby(["dow", "hour"])[target_col].apply(mad).values
     return grp
 
-def detect_peaks(df, target_col, mad_k=2.0, min_consec=1):
+def detect_peaks(df, target_col, mad_k=1.5, min_consec=1):
     base = robust_baseline_by_dow_hour(df, target_col)
     df = df.merge(base, left_on=["dow", "hour"], right_index=True, how="left")
     df["upper_cap"] = df["med"] + mad_k * df["mad"].replace(0, df["mad"].median())
@@ -238,3 +238,4 @@ def main():
 
 # Ejecutamos la función principal
 main()
+
