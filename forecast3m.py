@@ -2,7 +2,7 @@
 # forecast3m.py (tolerante a nombres y a 1 solo scaler)
 # - Usa últimos 90 días desde data/Hosting ia.xlsx
 # - Predice 90 días futuros y publica /public/*
-# - Carga modelos con compile=False (Keras 3 friendly)
+# - Carga modelos con compile=False (Keras 3 + TF 2.17)
 # =======================================================================
 
 import os, json
@@ -93,7 +93,7 @@ def calculate_agents(llamadas, tmo_seg, sla_target, asa_target_s):
         else:
             p_wait = erlang_c(R, n)
             asa = (p_wait * aht_s) / max(n - R, 1e-6)
-            sla = 1 - p_wait * np.exp(-AWT_MAX_S * (n - R) / a_h_t)
+            sla = 1 - p_wait * np.exp(-AWT_MAX_S * (n - R) / aht_s)
     return n
 
 def get_prod_factor(shift_hours, lunch_hours, breaks_min):
@@ -246,3 +246,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
