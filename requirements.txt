@@ -1,10 +1,8 @@
-# Core
 tensorflow-cpu==2.15.0.post1
-keras==2.15.0
+keras==3.4.1
 h5py==3.10.0
 protobuf<4
 
-# Data/ML
 pandas==2.2.2
 numpy==1.26.4
 scikit-learn==1.2.2
