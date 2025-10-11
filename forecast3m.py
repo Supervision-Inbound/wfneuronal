@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN FINAL CON LÓGICA DE FERIADOS CORREGIDA Y EFICIENTE)
+# forecast3m.py (CON SOPORTE PARA FERIADOS CHILENOS)
 # =======================================================================
 
 import os, json
@@ -8,14 +8,13 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from utils_release import download_asset_from_latest
-from pandas.tseries.offsets import MonthEnd
 
 # --- Parámetros generales ---
 OWNER = "Supervision-Inbound"
 REPO  = "wfneuronal"
 MODELS_DIR = "models"
 DATA_FILE = "data/historical_data.csv"
-FERIADOS_FILE = "data/Feriados_Chile.csv"
+HOLIDAYS_FILE = "data/Feriados_Chilev2.csv"  # <<< NUEVO
 OUT_CSV_DATAOUT = "public/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
 OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
@@ -27,15 +26,71 @@ ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
 
 TIMEZONE = "America/Santiago"
-# <<< CAMBIO: Corregida advertencia de 'H' a 'h' >>>
-FREQ = "h"
+FREQ = "H"
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
 
 MAD_K = 3.5
 SUAVIZADO = "cap"
 
-# --- Funciones de preprocesamiento ---
+# ========== NUEVA FUNCIÓN: CARGAR FERIADOS ==========
+def load_holidays(filepath):
+    """
+    Carga el archivo de feriados y retorna un set de fechas (solo día, sin hora).
+    
+    Args:
+        filepath: Ruta al archivo CSV de feriados
+    
+    Returns:
+        set: Conjunto de fechas en formato datetime.date
+    """
+    try:
+        df_holidays = pd.read_csv(filepath, encoding='utf-8')
+        # Normalizar nombre de columna (por si tiene espacios)
+        df_holidays.columns = df_holidays.columns.str.strip()
+        
+        # Convertir a datetime (prueba varios formatos comunes)
+        dates = pd.to_datetime(df_holidays['Fecha'], errors='coerce', dayfirst=True)
+        
+        # Filtrar valores nulos y extraer solo la fecha (sin hora)
+        valid_dates = dates.dropna().dt.date
+        
+        print(f"✔ Cargados {len(valid_dates)} feriados desde {filepath}")
+        return set(valid_dates)
+    except Exception as e:
+        print(f"⚠ Error al cargar feriados: {e}. Continuando sin feriados.")
+        return set()
+
+# ========== FUNCIÓN MODIFICADA: ADD TIME FEATURES ==========
+def add_time_features(df, holidays_set=None):
+    """
+    Añade features temporales incluyendo indicador de feriado.
+    
+    Args:
+        df: DataFrame con índice datetime
+        holidays_set: Set de fechas que son feriados (datetime.date objects)
+    
+    Returns:
+        DataFrame con nuevas columnas de features
+    """
+    df_copy = df.copy()
+    df_copy["dow"] = df_copy.index.dayofweek
+    df_copy["month"] = df_copy.index.month
+    df_copy["hour"] = df_copy.index.hour
+    df_copy["sin_hour"] = np.sin(2 * np.pi * df_copy["hour"] / 24)
+    df_copy["cos_hour"] = np.cos(2 * np.pi * df_copy["hour"] / 24)
+    df_copy["sin_dow"]  = np.sin(2 * np.pi * df_copy["dow"]  / 7)
+    df_copy["cos_dow"]  = np.cos(2 * np.pi * df_copy["dow"]  / 7)
+    
+    # <<< NUEVO: Feature de feriado >>>
+    if holidays_set is not None:
+        df_copy["is_holiday"] = df_copy.index.date.isin(holidays_set).astype(int)
+    else:
+        df_copy["is_holiday"] = 0
+    
+    return df_copy
+
+# --- Funciones de preprocesamiento (sin cambios) ---
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
     df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
@@ -55,44 +110,31 @@ def parse_tmo_to_seconds(val):
         return float(s)
     except: return np.nan
 
-def create_features_for_step(timestamp, df_history, target_col, set_feriados):
-    features = {}
-    features['dow'] = timestamp.dayofweek
-    features['month'] = timestamp.month
-    features['hour'] = timestamp.hour
-    features['feriados'] = 1 if timestamp.date() in set_feriados else 0
-    
-    features["sin_hour"] = np.sin(2 * np.pi * features["hour"] / 24)
-    features["cos_hour"] = np.cos(2 * np.pi * features["hour"] / 24)
-    features["sin_dow"]  = np.sin(2 * np.pi * features["dow"]  / 7)
-    features["cos_dow"]  = np.cos(2 * np.pi * features["dow"]  / 7)
-    
-    features[f"{target_col}_lag24"] = df_history[target_col].asof(timestamp - pd.Timedelta(hours=24))
-    
-    start_ma24 = timestamp - pd.Timedelta(hours=25)
-    end_ma24 = timestamp - pd.Timedelta(hours=1)
-    features[f"{target_col}_ma24"] = df_history[target_col].loc[start_ma24:end_ma24].mean()
-
-    start_ma168 = timestamp - pd.Timedelta(hours=169)
-    end_ma168 = timestamp - pd.Timedelta(hours=1)
-    features[f"{target_col}_ma168"] = df_history[target_col].loc[start_ma168:end_ma168].mean()
-    
-    return pd.DataFrame([features], index=[timestamp])
-
-def add_time_features_for_smoothing(df, set_feriados):
+def rolling_features(df, target_col):
     df_copy = df.copy()
-    df_copy["dow"] = df_copy.index.dayofweek
-    df_copy["hour"] = df_copy.index.hour
-    df_copy['feriados'] = df_copy.index.to_series().dt.date.isin(set_feriados).astype(int)
+    df_copy[f"{target_col}_lag24"]  = df_copy[target_col].shift(24)
+    df_copy[f"{target_col}_ma24"]   = df_copy[target_col].shift(1).rolling(24, min_periods=1).mean()
+    df_copy[f"{target_col}_ma168"]  = df_copy[target_col].shift(1).rolling(24*7, min_periods=1).mean()
     return df_copy
 
-def build_feature_matrix_nn(df_step, training_columns):
-    df_dummies = pd.get_dummies(df_step[["dow", "month"]], drop_first=False, dtype=int)
-    X = pd.concat([df_step, df_dummies], axis=1)
+# ========== FUNCIÓN MODIFICADA: BUILD FEATURE MATRIX ==========
+def build_feature_matrix_nn(df, training_columns, target_col):
+    """
+    Construye la matriz de features para el modelo, incluyendo is_holiday.
+    """
+    df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
+    base_feats = [
+        "sin_hour", "cos_hour", "sin_dow", "cos_dow",
+        "is_holiday",  # <<< NUEVO
+        f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168"
+    ]
+    existing_feats = [feat for feat in base_feats if feat in df.columns]
+    X = pd.concat([df[existing_feats], df_dummies], axis=1)
     for c in set(training_columns) - set(X.columns):
         X[c] = 0
     return X[training_columns].fillna(0)
 
+# --- Funciones auxiliares (sin cambios) ---
 def robust_baseline_by_dow_hour(df, col):
     grouped = df.groupby(["dow", "hour"])[col].agg(["median"])
     grouped.rename(columns={"median": "med"}, inplace=True)
@@ -110,23 +152,38 @@ def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
         df[col] = np.where(df["is_peak"] == 1, df["med"], df[col])
     return df.drop(columns=["med", "mad", "upper_cap", "is_peak"], errors='ignore')
 
-# --- Lógica principal de predicción (Reestructurada) ---
-def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timestamps, set_feriados):
+# ========== FUNCIÓN MODIFICADA: PREDICCIÓN ITERATIVA CON FERIADOS ==========
+def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timestamps, holidays_set):
+    """
+    Predicción iterativa considerando feriados.
+    
+    Args:
+        df_hist: DataFrame histórico con el target
+        modelo: Modelo de Keras
+        scaler: Scaler de scikit-learn
+        target_col: Nombre de la columna objetivo
+        future_timestamps: Índice de fechas futuras a predecir
+        holidays_set: Set de fechas que son feriados
+    
+    Returns:
+        Series con predicciones para future_timestamps
+    """
     training_columns = scaler.get_feature_names_out()
     df_prediccion = df_hist.copy()
-
+    
     for ts in future_timestamps:
-        df_step_features = create_features_for_step(ts, df_prediccion, target_col, set_feriados)
-        X_step = build_feature_matrix_nn(df_step_features, training_columns)
+        temp_df = pd.DataFrame(index=[ts])
+        df_completo = pd.concat([df_prediccion, temp_df])
+        df_completo = add_time_features(df_completo, holidays_set)  # <<< NUEVO: pasamos holidays
+        df_completo = rolling_features(df_completo, target_col)
+        X_step = build_feature_matrix_nn(df_completo.tail(1), training_columns, target_col)
         X_step_scaled = scaler.transform(X_step)
         prediccion = modelo.predict(X_step_scaled, verbose=0).flatten()[0]
         df_prediccion.loc[ts, target_col] = prediccion
-        
-        # <<< CAMBIO CRÍTICO: Reordenar el índice en cada paso para asegurar que 'asof' funcione >>>
-        df_prediccion.sort_index(inplace=True)
-
+    
     return df_prediccion.loc[future_timestamps, target_col]
 
+# ========== FUNCIÓN PRINCIPAL ==========
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs("public", exist_ok=True)
@@ -143,11 +200,9 @@ def main():
     model_tmo = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_TMO}")
     scaler_tmo = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_TMO}")
 
-    # --- Cargar y procesar la lista de feriados ---
-    print(f"Cargando feriados desde {FERIADOS_FILE}...")
-    df_feriados = pd.read_csv(FERIADOS_FILE, delimiter=';', encoding='latin-1')
-    df_feriados.columns = df_feriados.columns.str.strip()
-    set_feriados = set(pd.to_datetime(df_feriados['Fecha']).dt.date)
+    # <<< NUEVO: Cargar feriados >>>
+    print(f"Cargando feriados desde {HOLIDAYS_FILE}...")
+    holidays_set = load_holidays(HOLIDAYS_FILE)
 
     # --- Cargar y procesar datos históricos ---
     print(f"Cargando datos históricos desde {DATA_FILE}...")
@@ -155,32 +210,31 @@ def main():
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
-    # <<< CAMBIO: Eliminar duplicados en el índice para mayor robustez >>>
-    df_hist = df_hist[~df_hist.index.duplicated(keep='last')]
-    df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO, 'feriados']].dropna(subset=[TARGET_LLAMADAS])
+    df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
 
     # --- Definir el rango de fechas futuras a predecir ---
     last_known_date = df_hist.index.max()
     start_pred = last_known_date + pd.Timedelta(hours=1)
-    # <<< CAMBIO: Mejorada la forma de calcular la fecha final para eliminar UserWarning >>>
-    end_pred = (last_known_date + MonthEnd(0) + pd.DateOffset(months=3)).replace(hour=23, minute=59, second=59)
+    end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_localize(TIMEZONE)
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ)
     print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
 
-    # --- Predicción iterativa ---
-    print("Realizando predicción iterativa de llamadas...")
-    pred_ll = predecir_futuro_iterativo(df_hist, model_ll, scaler_ll, TARGET_LLAMADAS, future_ts, set_feriados)
+    # --- Predicción iterativa CON FERIADOS ---
+    print("Realizando predicción iterativa de llamadas (considerando feriados)...")
+    pred_ll = predecir_futuro_iterativo(df_hist, model_ll, scaler_ll, TARGET_LLAMADAS, future_ts, holidays_set)
     df_final = pd.DataFrame(index=future_ts)
     df_final["pred_llamadas"] = np.maximum(0, np.round(pred_ll)).astype(int)
 
-    print("Realizando predicción iterativa de TMO...")
-    pred_tmo = predecir_futuro_iterativo(df_hist, model_tmo, scaler_tmo, TARGET_TMO, future_ts, set_feriados)
+    print("Realizando predicción iterativa de TMO (considerando feriados)...")
+    pred_tmo = predecir_futuro_iterativo(df_hist, model_tmo, scaler_tmo, TARGET_TMO, future_ts, holidays_set)
     df_final["pred_tmo_seg"] = np.maximum(0, np.round(pred_tmo)).astype(int)
 
     # --- Aplicar suavizado de picos ---
     print("Aplicando suavizado de picos...")
-    df_final_with_features = add_time_features_for_smoothing(df_final, set_feriados)
+    df_final_with_features = add_time_features(df_final, holidays_set)  # <<< NUEVO: pasamos holidays
     df_final_smoothed = apply_peak_smoothing(df_final_with_features, "pred_llamadas", mad_k=MAD_K, method=SUAVIZADO)
+
+    # Asegurar que la salida final sea de números enteros
     df_final_smoothed["pred_llamadas"] = df_final_smoothed["pred_llamadas"].round().astype(int)
     
     # --- Guardar outputs ---
@@ -202,7 +256,7 @@ def main():
         {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")},
         open(STAMP_JSON, "w")
     )
-    print("✔ Inferencia completada con éxito.")
+    print("✔ Inferencia completada con éxito (con soporte para feriados).")
 
 if __name__ == "__main__":
     main()
