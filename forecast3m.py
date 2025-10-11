@@ -13,8 +13,6 @@ from utils_release import download_asset_from_latest
 OWNER = "Supervision-Inbound"
 REPO  = "wfneuronal"
 MODELS_DIR = "models"
-# Asegúrate de que tu archivo en el repositorio se llame 'historical_data.csv'
-# y esté dentro de la carpeta 'data/'.
 DATA_FILE = "data/historical_data.csv"
 OUT_CSV_DATAOUT = "public/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
@@ -36,17 +34,16 @@ SUAVIZADO = "cap"
 
 # --- Funciones de preprocesamiento (del script de entrenamiento) ---
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
-    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce").dt.date
+    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True) # Añadido dayfirst=True
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
     df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce")
-    # Se convierte a la zona horaria correcta y se establece como índice
     df = df.dropna(subset=["ts"]).sort_values("ts")
     df['ts'] = df['ts'].dt.tz_localize(TIMEZONE, ambiguous='NaT', nonexistent='NaT')
     return df.set_index("ts")
 
 def parse_tmo_to_seconds(val):
     if pd.isna(val): return np.nan
-    s = str(val).strip()
+    s = str(val).strip().replace(',', '.') # Reemplaza comas por puntos para decimales
     if s.replace('.','',1).isdigit(): return float(s)
     parts = s.split(":")
     try:
@@ -76,18 +73,14 @@ def rolling_features(df, target_col):
 # --- Funciones auxiliares de inferencia (Modificadas) ---
 def build_feature_matrix_nn(df, training_columns, target_col):
     df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
-
     base_feats = [
         "sin_hour", "cos_hour", "sin_dow", "cos_dow",
         f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168"
     ]
-
     existing_feats = [feat for feat in base_feats if feat in df.columns]
     X = pd.concat([df[existing_feats], df_dummies], axis=1)
-
     for c in set(training_columns) - set(X.columns):
         X[c] = 0
-
     return X[training_columns].fillna(0)
 
 def robust_baseline_by_dow_hour(df, col):
@@ -111,20 +104,15 @@ def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
 def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timestamps):
     training_columns = scaler.get_feature_names_out()
     df_prediccion = df_hist.copy()
-
     for ts in future_timestamps:
         temp_df = pd.DataFrame(index=[ts])
         df_completo = pd.concat([df_prediccion, temp_df])
-
         df_completo = add_time_features(df_completo)
         df_completo = rolling_features(df_completo, target_col)
-
         X_step = build_feature_matrix_nn(df_completo.tail(1), training_columns, target_col)
         X_step_scaled = scaler.transform(X_step)
         prediccion = modelo.predict(X_step_scaled, verbose=0).flatten()[0]
-
         df_prediccion.loc[ts, target_col] = prediccion
-
     return df_prediccion.loc[future_timestamps, target_col]
 
 def main():
@@ -145,11 +133,10 @@ def main():
 
     # --- Cargar y procesar datos históricos ---
     print(f"Cargando datos históricos desde {DATA_FILE}...")
-    df_hist_raw = pd.read_csv(DATA_FILE)
+    # <<< CAMBIO CRÍTICO: Especificar el delimitador punto y coma (;) >>>
+    df_hist_raw = pd.read_csv(DATA_FILE, delimiter=';')
     
-    # <<< CAMBIO CRÍTICO: Limpiar los nombres de las columnas >>>
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
-    
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
@@ -164,7 +151,6 @@ def main():
     # --- Predicción iterativa ---
     print("Realizando predicción iterativa de llamadas...")
     pred_ll = predecir_futuro_iterativo(df_hist, model_ll, scaler_ll, TARGET_LLAMADAS, future_ts)
-
     df_final = pd.DataFrame(index=future_ts)
     df_final["pred_llamadas"] = np.maximum(0, np.round(pred_ll)).astype(int)
 
@@ -196,7 +182,6 @@ def main():
         {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")},
         open(STAMP_JSON, "w")
     )
-
     print("✔ Inferencia completada con éxito.")
 
 if __name__ == "__main__":
