@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          lfs: true  # <<< CAMBIO CRÍTICO: Descarga archivos de Git LFS
+          lfs: true  # <<< CAMBIO CRÍTICO: Descarga los archivos grandes de Git LFS
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -39,6 +39,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          # La bandera --allow-empty crea un commit incluso si los archivos no cambiaron.
           git commit -m "chore(forecast): actualización automática de predicciones" --allow-empty
           git push
