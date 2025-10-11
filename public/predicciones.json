@@ -1,7 +1,7 @@
 [
   {
     "ts":"2025-07-27 23:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":74,
     "pred_tmo_seg":319
   },
   {
@@ -56,67 +56,67 @@
   },
   {
     "ts":"2025-07-28 10:00:00",
-    "pred_llamadas":225,
+    "pred_llamadas":244,
     "pred_tmo_seg":309
   },
   {
     "ts":"2025-07-28 11:00:00",
-    "pred_llamadas":241,
+    "pred_llamadas":266,
     "pred_tmo_seg":315
   },
   {
     "ts":"2025-07-28 12:00:00",
-    "pred_llamadas":247,
+    "pred_llamadas":277,
     "pred_tmo_seg":317
   },
   {
     "ts":"2025-07-28 13:00:00",
-    "pred_llamadas":229,
+    "pred_llamadas":246,
     "pred_tmo_seg":324
   },
   {
     "ts":"2025-07-28 14:00:00",
-    "pred_llamadas":204,
+    "pred_llamadas":215,
     "pred_tmo_seg":321
   },
   {
     "ts":"2025-07-28 15:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":208,
     "pred_tmo_seg":314
   },
   {
     "ts":"2025-07-28 16:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":199,
     "pred_tmo_seg":316
   },
   {
     "ts":"2025-07-28 17:00:00",
-    "pred_llamadas":165,
+    "pred_llamadas":179,
     "pred_tmo_seg":310
   },
   {
     "ts":"2025-07-28 18:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":177,
     "pred_tmo_seg":300
   },
   {
     "ts":"2025-07-28 19:00:00",
-    "pred_llamadas":139,
+    "pred_llamadas":145,
     "pred_tmo_seg":291
   },
   {
     "ts":"2025-07-28 20:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":152,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-07-28 21:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":148,
     "pred_tmo_seg":290
   },
   {
     "ts":"2025-07-28 22:00:00",
-    "pred_llamadas":70,
+    "pred_llamadas":63,
     "pred_tmo_seg":301
   },
   {
@@ -176,42 +176,42 @@
   },
   {
     "ts":"2025-07-29 10:00:00",
-    "pred_llamadas":212,
+    "pred_llamadas":220,
     "pred_tmo_seg":309
   },
   {
     "ts":"2025-07-29 11:00:00",
-    "pred_llamadas":228,
+    "pred_llamadas":247,
     "pred_tmo_seg":315
   },
   {
     "ts":"2025-07-29 12:00:00",
-    "pred_llamadas":227,
+    "pred_llamadas":266,
     "pred_tmo_seg":318
   },
   {
     "ts":"2025-07-29 13:00:00",
-    "pred_llamadas":208,
+    "pred_llamadas":239,
     "pred_tmo_seg":317
   },
   {
     "ts":"2025-07-29 14:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":206,
     "pred_tmo_seg":316
   },
   {
     "ts":"2025-07-29 15:00:00",
-    "pred_llamadas":181,
+    "pred_llamadas":208,
     "pred_tmo_seg":312
   },
   {
     "ts":"2025-07-29 16:00:00",
-    "pred_llamadas":177,
+    "pred_llamadas":207,
     "pred_tmo_seg":308
   },
   {
     "ts":"2025-07-29 17:00:00",
-    "pred_llamadas":169,
+    "pred_llamadas":175,
     "pred_tmo_seg":302
   },
   {
@@ -221,12 +221,12 @@
   },
   {
     "ts":"2025-07-29 19:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":143,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-07-29 20:00:00",
-    "pred_llamadas":128,
+    "pred_llamadas":138,
     "pred_tmo_seg":280
   },
   {
@@ -236,12 +236,12 @@
   },
   {
     "ts":"2025-07-29 22:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":72,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-07-29 23:00:00",
-    "pred_llamadas":20,
+    "pred_llamadas":16,
     "pred_tmo_seg":287
   },
   {
@@ -296,72 +296,72 @@
   },
   {
     "ts":"2025-07-30 10:00:00",
-    "pred_llamadas":206,
+    "pred_llamadas":210,
     "pred_tmo_seg":302
   },
   {
     "ts":"2025-07-30 11:00:00",
-    "pred_llamadas":223,
+    "pred_llamadas":228,
     "pred_tmo_seg":309
   },
   {
     "ts":"2025-07-30 12:00:00",
-    "pred_llamadas":224,
+    "pred_llamadas":230,
     "pred_tmo_seg":312
   },
   {
     "ts":"2025-07-30 13:00:00",
-    "pred_llamadas":207,
+    "pred_llamadas":235,
     "pred_tmo_seg":311
   },
   {
     "ts":"2025-07-30 14:00:00",
-    "pred_llamadas":193,
+    "pred_llamadas":200,
     "pred_tmo_seg":308
   },
   {
     "ts":"2025-07-30 15:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":204,
     "pred_tmo_seg":305
   },
   {
     "ts":"2025-07-30 16:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":193,
     "pred_tmo_seg":301
   },
   {
     "ts":"2025-07-30 17:00:00",
-    "pred_llamadas":177,
+    "pred_llamadas":186,
     "pred_tmo_seg":295
   },
   {
     "ts":"2025-07-30 18:00:00",
-    "pred_llamadas":164,
+    "pred_llamadas":176,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-07-30 19:00:00",
-    "pred_llamadas":147,
+    "pred_llamadas":150,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-07-30 20:00:00",
-    "pred_llamadas":130,
+    "pred_llamadas":152,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-07-30 21:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":117,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-07-30 22:00:00",
-    "pred_llamadas":64,
+    "pred_llamadas":73,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-07-30 23:00:00",
-    "pred_llamadas":19,
+    "pred_llamadas":25,
     "pred_tmo_seg":266
   },
   {
@@ -416,72 +416,72 @@
   },
   {
     "ts":"2025-07-31 10:00:00",
-    "pred_llamadas":208,
+    "pred_llamadas":206,
     "pred_tmo_seg":298
   },
   {
     "ts":"2025-07-31 11:00:00",
-    "pred_llamadas":224,
+    "pred_llamadas":236,
     "pred_tmo_seg":307
   },
   {
     "ts":"2025-07-31 12:00:00",
-    "pred_llamadas":224,
+    "pred_llamadas":226,
     "pred_tmo_seg":311
   },
   {
     "ts":"2025-07-31 13:00:00",
-    "pred_llamadas":209,
+    "pred_llamadas":207,
     "pred_tmo_seg":311
   },
   {
     "ts":"2025-07-31 14:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":198,
     "pred_tmo_seg":307
   },
   {
     "ts":"2025-07-31 15:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":196,
     "pred_tmo_seg":302
   },
   {
     "ts":"2025-07-31 16:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":191,
     "pred_tmo_seg":298
   },
   {
     "ts":"2025-07-31 17:00:00",
-    "pred_llamadas":177,
+    "pred_llamadas":158,
     "pred_tmo_seg":293
   },
   {
     "ts":"2025-07-31 18:00:00",
-    "pred_llamadas":163,
+    "pred_llamadas":170,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-07-31 19:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":148,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-07-31 20:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":137,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-07-31 21:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":114,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-07-31 22:00:00",
-    "pred_llamadas":63,
+    "pred_llamadas":55,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-07-31 23:00:00",
-    "pred_llamadas":20,
+    "pred_llamadas":25,
     "pred_tmo_seg":255
   },
   {
@@ -536,12 +536,12 @@
   },
   {
     "ts":"2025-08-01 10:00:00",
-    "pred_llamadas":193,
+    "pred_llamadas":194,
     "pred_tmo_seg":292
   },
   {
     "ts":"2025-08-01 11:00:00",
-    "pred_llamadas":207,
+    "pred_llamadas":199,
     "pred_tmo_seg":299
   },
   {
@@ -551,57 +551,57 @@
   },
   {
     "ts":"2025-08-01 13:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":206,
     "pred_tmo_seg":301
   },
   {
     "ts":"2025-08-01 14:00:00",
-    "pred_llamadas":176,
+    "pred_llamadas":159,
     "pred_tmo_seg":298
   },
   {
     "ts":"2025-08-01 15:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":174,
     "pred_tmo_seg":294
   },
   {
     "ts":"2025-08-01 16:00:00",
-    "pred_llamadas":163,
+    "pred_llamadas":153,
     "pred_tmo_seg":290
   },
   {
     "ts":"2025-08-01 17:00:00",
-    "pred_llamadas":154,
+    "pred_llamadas":147,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-01 18:00:00",
-    "pred_llamadas":142,
+    "pred_llamadas":130,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-01 19:00:00",
-    "pred_llamadas":130,
+    "pred_llamadas":127,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-01 20:00:00",
-    "pred_llamadas":119,
+    "pred_llamadas":106,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-08-01 21:00:00",
-    "pred_llamadas":104,
+    "pred_llamadas":92,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-01 22:00:00",
-    "pred_llamadas":64,
+    "pred_llamadas":58,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-01 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":25,
     "pred_tmo_seg":249
   },
   {
@@ -656,72 +656,72 @@
   },
   {
     "ts":"2025-08-02 10:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":105,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-08-02 11:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":111,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-02 12:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":105,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-02 13:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":92,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-02 14:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":82,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-08-02 15:00:00",
-    "pred_llamadas":102,
+    "pred_llamadas":76,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-08-02 16:00:00",
-    "pred_llamadas":104,
+    "pred_llamadas":78,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-08-02 17:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":80,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-08-02 18:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":80,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-02 19:00:00",
-    "pred_llamadas":106,
+    "pred_llamadas":80,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-02 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":75,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-08-02 21:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":74,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-02 22:00:00",
-    "pred_llamadas":63,
+    "pred_llamadas":61,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-08-02 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":30,
     "pred_tmo_seg":248
   },
   {
@@ -776,62 +776,62 @@
   },
   {
     "ts":"2025-08-03 10:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":76,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-03 11:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":72,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-03 12:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":62,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-03 13:00:00",
-    "pred_llamadas":70,
+    "pred_llamadas":52,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-03 14:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":50,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-03 15:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":50,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-03 16:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":60,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-03 17:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":87,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-03 18:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":77,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-08-03 19:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":94,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-03 20:00:00",
-    "pred_llamadas":94,
+    "pred_llamadas":97,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-08-03 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":93,
     "pred_tmo_seg":250
   },
   {
@@ -841,7 +841,7 @@
   },
   {
     "ts":"2025-08-03 23:00:00",
-    "pred_llamadas":29,
+    "pred_llamadas":30,
     "pred_tmo_seg":252
   },
   {
@@ -896,67 +896,67 @@
   },
   {
     "ts":"2025-08-04 10:00:00",
-    "pred_llamadas":178,
+    "pred_llamadas":193,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-04 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":216,
     "pred_tmo_seg":292
   },
   {
     "ts":"2025-08-04 12:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":218,
     "pred_tmo_seg":295
   },
   {
     "ts":"2025-08-04 13:00:00",
-    "pred_llamadas":178,
+    "pred_llamadas":191,
     "pred_tmo_seg":295
   },
   {
     "ts":"2025-08-04 14:00:00",
-    "pred_llamadas":163,
+    "pred_llamadas":172,
     "pred_tmo_seg":294
   },
   {
     "ts":"2025-08-04 15:00:00",
-    "pred_llamadas":154,
+    "pred_llamadas":169,
     "pred_tmo_seg":292
   },
   {
     "ts":"2025-08-04 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":156,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-04 17:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":137,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-04 18:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":133,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-04 19:00:00",
-    "pred_llamadas":103,
+    "pred_llamadas":107,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-08-04 20:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":106,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-04 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":93,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-08-04 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":265
   },
   {
@@ -1016,42 +1016,42 @@
   },
   {
     "ts":"2025-08-05 10:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":197,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-05 11:00:00",
-    "pred_llamadas":201,
+    "pred_llamadas":218,
     "pred_tmo_seg":291
   },
   {
     "ts":"2025-08-05 12:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":229,
     "pred_tmo_seg":293
   },
   {
     "ts":"2025-08-05 13:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":199,
     "pred_tmo_seg":291
   },
   {
     "ts":"2025-08-05 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":172,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-05 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":168,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-05 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":160,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-05 17:00:00",
-    "pred_llamadas":128,
+    "pred_llamadas":133,
     "pred_tmo_seg":280
   },
   {
@@ -1061,12 +1061,12 @@
   },
   {
     "ts":"2025-08-05 19:00:00",
-    "pred_llamadas":106,
+    "pred_llamadas":108,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-08-05 20:00:00",
-    "pred_llamadas":94,
+    "pred_llamadas":101,
     "pred_tmo_seg":263
   },
   {
@@ -1076,12 +1076,12 @@
   },
   {
     "ts":"2025-08-05 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":56,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-08-05 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":265
   },
   {
@@ -1136,72 +1136,72 @@
   },
   {
     "ts":"2025-08-06 10:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":193,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-06 11:00:00",
-    "pred_llamadas":202,
+    "pred_llamadas":207,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-06 12:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":201,
     "pred_tmo_seg":293
   },
   {
     "ts":"2025-08-06 13:00:00",
-    "pred_llamadas":176,
+    "pred_llamadas":200,
     "pred_tmo_seg":292
   },
   {
     "ts":"2025-08-06 14:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":168,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-06 15:00:00",
-    "pred_llamadas":151,
+    "pred_llamadas":164,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-06 16:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":153,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-08-06 17:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":144,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-06 18:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":134,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-08-06 19:00:00",
-    "pred_llamadas":111,
+    "pred_llamadas":114,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-08-06 20:00:00",
-    "pred_llamadas":98,
+    "pred_llamadas":114,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-06 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":88,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-06 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":58,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-08-06 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":256
   },
   {
@@ -1256,72 +1256,72 @@
   },
   {
     "ts":"2025-08-07 10:00:00",
-    "pred_llamadas":185,
+    "pred_llamadas":183,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-07 11:00:00",
-    "pred_llamadas":199,
+    "pred_llamadas":210,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-07 12:00:00",
-    "pred_llamadas":193,
+    "pred_llamadas":195,
     "pred_tmo_seg":291
   },
   {
     "ts":"2025-08-07 13:00:00",
-    "pred_llamadas":174,
+    "pred_llamadas":173,
     "pred_tmo_seg":290
   },
   {
     "ts":"2025-08-07 14:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-07 15:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":158,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-08-07 16:00:00",
-    "pred_llamadas":147,
+    "pred_llamadas":151,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-07 17:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":125,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-07 18:00:00",
-    "pred_llamadas":127,
+    "pred_llamadas":133,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-08-07 19:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":115,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-08-07 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":105,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-07 21:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":87,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-07 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-07 23:00:00",
-    "pred_llamadas":25,
+    "pred_llamadas":32,
     "pred_tmo_seg":253
   },
   {
@@ -1376,12 +1376,12 @@
   },
   {
     "ts":"2025-08-08 10:00:00",
-    "pred_llamadas":165,
+    "pred_llamadas":166,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-08 11:00:00",
-    "pred_llamadas":177,
+    "pred_llamadas":170,
     "pred_tmo_seg":283
   },
   {
@@ -1391,57 +1391,57 @@
   },
   {
     "ts":"2025-08-08 13:00:00",
-    "pred_llamadas":156,
+    "pred_llamadas":170,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-08 14:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":131,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-08 15:00:00",
-    "pred_llamadas":135,
+    "pred_llamadas":141,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-08 16:00:00",
-    "pred_llamadas":130,
+    "pred_llamadas":122,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-08-08 17:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":120,
     "pred_tmo_seg":269
   },
   {
     "ts":"2025-08-08 18:00:00",
-    "pred_llamadas":116,
+    "pred_llamadas":106,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-08 19:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":104,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-08 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":85,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-08 21:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":72,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-08 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-08 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":24,
     "pred_tmo_seg":247
   },
   {
@@ -1496,72 +1496,72 @@
   },
   {
     "ts":"2025-08-09 10:00:00",
-    "pred_llamadas":116,
-    "pred_tmo_seg":258
-  },
-  {
-    "ts":"2025-08-09 11:00:00",
-    "pred_llamadas":122,
-    "pred_tmo_seg":263
-  },
-  {
-    "ts":"2025-08-09 12:00:00",
-    "pred_llamadas":114,
-    "pred_tmo_seg":265
-  },
-  {
-    "ts":"2025-08-09 13:00:00",
-    "pred_llamadas":100,
-    "pred_tmo_seg":263
-  },
-  {
-    "ts":"2025-08-09 14:00:00",
-    "pred_llamadas":91,
-    "pred_tmo_seg":260
-  },
-  {
-    "ts":"2025-08-09 15:00:00",
     "pred_llamadas":87,
     "pred_tmo_seg":258
   },
   {
+    "ts":"2025-08-09 11:00:00",
+    "pred_llamadas":92,
+    "pred_tmo_seg":263
+  },
+  {
+    "ts":"2025-08-09 12:00:00",
+    "pred_llamadas":86,
+    "pred_tmo_seg":265
+  },
+  {
+    "ts":"2025-08-09 13:00:00",
+    "pred_llamadas":75,
+    "pred_tmo_seg":263
+  },
+  {
+    "ts":"2025-08-09 14:00:00",
+    "pred_llamadas":68,
+    "pred_tmo_seg":260
+  },
+  {
+    "ts":"2025-08-09 15:00:00",
+    "pred_llamadas":65,
+    "pred_tmo_seg":258
+  },
+  {
     "ts":"2025-08-09 16:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-09 17:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-09 18:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-09 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-09 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":63,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-08-09 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-09 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-09 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":247
   },
   {
@@ -1616,62 +1616,62 @@
   },
   {
     "ts":"2025-08-10 10:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":63,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-10 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-10 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-10 13:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-08-10 14:00:00",
-    "pred_llamadas":58,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-10 15:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-10 16:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":53,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-10 17:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":77,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-10 18:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":69,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-08-10 19:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":85,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-08-10 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":87,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-10 21:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":84,
     "pred_tmo_seg":250
   },
   {
@@ -1681,7 +1681,7 @@
   },
   {
     "ts":"2025-08-10 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":259
   },
   {
@@ -1736,67 +1736,67 @@
   },
   {
     "ts":"2025-08-11 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-11 11:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":207,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-11 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-11 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-11 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-11 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-11 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-11 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":133,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-11 18:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":127,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-08-11 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-11 20:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":101,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-11 21:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":88,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-11 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -1856,42 +1856,42 @@
   },
   {
     "ts":"2025-08-12 10:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":193,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-12 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":212,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-12 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":222,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-12 13:00:00",
-    "pred_llamadas":168,
+    "pred_llamadas":193,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-12 14:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-12 15:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-12 16:00:00",
-    "pred_llamadas":132,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-12 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":127,
     "pred_tmo_seg":277
   },
   {
@@ -1901,12 +1901,12 @@
   },
   {
     "ts":"2025-08-12 19:00:00",
-    "pred_llamadas":101,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-12 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":96,
     "pred_tmo_seg":263
   },
   {
@@ -1916,12 +1916,12 @@
   },
   {
     "ts":"2025-08-12 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-12 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -1976,72 +1976,72 @@
   },
   {
     "ts":"2025-08-13 10:00:00",
-    "pred_llamadas":185,
+    "pred_llamadas":189,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-13 11:00:00",
-    "pred_llamadas":197,
+    "pred_llamadas":201,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-13 12:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":195,
     "pred_tmo_seg":290
   },
   {
     "ts":"2025-08-13 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":194,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-13 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":164,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-13 15:00:00",
-    "pred_llamadas":147,
+    "pred_llamadas":159,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-08-13 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":148,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-13 17:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":138,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-13 18:00:00",
-    "pred_llamadas":120,
+    "pred_llamadas":128,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-13 19:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":109,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-08-13 20:00:00",
-    "pred_llamadas":95,
+    "pred_llamadas":111,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-13 21:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":84,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-13 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-13 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":259
   },
   {
@@ -2096,72 +2096,72 @@
   },
   {
     "ts":"2025-08-14 10:00:00",
-    "pred_llamadas":181,
+    "pred_llamadas":179,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-14 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":205,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-14 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":190,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-14 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-14 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-14 15:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":153,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-14 16:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":147,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-14 17:00:00",
-    "pred_llamadas":135,
+    "pred_llamadas":120,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-14 18:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":129,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-14 19:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":113,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-08-14 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":102,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-14 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":84,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-14 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":44,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-08-14 23:00:00",
-    "pred_llamadas":24,
+    "pred_llamadas":30,
     "pred_tmo_seg":255
   },
   {
@@ -2221,7 +2221,7 @@
   },
   {
     "ts":"2025-08-15 11:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":82,
     "pred_tmo_seg":252
   },
   {
@@ -2231,57 +2231,57 @@
   },
   {
     "ts":"2025-08-15 13:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":80,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-15 14:00:00",
-    "pred_llamadas":69,
+    "pred_llamadas":63,
     "pred_tmo_seg":243
   },
   {
     "ts":"2025-08-15 15:00:00",
-    "pred_llamadas":57,
+    "pred_llamadas":60,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-15 16:00:00",
-    "pred_llamadas":55,
+    "pred_llamadas":52,
     "pred_tmo_seg":242
   },
   {
     "ts":"2025-08-15 17:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":58,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-08-15 18:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":73,
     "pred_tmo_seg":240
   },
   {
     "ts":"2025-08-15 19:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":71,
     "pred_tmo_seg":238
   },
   {
     "ts":"2025-08-15 20:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":68,
     "pred_tmo_seg":233
   },
   {
     "ts":"2025-08-15 21:00:00",
-    "pred_llamadas":65,
+    "pred_llamadas":58,
     "pred_tmo_seg":239
   },
   {
     "ts":"2025-08-15 22:00:00",
-    "pred_llamadas":44,
+    "pred_llamadas":40,
     "pred_tmo_seg":242
   },
   {
     "ts":"2025-08-15 23:00:00",
-    "pred_llamadas":23,
+    "pred_llamadas":21,
     "pred_tmo_seg":231
   },
   {
@@ -2336,72 +2336,72 @@
   },
   {
     "ts":"2025-08-16 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-16 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-08-16 12:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":84,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-16 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-08-16 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-16 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-08-16 16:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-16 17:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-16 18:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-16 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-16 20:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":62,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-08-16 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-16 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-16 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":248
   },
   {
@@ -2456,62 +2456,62 @@
   },
   {
     "ts":"2025-08-17 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-17 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-17 12:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":51,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-17 13:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-08-17 14:00:00",
-    "pred_llamadas":58,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-17 15:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-17 16:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":53,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-17 17:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":77,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-17 18:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":69,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-08-17 19:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":85,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-08-17 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":87,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-17 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":83,
     "pred_tmo_seg":250
   },
   {
@@ -2521,7 +2521,7 @@
   },
   {
     "ts":"2025-08-17 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":259
   },
   {
@@ -2576,67 +2576,67 @@
   },
   {
     "ts":"2025-08-18 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-18 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-18 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-18 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-18 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-18 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-18 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-18 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":133,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-18 18:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":128,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-08-18 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-18 20:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":101,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-18 21:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":88,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-18 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -2696,42 +2696,42 @@
   },
   {
     "ts":"2025-08-19 10:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":193,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-19 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":212,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-19 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":222,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-19 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-19 14:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":168,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-19 15:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-19 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-19 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":127,
     "pred_tmo_seg":277
   },
   {
@@ -2741,12 +2741,12 @@
   },
   {
     "ts":"2025-08-19 19:00:00",
-    "pred_llamadas":101,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-19 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":96,
     "pred_tmo_seg":263
   },
   {
@@ -2756,12 +2756,12 @@
   },
   {
     "ts":"2025-08-19 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-19 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -2816,72 +2816,72 @@
   },
   {
     "ts":"2025-08-20 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":188,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-20 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":200,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-20 12:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":195,
     "pred_tmo_seg":290
   },
   {
     "ts":"2025-08-20 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":194,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-20 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":164,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-20 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-08-20 16:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":147,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-20 17:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":138,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-20 18:00:00",
-    "pred_llamadas":120,
+    "pred_llamadas":128,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-20 19:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":109,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-08-20 20:00:00",
-    "pred_llamadas":94,
+    "pred_llamadas":110,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-20 21:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":84,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-20 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-20 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":258
   },
   {
@@ -2936,72 +2936,72 @@
   },
   {
     "ts":"2025-08-21 10:00:00",
-    "pred_llamadas":181,
+    "pred_llamadas":179,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-21 11:00:00",
-    "pred_llamadas":193,
+    "pred_llamadas":204,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-21 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-21 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-21 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-21 15:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":153,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-21 16:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":147,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-21 17:00:00",
-    "pred_llamadas":135,
+    "pred_llamadas":120,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-21 18:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":129,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-21 19:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":113,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-08-21 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":102,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-21 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":84,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-21 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":44,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-08-21 23:00:00",
-    "pred_llamadas":24,
+    "pred_llamadas":30,
     "pred_tmo_seg":255
   },
   {
@@ -3056,12 +3056,12 @@
   },
   {
     "ts":"2025-08-22 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-22 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":283
   },
   {
@@ -3071,57 +3071,57 @@
   },
   {
     "ts":"2025-08-22 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-22 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-22 15:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":139,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-22 16:00:00",
-    "pred_llamadas":128,
+    "pred_llamadas":120,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-22 17:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":119,
     "pred_tmo_seg":269
   },
   {
     "ts":"2025-08-22 18:00:00",
-    "pred_llamadas":115,
+    "pred_llamadas":106,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-22 19:00:00",
-    "pred_llamadas":105,
+    "pred_llamadas":102,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-22 20:00:00",
-    "pred_llamadas":94,
+    "pred_llamadas":84,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-22 21:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":71,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-22 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-22 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":24,
     "pred_tmo_seg":248
   },
   {
@@ -3176,72 +3176,72 @@
   },
   {
     "ts":"2025-08-23 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-23 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-08-23 12:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":84,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-23 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-08-23 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-23 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-08-23 16:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-23 17:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-23 18:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-23 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-23 20:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":62,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-08-23 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-23 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-23 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":247
   },
   {
@@ -3296,62 +3296,62 @@
   },
   {
     "ts":"2025-08-24 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-24 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-24 12:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":51,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-24 13:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-08-24 14:00:00",
-    "pred_llamadas":58,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-24 15:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-24 16:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":53,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-24 17:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":77,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-24 18:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":69,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-08-24 19:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":85,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-08-24 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":87,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-24 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":83,
     "pred_tmo_seg":250
   },
   {
@@ -3361,7 +3361,7 @@
   },
   {
     "ts":"2025-08-24 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":259
   },
   {
@@ -3416,67 +3416,67 @@
   },
   {
     "ts":"2025-08-25 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-25 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-25 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-25 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-25 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-25 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-08-25 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-25 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":133,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-08-25 18:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":128,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-08-25 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-25 20:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":101,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-25 21:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":88,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-08-25 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -3536,42 +3536,42 @@
   },
   {
     "ts":"2025-08-26 10:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":193,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-26 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":212,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-26 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":222,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-08-26 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-26 14:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":168,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-26 15:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-26 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-26 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":127,
     "pred_tmo_seg":277
   },
   {
@@ -3581,12 +3581,12 @@
   },
   {
     "ts":"2025-08-26 19:00:00",
-    "pred_llamadas":101,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-26 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":96,
     "pred_tmo_seg":263
   },
   {
@@ -3596,12 +3596,12 @@
   },
   {
     "ts":"2025-08-26 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-26 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -3656,72 +3656,72 @@
   },
   {
     "ts":"2025-08-27 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":188,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-27 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":200,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-08-27 12:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":195,
     "pred_tmo_seg":290
   },
   {
     "ts":"2025-08-27 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":194,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-27 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":164,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-27 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-08-27 16:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":147,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-08-27 17:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":138,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-08-27 18:00:00",
-    "pred_llamadas":120,
+    "pred_llamadas":128,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-27 19:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":109,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-08-27 20:00:00",
-    "pred_llamadas":94,
+    "pred_llamadas":110,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-27 21:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":84,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-27 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-08-27 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":258
   },
   {
@@ -3776,72 +3776,72 @@
   },
   {
     "ts":"2025-08-28 10:00:00",
-    "pred_llamadas":181,
+    "pred_llamadas":179,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-28 11:00:00",
-    "pred_llamadas":193,
+    "pred_llamadas":204,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-28 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-28 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-08-28 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-08-28 15:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":153,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-08-28 16:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":147,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-08-28 17:00:00",
-    "pred_llamadas":135,
+    "pred_llamadas":120,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-28 18:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":129,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-28 19:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":113,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-08-28 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":102,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-08-28 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":84,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-28 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":44,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-08-28 23:00:00",
-    "pred_llamadas":24,
+    "pred_llamadas":30,
     "pred_tmo_seg":255
   },
   {
@@ -3896,12 +3896,12 @@
   },
   {
     "ts":"2025-08-29 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-29 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":283
   },
   {
@@ -3911,57 +3911,57 @@
   },
   {
     "ts":"2025-08-29 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-08-29 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-08-29 15:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":139,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-08-29 16:00:00",
-    "pred_llamadas":128,
+    "pred_llamadas":120,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-08-29 17:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":119,
     "pred_tmo_seg":269
   },
   {
     "ts":"2025-08-29 18:00:00",
-    "pred_llamadas":115,
+    "pred_llamadas":106,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-29 19:00:00",
-    "pred_llamadas":105,
+    "pred_llamadas":102,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-29 20:00:00",
-    "pred_llamadas":94,
+    "pred_llamadas":84,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-29 21:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":71,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-29 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-29 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":24,
     "pred_tmo_seg":248
   },
   {
@@ -4016,72 +4016,72 @@
   },
   {
     "ts":"2025-08-30 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-08-30 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-08-30 12:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":84,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-08-30 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-08-30 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-08-30 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-08-30 16:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-30 17:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-08-30 18:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-30 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-30 20:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":62,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-08-30 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-30 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-08-30 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":247
   },
   {
@@ -4136,62 +4136,62 @@
   },
   {
     "ts":"2025-08-31 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-31 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-31 12:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":51,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-08-31 13:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-08-31 14:00:00",
-    "pred_llamadas":58,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-31 15:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-31 16:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":53,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-08-31 17:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":77,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-08-31 18:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":69,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-08-31 19:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":85,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-08-31 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":87,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-08-31 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":83,
     "pred_tmo_seg":250
   },
   {
@@ -4201,7 +4201,7 @@
   },
   {
     "ts":"2025-08-31 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":259
   },
   {
@@ -4256,67 +4256,67 @@
   },
   {
     "ts":"2025-09-01 10:00:00",
-    "pred_llamadas":169,
+    "pred_llamadas":183,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-01 11:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":205,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-01 12:00:00",
-    "pred_llamadas":185,
+    "pred_llamadas":207,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-09-01 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":183,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-01 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":167,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-01 15:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-01 16:00:00",
-    "pred_llamadas":135,
+    "pred_llamadas":149,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-09-01 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":132,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-01 18:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":127,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-09-01 19:00:00",
-    "pred_llamadas":98,
+    "pred_llamadas":102,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-01 20:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":101,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-01 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":89,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-01 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":46,
     "pred_tmo_seg":265
   },
   {
@@ -4376,42 +4376,42 @@
   },
   {
     "ts":"2025-09-02 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":191,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-09-02 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":210,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-02 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":219,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-02 13:00:00",
-    "pred_llamadas":166,
+    "pred_llamadas":191,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-02 14:00:00",
-    "pred_llamadas":151,
+    "pred_llamadas":166,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-02 15:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":161,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-02 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-02 17:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":126,
     "pred_tmo_seg":276
   },
   {
@@ -4421,12 +4421,12 @@
   },
   {
     "ts":"2025-09-02 19:00:00",
-    "pred_llamadas":101,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-02 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":96,
     "pred_tmo_seg":263
   },
   {
@@ -4436,12 +4436,12 @@
   },
   {
     "ts":"2025-09-02 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-02 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":269
   },
   {
@@ -4496,72 +4496,72 @@
   },
   {
     "ts":"2025-09-03 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-09-03 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-03 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-09-03 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-09-03 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-03 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-09-03 16:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":147,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-09-03 17:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":138,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-03 18:00:00",
-    "pred_llamadas":120,
+    "pred_llamadas":128,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-09-03 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":110,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-03 20:00:00",
-    "pred_llamadas":95,
+    "pred_llamadas":111,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-03 21:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":85,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-03 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-03 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":259
   },
   {
@@ -4616,72 +4616,72 @@
   },
   {
     "ts":"2025-09-04 10:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":178,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-09-04 11:00:00",
-    "pred_llamadas":192,
+    "pred_llamadas":203,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-04 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":188,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-04 13:00:00",
-    "pred_llamadas":169,
+    "pred_llamadas":168,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-04 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":158,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-04 15:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-04 16:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":147,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-04 17:00:00",
-    "pred_llamadas":136,
+    "pred_llamadas":121,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-09-04 18:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":131,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-09-04 19:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":113,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-04 20:00:00",
-    "pred_llamadas":98,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-04 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":85,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-09-04 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":44,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-04 23:00:00",
-    "pred_llamadas":25,
+    "pred_llamadas":32,
     "pred_tmo_seg":255
   },
   {
@@ -4736,12 +4736,12 @@
   },
   {
     "ts":"2025-09-05 10:00:00",
-    "pred_llamadas":161,
+    "pred_llamadas":162,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-09-05 11:00:00",
-    "pred_llamadas":172,
+    "pred_llamadas":165,
     "pred_tmo_seg":281
   },
   {
@@ -4751,57 +4751,57 @@
   },
   {
     "ts":"2025-09-05 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-05 14:00:00",
-    "pred_llamadas":142,
+    "pred_llamadas":128,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-05 15:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":139,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-09-05 16:00:00",
-    "pred_llamadas":129,
+    "pred_llamadas":121,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-09-05 17:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":120,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-09-05 18:00:00",
-    "pred_llamadas":116,
+    "pred_llamadas":106,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-09-05 19:00:00",
-    "pred_llamadas":106,
+    "pred_llamadas":103,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-05 20:00:00",
-    "pred_llamadas":95,
+    "pred_llamadas":85,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-09-05 21:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":72,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-05 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-05 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":24,
     "pred_tmo_seg":248
   },
   {
@@ -4856,72 +4856,72 @@
   },
   {
     "ts":"2025-09-06 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-06 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-06 12:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":84,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-09-06 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-06 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-06 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-06 16:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-09-06 17:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-06 18:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-06 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-06 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":63,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-09-06 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-06 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-06 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":247
   },
   {
@@ -4971,62 +4971,62 @@
   },
   {
     "ts":"2025-09-07 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-07 11:00:00",
-    "pred_llamadas":77,
+    "pred_llamadas":61,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-07 12:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":55,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-07 13:00:00",
-    "pred_llamadas":64,
+    "pred_llamadas":48,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-07 14:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-07 15:00:00",
-    "pred_llamadas":63,
+    "pred_llamadas":47,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-07 16:00:00",
-    "pred_llamadas":71,
+    "pred_llamadas":57,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-07 17:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":83,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-07 18:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":74,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-07 19:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":91,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-09-07 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":92,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-09-07 21:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":88,
     "pred_tmo_seg":249
   },
   {
@@ -5036,7 +5036,7 @@
   },
   {
     "ts":"2025-09-07 23:00:00",
-    "pred_llamadas":30,
+    "pred_llamadas":31,
     "pred_tmo_seg":257
   },
   {
@@ -5091,67 +5091,67 @@
   },
   {
     "ts":"2025-09-08 10:00:00",
-    "pred_llamadas":172,
+    "pred_llamadas":186,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-08 11:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":210,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-08 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":211,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-08 13:00:00",
-    "pred_llamadas":174,
+    "pred_llamadas":187,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-08 14:00:00",
-    "pred_llamadas":161,
+    "pred_llamadas":170,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-08 15:00:00",
-    "pred_llamadas":151,
+    "pred_llamadas":165,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-08 16:00:00",
-    "pred_llamadas":139,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-08 17:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":136,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-09-08 18:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":130,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-09-08 19:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":104,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-09-08 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-08 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":90,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-08 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":264
   },
   {
@@ -5211,42 +5211,42 @@
   },
   {
     "ts":"2025-09-09 10:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":194,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-09 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":212,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-09 12:00:00",
-    "pred_llamadas":190,
+    "pred_llamadas":223,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-09-09 13:00:00",
-    "pred_llamadas":168,
+    "pred_llamadas":193,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-09 14:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-09 15:00:00",
-    "pred_llamadas":142,
+    "pred_llamadas":163,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-09 16:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":156,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-09 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":128,
     "pred_tmo_seg":276
   },
   {
@@ -5256,12 +5256,12 @@
   },
   {
     "ts":"2025-09-09 19:00:00",
-    "pred_llamadas":103,
+    "pred_llamadas":105,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-09 20:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":98,
     "pred_tmo_seg":262
   },
   {
@@ -5271,12 +5271,12 @@
   },
   {
     "ts":"2025-09-09 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-09 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -5331,72 +5331,72 @@
   },
   {
     "ts":"2025-09-10 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":188,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-10 11:00:00",
-    "pred_llamadas":196,
+    "pred_llamadas":200,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-10 12:00:00",
-    "pred_llamadas":191,
+    "pred_llamadas":196,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-09-10 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":194,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-10 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":164,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-10 15:00:00",
-    "pred_llamadas":147,
+    "pred_llamadas":159,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-09-10 16:00:00",
-    "pred_llamadas":142,
+    "pred_llamadas":149,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-09-10 17:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":140,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-10 18:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":130,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-09-10 19:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":112,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-10 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":112,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-10 21:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":86,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-10 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-10 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":259
   },
   {
@@ -5451,72 +5451,72 @@
   },
   {
     "ts":"2025-09-11 10:00:00",
-    "pred_llamadas":181,
+    "pred_llamadas":179,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-09-11 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":205,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-11 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":190,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-11 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":170,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-11 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-11 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-11 16:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":149,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-11 17:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":122,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-09-11 18:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":132,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-09-11 19:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":114,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-11 20:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":104,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-11 21:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":86,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-09-11 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-11 23:00:00",
-    "pred_llamadas":25,
+    "pred_llamadas":32,
     "pred_tmo_seg":255
   },
   {
@@ -5571,12 +5571,12 @@
   },
   {
     "ts":"2025-09-12 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-09-12 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":281
   },
   {
@@ -5586,57 +5586,57 @@
   },
   {
     "ts":"2025-09-12 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-12 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-12 15:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":139,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-09-12 16:00:00",
-    "pred_llamadas":129,
+    "pred_llamadas":121,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-09-12 17:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":120,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-09-12 18:00:00",
-    "pred_llamadas":116,
+    "pred_llamadas":106,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-09-12 19:00:00",
-    "pred_llamadas":106,
+    "pred_llamadas":103,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-12 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":85,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-09-12 21:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":72,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-12 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-12 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":24,
     "pred_tmo_seg":248
   },
   {
@@ -5691,72 +5691,72 @@
   },
   {
     "ts":"2025-09-13 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-13 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-13 12:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":85,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-09-13 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-13 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-13 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-13 16:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-09-13 17:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-13 18:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-13 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-13 20:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":64,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-09-13 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-13 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-13 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":248
   },
   {
@@ -5811,62 +5811,62 @@
   },
   {
     "ts":"2025-09-14 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-14 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-14 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-14 13:00:00",
-    "pred_llamadas":61,
+    "pred_llamadas":46,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-14 14:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-14 15:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-14 16:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":54,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-14 17:00:00",
-    "pred_llamadas":77,
+    "pred_llamadas":78,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-14 18:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":70,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-14 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":87,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-09-14 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":89,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-14 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":85,
     "pred_tmo_seg":250
   },
   {
@@ -5876,7 +5876,7 @@
   },
   {
     "ts":"2025-09-14 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":259
   },
   {
@@ -5931,67 +5931,67 @@
   },
   {
     "ts":"2025-09-15 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-15 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-15 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-15 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-15 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-15 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-15 16:00:00",
-    "pred_llamadas":136,
+    "pred_llamadas":150,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-15 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":133,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-09-15 18:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":128,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-09-15 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-15 20:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":102,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-15 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":89,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-15 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":46,
     "pred_tmo_seg":265
   },
   {
@@ -6051,42 +6051,42 @@
   },
   {
     "ts":"2025-09-16 10:00:00",
-    "pred_llamadas":185,
+    "pred_llamadas":192,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-16 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":211,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-16 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":221,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-09-16 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-16 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-16 15:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-16 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-16 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":127,
     "pred_tmo_seg":276
   },
   {
@@ -6096,12 +6096,12 @@
   },
   {
     "ts":"2025-09-16 19:00:00",
-    "pred_llamadas":102,
+    "pred_llamadas":104,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-16 20:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":97,
     "pred_tmo_seg":262
   },
   {
@@ -6111,12 +6111,12 @@
   },
   {
     "ts":"2025-09-16 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-16 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -6171,72 +6171,72 @@
   },
   {
     "ts":"2025-09-17 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-17 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-17 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-09-17 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-17 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-17 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-09-17 16:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":147,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-09-17 17:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":138,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-17 18:00:00",
-    "pred_llamadas":120,
+    "pred_llamadas":128,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-09-17 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":110,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-17 20:00:00",
-    "pred_llamadas":95,
+    "pred_llamadas":111,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-17 21:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":85,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-17 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-17 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":259
   },
   {
@@ -6291,17 +6291,17 @@
   },
   {
     "ts":"2025-09-18 10:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":89,
     "pred_tmo_seg":242
   },
   {
     "ts":"2025-09-18 11:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":101,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-09-18 12:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":87,
     "pred_tmo_seg":262
   },
   {
@@ -6316,47 +6316,47 @@
   },
   {
     "ts":"2025-09-18 15:00:00",
-    "pred_llamadas":64,
+    "pred_llamadas":66,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-18 16:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":64,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-18 17:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":59,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-18 18:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":90,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-09-18 19:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":80,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-09-18 20:00:00",
-    "pred_llamadas":78,
+    "pred_llamadas":82,
     "pred_tmo_seg":238
   },
   {
     "ts":"2025-09-18 21:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":69,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-09-18 22:00:00",
-    "pred_llamadas":41,
+    "pred_llamadas":36,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-18 23:00:00",
-    "pred_llamadas":22,
+    "pred_llamadas":28,
     "pred_tmo_seg":238
   },
   {
@@ -6411,12 +6411,12 @@
   },
   {
     "ts":"2025-09-19 10:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":81,
     "pred_tmo_seg":239
   },
   {
     "ts":"2025-09-19 11:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":82,
     "pred_tmo_seg":251
   },
   {
@@ -6426,57 +6426,57 @@
   },
   {
     "ts":"2025-09-19 13:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":80,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-09-19 14:00:00",
-    "pred_llamadas":69,
+    "pred_llamadas":62,
     "pred_tmo_seg":242
   },
   {
     "ts":"2025-09-19 15:00:00",
-    "pred_llamadas":57,
+    "pred_llamadas":60,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-19 16:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":52,
     "pred_tmo_seg":241
   },
   {
     "ts":"2025-09-19 17:00:00",
-    "pred_llamadas":61,
+    "pred_llamadas":58,
     "pred_tmo_seg":243
   },
   {
     "ts":"2025-09-19 18:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":73,
     "pred_tmo_seg":239
   },
   {
     "ts":"2025-09-19 19:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":72,
     "pred_tmo_seg":238
   },
   {
     "ts":"2025-09-19 20:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":68,
     "pred_tmo_seg":233
   },
   {
     "ts":"2025-09-19 21:00:00",
-    "pred_llamadas":66,
+    "pred_llamadas":59,
     "pred_tmo_seg":239
   },
   {
     "ts":"2025-09-19 22:00:00",
-    "pred_llamadas":44,
+    "pred_llamadas":40,
     "pred_tmo_seg":242
   },
   {
     "ts":"2025-09-19 23:00:00",
-    "pred_llamadas":23,
+    "pred_llamadas":21,
     "pred_tmo_seg":231
   },
   {
@@ -6531,72 +6531,72 @@
   },
   {
     "ts":"2025-09-20 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-20 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-20 12:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":84,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-09-20 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-20 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-20 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-20 16:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-09-20 17:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-20 18:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-20 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-20 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":63,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-09-20 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-20 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-20 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":247
   },
   {
@@ -6651,62 +6651,62 @@
   },
   {
     "ts":"2025-09-21 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-21 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-21 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-21 13:00:00",
-    "pred_llamadas":61,
+    "pred_llamadas":46,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-21 14:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-21 15:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-21 16:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":54,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-21 17:00:00",
-    "pred_llamadas":77,
+    "pred_llamadas":78,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-21 18:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":70,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-21 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":87,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-09-21 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":89,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-21 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":85,
     "pred_tmo_seg":250
   },
   {
@@ -6716,7 +6716,7 @@
   },
   {
     "ts":"2025-09-21 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":258
   },
   {
@@ -6771,67 +6771,67 @@
   },
   {
     "ts":"2025-09-22 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-22 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-22 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-22 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-22 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-22 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-22 16:00:00",
-    "pred_llamadas":136,
+    "pred_llamadas":150,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-22 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":133,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-09-22 18:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":128,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-09-22 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-22 20:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":101,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-22 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":89,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-22 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":46,
     "pred_tmo_seg":265
   },
   {
@@ -6891,42 +6891,42 @@
   },
   {
     "ts":"2025-09-23 10:00:00",
-    "pred_llamadas":185,
+    "pred_llamadas":192,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-23 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":211,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-23 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":221,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-09-23 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-23 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-23 15:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-23 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-23 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":127,
     "pred_tmo_seg":276
   },
   {
@@ -6936,12 +6936,12 @@
   },
   {
     "ts":"2025-09-23 19:00:00",
-    "pred_llamadas":102,
+    "pred_llamadas":104,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-23 20:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":97,
     "pred_tmo_seg":262
   },
   {
@@ -6951,12 +6951,12 @@
   },
   {
     "ts":"2025-09-23 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-23 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -7011,72 +7011,72 @@
   },
   {
     "ts":"2025-09-24 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-24 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-24 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":289
   },
   {
     "ts":"2025-09-24 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-24 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-24 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-09-24 16:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":147,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-09-24 17:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":138,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-24 18:00:00",
-    "pred_llamadas":120,
+    "pred_llamadas":128,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-09-24 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":110,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-24 20:00:00",
-    "pred_llamadas":95,
+    "pred_llamadas":111,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-24 21:00:00",
-    "pred_llamadas":80,
+    "pred_llamadas":85,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-24 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-24 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":259
   },
   {
@@ -7131,72 +7131,72 @@
   },
   {
     "ts":"2025-09-25 10:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":178,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-09-25 11:00:00",
-    "pred_llamadas":193,
+    "pred_llamadas":204,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-25 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-25 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-09-25 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-25 15:00:00",
-    "pred_llamadas":148,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-25 16:00:00",
-    "pred_llamadas":144,
+    "pred_llamadas":148,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-25 17:00:00",
-    "pred_llamadas":136,
+    "pred_llamadas":121,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-09-25 18:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":131,
     "pred_tmo_seg":272
   },
   {
     "ts":"2025-09-25 19:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":114,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-25 20:00:00",
-    "pred_llamadas":98,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-25 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":85,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-09-25 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":44,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-25 23:00:00",
-    "pred_llamadas":25,
+    "pred_llamadas":32,
     "pred_tmo_seg":255
   },
   {
@@ -7251,12 +7251,12 @@
   },
   {
     "ts":"2025-09-26 10:00:00",
-    "pred_llamadas":161,
+    "pred_llamadas":162,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-09-26 11:00:00",
-    "pred_llamadas":172,
+    "pred_llamadas":165,
     "pred_tmo_seg":281
   },
   {
@@ -7266,57 +7266,57 @@
   },
   {
     "ts":"2025-09-26 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-26 14:00:00",
-    "pred_llamadas":142,
+    "pred_llamadas":128,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-26 15:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":139,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-09-26 16:00:00",
-    "pred_llamadas":129,
+    "pred_llamadas":121,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-09-26 17:00:00",
-    "pred_llamadas":125,
+    "pred_llamadas":120,
     "pred_tmo_seg":268
   },
   {
     "ts":"2025-09-26 18:00:00",
-    "pred_llamadas":116,
+    "pred_llamadas":106,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-09-26 19:00:00",
-    "pred_llamadas":106,
+    "pred_llamadas":103,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-09-26 20:00:00",
-    "pred_llamadas":95,
+    "pred_llamadas":85,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-09-26 21:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":72,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-26 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-26 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":24,
     "pred_tmo_seg":248
   },
   {
@@ -7371,72 +7371,72 @@
   },
   {
     "ts":"2025-09-27 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-27 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-27 12:00:00",
-    "pred_llamadas":112,
+    "pred_llamadas":84,
     "pred_tmo_seg":263
   },
   {
     "ts":"2025-09-27 13:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":74,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-27 14:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-09-27 15:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":65,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-09-27 16:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":67,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-09-27 17:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-27 18:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":68,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-27 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-27 20:00:00",
-    "pred_llamadas":84,
+    "pred_llamadas":63,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-09-27 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":62,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-27 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-27 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":29,
     "pred_tmo_seg":247
   },
   {
@@ -7491,62 +7491,62 @@
   },
   {
     "ts":"2025-09-28 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-28 11:00:00",
-    "pred_llamadas":75,
+    "pred_llamadas":60,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-28 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-09-28 13:00:00",
-    "pred_llamadas":61,
+    "pred_llamadas":46,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-09-28 14:00:00",
-    "pred_llamadas":59,
+    "pred_llamadas":44,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-28 15:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-28 16:00:00",
-    "pred_llamadas":67,
+    "pred_llamadas":54,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-09-28 17:00:00",
-    "pred_llamadas":77,
+    "pred_llamadas":78,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-09-28 18:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":70,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-09-28 19:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":87,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-09-28 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":89,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-09-28 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":85,
     "pred_tmo_seg":250
   },
   {
@@ -7556,7 +7556,7 @@
   },
   {
     "ts":"2025-09-28 23:00:00",
-    "pred_llamadas":28,
+    "pred_llamadas":29,
     "pred_tmo_seg":258
   },
   {
@@ -7611,67 +7611,67 @@
   },
   {
     "ts":"2025-09-29 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-09-29 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-09-29 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-29 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-29 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-29 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-29 16:00:00",
-    "pred_llamadas":136,
+    "pred_llamadas":150,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-29 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":133,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-09-29 18:00:00",
-    "pred_llamadas":110,
+    "pred_llamadas":128,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-09-29 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-29 20:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":101,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-09-29 21:00:00",
-    "pred_llamadas":73,
+    "pred_llamadas":89,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-09-29 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":46,
     "pred_tmo_seg":265
   },
   {
@@ -7731,42 +7731,42 @@
   },
   {
     "ts":"2025-09-30 10:00:00",
-    "pred_llamadas":185,
+    "pred_llamadas":192,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-09-30 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":211,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-30 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":221,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-09-30 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":286
   },
   {
     "ts":"2025-09-30 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-09-30 15:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":162,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-09-30 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":153,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-09-30 17:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":127,
     "pred_tmo_seg":276
   },
   {
@@ -7776,12 +7776,12 @@
   },
   {
     "ts":"2025-09-30 19:00:00",
-    "pred_llamadas":102,
+    "pred_llamadas":104,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-09-30 20:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":97,
     "pred_tmo_seg":262
   },
   {
@@ -7791,12 +7791,12 @@
   },
   {
     "ts":"2025-09-30 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-09-30 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":21,
     "pred_tmo_seg":268
   },
   {
@@ -7851,72 +7851,72 @@
   },
   {
     "ts":"2025-10-01 10:00:00",
-    "pred_llamadas":182,
+    "pred_llamadas":186,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-10-01 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":198,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-01 12:00:00",
-    "pred_llamadas":188,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-01 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-01 14:00:00",
-    "pred_llamadas":156,
+    "pred_llamadas":162,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-01 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-01 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":148,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-10-01 17:00:00",
-    "pred_llamadas":132,
+    "pred_llamadas":139,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-01 18:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":130,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-01 19:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":112,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-01 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":112,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-01 21:00:00",
-    "pred_llamadas":81,
+    "pred_llamadas":86,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-10-01 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-01 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":260
   },
   {
@@ -7971,72 +7971,72 @@
   },
   {
     "ts":"2025-10-02 10:00:00",
-    "pred_llamadas":179,
+    "pred_llamadas":177,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-02 11:00:00",
-    "pred_llamadas":192,
+    "pred_llamadas":203,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-02 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":188,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-02 13:00:00",
-    "pred_llamadas":169,
+    "pred_llamadas":168,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-02 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":158,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-02 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-02 16:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":149,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-02 17:00:00",
-    "pred_llamadas":138,
+    "pred_llamadas":123,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-10-02 18:00:00",
-    "pred_llamadas":127,
+    "pred_llamadas":133,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-02 19:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":115,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-02 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":105,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-02 21:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":87,
     "pred_tmo_seg":258
   },
   {
     "ts":"2025-10-02 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-10-02 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":33,
     "pred_tmo_seg":256
   },
   {
@@ -8091,12 +8091,12 @@
   },
   {
     "ts":"2025-10-03 10:00:00",
-    "pred_llamadas":161,
+    "pred_llamadas":162,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-10-03 11:00:00",
-    "pred_llamadas":172,
+    "pred_llamadas":165,
     "pred_tmo_seg":280
   },
   {
@@ -8106,57 +8106,57 @@
   },
   {
     "ts":"2025-10-03 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-03 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-03 15:00:00",
-    "pred_llamadas":134,
+    "pred_llamadas":140,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-10-03 16:00:00",
-    "pred_llamadas":130,
+    "pred_llamadas":122,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-03 17:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":121,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-10-03 18:00:00",
-    "pred_llamadas":117,
+    "pred_llamadas":107,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-03 19:00:00",
-    "pred_llamadas":107,
+    "pred_llamadas":104,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-03 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":86,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-10-03 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":73,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-10-03 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-03 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":25,
     "pred_tmo_seg":248
   },
   {
@@ -8211,72 +8211,72 @@
   },
   {
     "ts":"2025-10-04 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-04 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-04 12:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":85,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-04 13:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":75,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-04 14:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-04 15:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-04 16:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-10-04 17:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-04 18:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-04 19:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-04 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":64,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-10-04 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":64,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-10-04 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-04 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":30,
     "pred_tmo_seg":248
   },
   {
@@ -8331,62 +8331,62 @@
   },
   {
     "ts":"2025-10-05 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-05 11:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":60,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-05 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-05 13:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-05 14:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-05 15:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-05 16:00:00",
-    "pred_llamadas":69,
+    "pred_llamadas":56,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-05 17:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":80,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-05 18:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":72,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-05 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":88,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-10-05 20:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":91,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-05 21:00:00",
-    "pred_llamadas":78,
+    "pred_llamadas":87,
     "pred_tmo_seg":249
   },
   {
@@ -8396,7 +8396,7 @@
   },
   {
     "ts":"2025-10-05 23:00:00",
-    "pred_llamadas":29,
+    "pred_llamadas":30,
     "pred_tmo_seg":258
   },
   {
@@ -8451,67 +8451,67 @@
   },
   {
     "ts":"2025-10-06 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-06 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-06 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-06 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-06 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-06 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-10-06 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-06 17:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":135,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-06 18:00:00",
-    "pred_llamadas":111,
+    "pred_llamadas":129,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-10-06 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-06 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-06 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":90,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-06 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -8571,42 +8571,42 @@
   },
   {
     "ts":"2025-10-07 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":191,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-07 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":210,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-07 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":219,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-07 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-07 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-07 15:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":161,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-07 16:00:00",
-    "pred_llamadas":132,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-07 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":128,
     "pred_tmo_seg":276
   },
   {
@@ -8616,12 +8616,12 @@
   },
   {
     "ts":"2025-10-07 19:00:00",
-    "pred_llamadas":103,
+    "pred_llamadas":105,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-07 20:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":98,
     "pred_tmo_seg":263
   },
   {
@@ -8631,12 +8631,12 @@
   },
   {
     "ts":"2025-10-07 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-10-07 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":22,
     "pred_tmo_seg":270
   },
   {
@@ -8691,72 +8691,72 @@
   },
   {
     "ts":"2025-10-08 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-10-08 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-08 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-08 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-08 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-08 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-08 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":148,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-10-08 17:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":140,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-08 18:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":131,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-08 19:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":112,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-08 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":112,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-08 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":87,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-10-08 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-08 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":260
   },
   {
@@ -8811,72 +8811,72 @@
   },
   {
     "ts":"2025-10-09 10:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":178,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-09 11:00:00",
-    "pred_llamadas":192,
+    "pred_llamadas":203,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-09 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-09 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-09 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-09 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-09 16:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":149,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-09 17:00:00",
-    "pred_llamadas":138,
+    "pred_llamadas":123,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-10-09 18:00:00",
-    "pred_llamadas":127,
+    "pred_llamadas":133,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-09 19:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":115,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-09 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":105,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-09 21:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":87,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-09 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-10-09 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":33,
     "pred_tmo_seg":256
   },
   {
@@ -8931,12 +8931,12 @@
   },
   {
     "ts":"2025-10-10 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-10-10 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":280
   },
   {
@@ -8946,57 +8946,57 @@
   },
   {
     "ts":"2025-10-10 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-10 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-10 15:00:00",
-    "pred_llamadas":134,
+    "pred_llamadas":140,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-10-10 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":123,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-10 17:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":121,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-10-10 18:00:00",
-    "pred_llamadas":117,
+    "pred_llamadas":107,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-10 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":105,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-10 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":86,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-10-10 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":73,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-10-10 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-10 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":25,
     "pred_tmo_seg":248
   },
   {
@@ -9051,72 +9051,72 @@
   },
   {
     "ts":"2025-10-11 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-11 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-11 12:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":85,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-11 13:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":75,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-11 14:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-11 15:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-11 16:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-10-11 17:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-11 18:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-11 19:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-11 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":64,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-10-11 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":64,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-10-11 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-11 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":30,
     "pred_tmo_seg":248
   },
   {
@@ -9171,62 +9171,62 @@
   },
   {
     "ts":"2025-10-12 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-12 11:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":60,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-12 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-12 13:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-12 14:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-12 15:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-12 16:00:00",
-    "pred_llamadas":69,
+    "pred_llamadas":56,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-12 17:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":80,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-12 18:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":72,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-12 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":88,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-10-12 20:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":91,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-12 21:00:00",
-    "pred_llamadas":78,
+    "pred_llamadas":87,
     "pred_tmo_seg":249
   },
   {
@@ -9236,7 +9236,7 @@
   },
   {
     "ts":"2025-10-12 23:00:00",
-    "pred_llamadas":29,
+    "pred_llamadas":30,
     "pred_tmo_seg":258
   },
   {
@@ -9291,67 +9291,67 @@
   },
   {
     "ts":"2025-10-13 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-13 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-13 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-13 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-13 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-13 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-10-13 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-13 17:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":135,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-13 18:00:00",
-    "pred_llamadas":111,
+    "pred_llamadas":129,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-10-13 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-13 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-13 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":90,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-13 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -9411,42 +9411,42 @@
   },
   {
     "ts":"2025-10-14 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":191,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-14 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":210,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-14 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":219,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-14 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-14 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-14 15:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":161,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-14 16:00:00",
-    "pred_llamadas":132,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-14 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":128,
     "pred_tmo_seg":276
   },
   {
@@ -9456,12 +9456,12 @@
   },
   {
     "ts":"2025-10-14 19:00:00",
-    "pred_llamadas":103,
+    "pred_llamadas":105,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-14 20:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":98,
     "pred_tmo_seg":263
   },
   {
@@ -9471,12 +9471,12 @@
   },
   {
     "ts":"2025-10-14 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-14 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":22,
     "pred_tmo_seg":270
   },
   {
@@ -9531,72 +9531,72 @@
   },
   {
     "ts":"2025-10-15 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-10-15 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-15 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-15 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-15 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-15 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-15 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":148,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-10-15 17:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":140,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-15 18:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":131,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-15 19:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":112,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-15 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":112,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-15 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":87,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-10-15 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-15 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":260
   },
   {
@@ -9651,72 +9651,72 @@
   },
   {
     "ts":"2025-10-16 10:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":178,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-16 11:00:00",
-    "pred_llamadas":192,
+    "pred_llamadas":203,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-16 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-16 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-16 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-16 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-16 16:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":149,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-16 17:00:00",
-    "pred_llamadas":138,
+    "pred_llamadas":123,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-10-16 18:00:00",
-    "pred_llamadas":127,
+    "pred_llamadas":133,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-16 19:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":115,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-16 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":105,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-16 21:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":87,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-16 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-10-16 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":33,
     "pred_tmo_seg":256
   },
   {
@@ -9771,12 +9771,12 @@
   },
   {
     "ts":"2025-10-17 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-10-17 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":280
   },
   {
@@ -9786,57 +9786,57 @@
   },
   {
     "ts":"2025-10-17 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-17 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-17 15:00:00",
-    "pred_llamadas":134,
+    "pred_llamadas":140,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-10-17 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":123,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-17 17:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":121,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-10-17 18:00:00",
-    "pred_llamadas":117,
+    "pred_llamadas":107,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-17 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":105,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-17 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":86,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-10-17 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":73,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-10-17 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-17 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":25,
     "pred_tmo_seg":248
   },
   {
@@ -9891,72 +9891,72 @@
   },
   {
     "ts":"2025-10-18 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-18 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-18 12:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":85,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-18 13:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":75,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-18 14:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-18 15:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-18 16:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-10-18 17:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-18 18:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-18 19:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-18 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":64,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-10-18 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":64,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-10-18 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-18 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":30,
     "pred_tmo_seg":248
   },
   {
@@ -10011,62 +10011,62 @@
   },
   {
     "ts":"2025-10-19 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-19 11:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":60,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-19 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-19 13:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-19 14:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-19 15:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-19 16:00:00",
-    "pred_llamadas":69,
+    "pred_llamadas":56,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-19 17:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":80,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-19 18:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":72,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-19 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":88,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-10-19 20:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":91,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-19 21:00:00",
-    "pred_llamadas":78,
+    "pred_llamadas":87,
     "pred_tmo_seg":249
   },
   {
@@ -10076,7 +10076,7 @@
   },
   {
     "ts":"2025-10-19 23:00:00",
-    "pred_llamadas":29,
+    "pred_llamadas":30,
     "pred_tmo_seg":258
   },
   {
@@ -10131,67 +10131,67 @@
   },
   {
     "ts":"2025-10-20 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-20 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-20 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-20 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-20 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-20 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-10-20 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-20 17:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":135,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-20 18:00:00",
-    "pred_llamadas":111,
+    "pred_llamadas":129,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-10-20 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-20 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-20 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":90,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-20 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -10251,42 +10251,42 @@
   },
   {
     "ts":"2025-10-21 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":191,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-21 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":210,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-21 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":219,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-21 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-21 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-21 15:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":161,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-21 16:00:00",
-    "pred_llamadas":132,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-21 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":128,
     "pred_tmo_seg":276
   },
   {
@@ -10296,12 +10296,12 @@
   },
   {
     "ts":"2025-10-21 19:00:00",
-    "pred_llamadas":103,
+    "pred_llamadas":105,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-21 20:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":98,
     "pred_tmo_seg":263
   },
   {
@@ -10311,12 +10311,12 @@
   },
   {
     "ts":"2025-10-21 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-21 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":22,
     "pred_tmo_seg":270
   },
   {
@@ -10371,72 +10371,72 @@
   },
   {
     "ts":"2025-10-22 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-10-22 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-22 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-22 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-22 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-22 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-22 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":148,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-10-22 17:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":140,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-22 18:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":131,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-22 19:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":112,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-22 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":112,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-22 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":87,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-10-22 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-22 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":260
   },
   {
@@ -10491,72 +10491,72 @@
   },
   {
     "ts":"2025-10-23 10:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":178,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-23 11:00:00",
-    "pred_llamadas":192,
+    "pred_llamadas":203,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-23 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-23 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-23 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-23 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-23 16:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":149,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-23 17:00:00",
-    "pred_llamadas":138,
+    "pred_llamadas":123,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-10-23 18:00:00",
-    "pred_llamadas":127,
+    "pred_llamadas":133,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-23 19:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":115,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-23 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":105,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-23 21:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":87,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-23 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-10-23 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":33,
     "pred_tmo_seg":256
   },
   {
@@ -10611,12 +10611,12 @@
   },
   {
     "ts":"2025-10-24 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-10-24 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":280
   },
   {
@@ -10626,57 +10626,57 @@
   },
   {
     "ts":"2025-10-24 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-24 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-24 15:00:00",
-    "pred_llamadas":134,
+    "pred_llamadas":140,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-10-24 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":123,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-24 17:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":121,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-10-24 18:00:00",
-    "pred_llamadas":117,
+    "pred_llamadas":107,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-24 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":105,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-24 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":86,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-10-24 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":73,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-10-24 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-24 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":25,
     "pred_tmo_seg":248
   },
   {
@@ -10731,72 +10731,72 @@
   },
   {
     "ts":"2025-10-25 10:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":86,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-25 11:00:00",
-    "pred_llamadas":121,
+    "pred_llamadas":91,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-25 12:00:00",
-    "pred_llamadas":113,
+    "pred_llamadas":85,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-25 13:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":75,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-25 14:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-25 15:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":66,
     "pred_tmo_seg":256
   },
   {
     "ts":"2025-10-25 16:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":68,
     "pred_tmo_seg":254
   },
   {
     "ts":"2025-10-25 17:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-25 18:00:00",
-    "pred_llamadas":93,
+    "pred_llamadas":70,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-25 19:00:00",
-    "pred_llamadas":92,
+    "pred_llamadas":69,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-25 20:00:00",
-    "pred_llamadas":86,
+    "pred_llamadas":64,
     "pred_tmo_seg":244
   },
   {
     "ts":"2025-10-25 21:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":64,
     "pred_tmo_seg":247
   },
   {
     "ts":"2025-10-25 22:00:00",
-    "pred_llamadas":56,
+    "pred_llamadas":54,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-25 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":30,
     "pred_tmo_seg":248
   },
   {
@@ -10851,62 +10851,62 @@
   },
   {
     "ts":"2025-10-26 10:00:00",
-    "pred_llamadas":72,
+    "pred_llamadas":63,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-26 11:00:00",
-    "pred_llamadas":76,
+    "pred_llamadas":60,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-26 12:00:00",
-    "pred_llamadas":68,
+    "pred_llamadas":52,
     "pred_tmo_seg":252
   },
   {
     "ts":"2025-10-26 13:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-26 14:00:00",
-    "pred_llamadas":60,
+    "pred_llamadas":45,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-26 15:00:00",
-    "pred_llamadas":62,
+    "pred_llamadas":46,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-26 16:00:00",
-    "pred_llamadas":69,
+    "pred_llamadas":56,
     "pred_tmo_seg":250
   },
   {
     "ts":"2025-10-26 17:00:00",
-    "pred_llamadas":79,
+    "pred_llamadas":80,
     "pred_tmo_seg":249
   },
   {
     "ts":"2025-10-26 18:00:00",
-    "pred_llamadas":87,
+    "pred_llamadas":72,
     "pred_tmo_seg":248
   },
   {
     "ts":"2025-10-26 19:00:00",
-    "pred_llamadas":90,
+    "pred_llamadas":88,
     "pred_tmo_seg":245
   },
   {
     "ts":"2025-10-26 20:00:00",
-    "pred_llamadas":88,
+    "pred_llamadas":91,
     "pred_tmo_seg":246
   },
   {
     "ts":"2025-10-26 21:00:00",
-    "pred_llamadas":78,
+    "pred_llamadas":87,
     "pred_tmo_seg":249
   },
   {
@@ -10916,7 +10916,7 @@
   },
   {
     "ts":"2025-10-26 23:00:00",
-    "pred_llamadas":29,
+    "pred_llamadas":30,
     "pred_tmo_seg":258
   },
   {
@@ -10971,67 +10971,67 @@
   },
   {
     "ts":"2025-10-27 10:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":184,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-27 11:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":206,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-27 12:00:00",
-    "pred_llamadas":186,
+    "pred_llamadas":209,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-27 13:00:00",
-    "pred_llamadas":171,
+    "pred_llamadas":184,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-27 14:00:00",
-    "pred_llamadas":159,
+    "pred_llamadas":168,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-27 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":163,
     "pred_tmo_seg":283
   },
   {
     "ts":"2025-10-27 16:00:00",
-    "pred_llamadas":137,
+    "pred_llamadas":151,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-27 17:00:00",
-    "pred_llamadas":124,
+    "pred_llamadas":135,
     "pred_tmo_seg":276
   },
   {
     "ts":"2025-10-27 18:00:00",
-    "pred_llamadas":111,
+    "pred_llamadas":129,
     "pred_tmo_seg":270
   },
   {
     "ts":"2025-10-27 19:00:00",
-    "pred_llamadas":99,
+    "pred_llamadas":103,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-27 20:00:00",
-    "pred_llamadas":89,
+    "pred_llamadas":103,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-27 21:00:00",
-    "pred_llamadas":74,
+    "pred_llamadas":90,
     "pred_tmo_seg":262
   },
   {
     "ts":"2025-10-27 22:00:00",
-    "pred_llamadas":52,
+    "pred_llamadas":47,
     "pred_tmo_seg":265
   },
   {
@@ -11091,42 +11091,42 @@
   },
   {
     "ts":"2025-10-28 10:00:00",
-    "pred_llamadas":184,
+    "pred_llamadas":191,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-28 11:00:00",
-    "pred_llamadas":194,
+    "pred_llamadas":210,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-28 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":219,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-28 13:00:00",
-    "pred_llamadas":167,
+    "pred_llamadas":192,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-28 14:00:00",
-    "pred_llamadas":152,
+    "pred_llamadas":167,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-28 15:00:00",
-    "pred_llamadas":140,
+    "pred_llamadas":161,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-28 16:00:00",
-    "pred_llamadas":132,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-28 17:00:00",
-    "pred_llamadas":123,
+    "pred_llamadas":128,
     "pred_tmo_seg":276
   },
   {
@@ -11136,12 +11136,12 @@
   },
   {
     "ts":"2025-10-28 19:00:00",
-    "pred_llamadas":103,
+    "pred_llamadas":105,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-28 20:00:00",
-    "pred_llamadas":91,
+    "pred_llamadas":98,
     "pred_tmo_seg":263
   },
   {
@@ -11151,12 +11151,12 @@
   },
   {
     "ts":"2025-10-28 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":53,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-28 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":22,
     "pred_tmo_seg":270
   },
   {
@@ -11211,72 +11211,72 @@
   },
   {
     "ts":"2025-10-29 10:00:00",
-    "pred_llamadas":183,
+    "pred_llamadas":187,
     "pred_tmo_seg":279
   },
   {
     "ts":"2025-10-29 11:00:00",
-    "pred_llamadas":195,
+    "pred_llamadas":199,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-29 12:00:00",
-    "pred_llamadas":189,
+    "pred_llamadas":194,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-29 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":193,
     "pred_tmo_seg":288
   },
   {
     "ts":"2025-10-29 14:00:00",
-    "pred_llamadas":157,
+    "pred_llamadas":163,
     "pred_tmo_seg":285
   },
   {
     "ts":"2025-10-29 15:00:00",
-    "pred_llamadas":146,
+    "pred_llamadas":158,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-29 16:00:00",
-    "pred_llamadas":141,
+    "pred_llamadas":148,
     "pred_tmo_seg":280
   },
   {
     "ts":"2025-10-29 17:00:00",
-    "pred_llamadas":133,
+    "pred_llamadas":140,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-29 18:00:00",
-    "pred_llamadas":122,
+    "pred_llamadas":131,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-29 19:00:00",
-    "pred_llamadas":109,
+    "pred_llamadas":112,
     "pred_tmo_seg":265
   },
   {
     "ts":"2025-10-29 20:00:00",
-    "pred_llamadas":96,
+    "pred_llamadas":112,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-29 21:00:00",
-    "pred_llamadas":82,
+    "pred_llamadas":87,
     "pred_tmo_seg":260
   },
   {
     "ts":"2025-10-29 22:00:00",
-    "pred_llamadas":50,
+    "pred_llamadas":57,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-29 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":34,
     "pred_tmo_seg":260
   },
   {
@@ -11331,72 +11331,72 @@
   },
   {
     "ts":"2025-10-30 10:00:00",
-    "pred_llamadas":180,
+    "pred_llamadas":178,
     "pred_tmo_seg":277
   },
   {
     "ts":"2025-10-30 11:00:00",
-    "pred_llamadas":192,
+    "pred_llamadas":203,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-30 12:00:00",
-    "pred_llamadas":187,
+    "pred_llamadas":189,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-30 13:00:00",
-    "pred_llamadas":170,
+    "pred_llamadas":169,
     "pred_tmo_seg":287
   },
   {
     "ts":"2025-10-30 14:00:00",
-    "pred_llamadas":158,
+    "pred_llamadas":159,
     "pred_tmo_seg":284
   },
   {
     "ts":"2025-10-30 15:00:00",
-    "pred_llamadas":149,
+    "pred_llamadas":154,
     "pred_tmo_seg":281
   },
   {
     "ts":"2025-10-30 16:00:00",
-    "pred_llamadas":145,
+    "pred_llamadas":149,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-30 17:00:00",
-    "pred_llamadas":138,
+    "pred_llamadas":123,
     "pred_tmo_seg":275
   },
   {
     "ts":"2025-10-30 18:00:00",
-    "pred_llamadas":127,
+    "pred_llamadas":133,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-30 19:00:00",
-    "pred_llamadas":114,
+    "pred_llamadas":115,
     "pred_tmo_seg":266
   },
   {
     "ts":"2025-10-30 20:00:00",
-    "pred_llamadas":100,
+    "pred_llamadas":105,
     "pred_tmo_seg":261
   },
   {
     "ts":"2025-10-30 21:00:00",
-    "pred_llamadas":85,
+    "pred_llamadas":87,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-30 22:00:00",
-    "pred_llamadas":51,
+    "pred_llamadas":45,
     "pred_tmo_seg":257
   },
   {
     "ts":"2025-10-30 23:00:00",
-    "pred_llamadas":26,
+    "pred_llamadas":33,
     "pred_tmo_seg":256
   },
   {
@@ -11451,12 +11451,12 @@
   },
   {
     "ts":"2025-10-31 10:00:00",
-    "pred_llamadas":162,
+    "pred_llamadas":163,
     "pred_tmo_seg":273
   },
   {
     "ts":"2025-10-31 11:00:00",
-    "pred_llamadas":173,
+    "pred_llamadas":166,
     "pred_tmo_seg":280
   },
   {
@@ -11466,57 +11466,57 @@
   },
   {
     "ts":"2025-10-31 13:00:00",
-    "pred_llamadas":153,
+    "pred_llamadas":167,
     "pred_tmo_seg":282
   },
   {
     "ts":"2025-10-31 14:00:00",
-    "pred_llamadas":143,
+    "pred_llamadas":129,
     "pred_tmo_seg":278
   },
   {
     "ts":"2025-10-31 15:00:00",
-    "pred_llamadas":134,
+    "pred_llamadas":140,
     "pred_tmo_seg":274
   },
   {
     "ts":"2025-10-31 16:00:00",
-    "pred_llamadas":131,
+    "pred_llamadas":123,
     "pred_tmo_seg":271
   },
   {
     "ts":"2025-10-31 17:00:00",
-    "pred_llamadas":126,
+    "pred_llamadas":121,
     "pred_tmo_seg":267
   },
   {
     "ts":"2025-10-31 18:00:00",
-    "pred_llamadas":117,
+    "pred_llamadas":107,
     "pred_tmo_seg":264
   },
   {
     "ts":"2025-10-31 19:00:00",
-    "pred_llamadas":108,
+    "pred_llamadas":105,
     "pred_tmo_seg":259
   },
   {
     "ts":"2025-10-31 20:00:00",
-    "pred_llamadas":97,
+    "pred_llamadas":86,
     "pred_tmo_seg":255
   },
   {
     "ts":"2025-10-31 21:00:00",
-    "pred_llamadas":83,
+    "pred_llamadas":73,
     "pred_tmo_seg":253
   },
   {
     "ts":"2025-10-31 22:00:00",
-    "pred_llamadas":54,
+    "pred_llamadas":49,
     "pred_tmo_seg":251
   },
   {
     "ts":"2025-10-31 23:00:00",
-    "pred_llamadas":27,
+    "pred_llamadas":25,
     "pred_tmo_seg":248
   }
 ]
