@@ -1,6 +1,8 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN FINAL CON DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA,
-# AJUSTE POR FERIADOS Y SUAVIZADO ROBUSTO BASADO EN HISTÓRICO)
+# forecast3m.py
+# DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA,
+# RECALIBRACIÓN ESTACIONAL (DOW-HOUR), AJUSTE POR FERIADOS
+# y SUAVIZADO ROBUSTO BASADO EN HISTÓRICO
 # =======================================================================
 
 import os, json
@@ -16,6 +18,7 @@ REPO  = "wfneuronal"
 MODELS_DIR = "models"
 DATA_FILE = "data/historical_data.csv"
 HOLIDAYS_FILE = "data/Feriados_Chilev2.csv"   # CSV con columna 'Fecha' (DD-MM-YYYY)
+
 OUT_CSV_DATAOUT = "public/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
 OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
@@ -33,10 +36,10 @@ TARGET_TMO = "tmo_seg"
 
 # Suavizado (menos agresivo)
 MAD_K = 5.0            # K base (lunes-viernes)
-MAD_K_WEEKEND = 6.5    # K fin de semana (más permisivo)
-SUAVIZADO = "cap"      # reservado si se quiere volver al método previo
+MAD_K_WEEKEND = 6.5    # K fin de semana
+SUAVIZADO = "cap"      # (compatibilidad)
 
-# -------------------- Funciones de preprocesamiento --------------------
+# -------------------- Utilidades de fecha/tiempo -----------------------
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
     df = df.copy()
     df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
@@ -95,47 +98,73 @@ def build_feature_matrix_nn(df, training_columns, target_col):
         X[c] = 0
     return X[training_columns].fillna(0)
 
-# -------------------- Suavizado robusto (nuevo) ------------------------
+# -------------------- Recalibración estacional (NUEVO) -----------------
+def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
+    """
+    Calcula pesos multiplicativos por (dow,hour) que reintroducen el perfil semanal:
+      w(dow,h) = mediana_hist(dow,h) / mediana_hist_por_hora(h)
+    Usa por defecto las últimas 'weeks' semanas del histórico (si hay).
+    """
+    d = df_hist.copy()
+    if len(d) == 0:
+        return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
+
+    # filtrar histórico reciente si es posible
+    end = d.index.max()
+    start = end - pd.Timedelta(weeks=weeks)
+    d = d.loc[d.index >= start]
+
+    d = add_time_features(d[[col]])
+    med_dow_hour = d.groupby(["dow","hour"])[col].median()
+    med_hour     = d.groupby("hour")[col].median()
+
+    weights = {}
+    for dow in range(7):
+        for h in range(24):
+            num = med_dow_hour.get((dow,h), np.nan)
+            den = med_hour.get(h, np.nan)
+            w = 1.0
+            if not np.isnan(num) and not np.isnan(den) and den != 0:
+                w = float(num / den)
+            weights[(dow,h)] = float(np.clip(w, clip_min, clip_max))
+    return weights
+
+def apply_seasonal_weights(df_future, weights):
+    """
+    Aplica pesos multiplicativos por (dow,hour) a la columna 'pred_llamadas'.
+    """
+    df = add_time_features(df_future.copy())
+    idx = list(zip(df["dow"].values, df["hour"].values))
+    w = np.array([weights.get(key, 1.0) for key in idx], dtype=float)
+    df["pred_llamadas"] = (df["pred_llamadas"].astype(float) * w).round().astype(int)
+    return df.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
+
+# -------------------- Suavizado robusto (igual que tu versión previa) --
 def baseline_from_history(df_hist, col):
-    """
-    Calcula baseline robusto por (dow, hour) usando el HISTÓRICO:
-      - mediana
-      - MAD (mediana del desvío absoluto)
-      - q95 (percentil 95)
-    """
     d = add_time_features(df_hist[[col]].copy())
     g = d.groupby(["dow", "hour"])[col]
     base = g.median().rename("med").to_frame()
     mad = g.apply(lambda x: np.median(np.abs(x - np.median(x)))).rename("mad")
     q95 = g.quantile(0.95).rename("q95")
     base = base.join([mad, q95])
-    # fallbacks
     if base["mad"].isna().all():
         base["mad"] = 0
     base["mad"] = base["mad"].replace(0, base["mad"].median() if not np.isnan(base["mad"].median()) else 1.0)
     base["q95"] = base["q95"].fillna(base["med"])
-    return base  # MultiIndex (dow,hour) -> med, mad, q95
+    return base
 
 def apply_peak_smoothing_history(df_future, col, base, k_weekday=MAD_K, k_weekend=MAD_K_WEEKEND):
-    """
-    Suaviza solo picos anómalos comparando contra baseline histórico.
-    Condición para capear: pred > med + K*MAD y pred > q95.
-    """
     df = add_time_features(df_future.copy())
     keys = list(zip(df["dow"].values, df["hour"].values))
     b = base.reindex(keys)
-    # Fallback global si hay combos inexistentes
     b = b.fillna(base.median(numeric_only=True))
-    K = np.where(df["dow"].isin([5, 6]), k_weekend, k_weekday).astype(float)  # 5=sáb, 6=dom
+    K = np.where(df["dow"].isin([5, 6]), k_weekend, k_weekday).astype(float)  # 5=sáb,6=dom
     upper_cap = b["med"].values + K * b["mad"].values
-
     mask = (df[col].astype(float).values > upper_cap) & (df[col].astype(float).values > b["q95"].values)
     df.loc[mask, col] = upper_cap[mask]
-    # limpiar columnas auxiliares
     return df.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
 
-# -------------------- (Opcional) suavizado anterior --------------------
-# Se mantiene por compatibilidad si se quisiera volver atrás.
+# -------------------- (Compat) funciones previas de suavizado ----------
 def robust_baseline_by_dow_hour(df, col):
     grouped = df.groupby(["dow", "hour"])[col].agg(["median"])
     grouped.rename(columns={"median": "med"}, inplace=True)
@@ -157,9 +186,6 @@ def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
 
 # -------------------- Feriados: lectura y ajuste -----------------------
 def load_holidays(csv_path, tz=TIMEZONE):
-    """
-    Lee CSV con columna 'Fecha' (DD-MM-YYYY) y devuelve set de fechas (date).
-    """
     if not os.path.exists(csv_path):
         print(f"ADVERTENCIA: No se encontró archivo de feriados en {csv_path}. No se aplicarán ajustes.")
         return set()
@@ -171,9 +197,6 @@ def load_holidays(csv_path, tz=TIMEZONE):
     return set(fechas)
 
 def mark_holidays_index(index, holidays_set):
-    """
-    Devuelve Series booleana alineada al index, True si la fecha está en feriados_set.
-    """
     tz = getattr(index, "tz", None)
     idx_dates = index.tz_convert(TIMEZONE).date if tz is not None else index.date
     return pd.Series([d in holidays_set for d in idx_dates], index=index, dtype=bool, name="is_holiday")
@@ -186,10 +209,6 @@ def _safe_ratio(num, den, fallback=1.0):
     return num / den
 
 def compute_holiday_factors(df_hist, holidays_set, col_calls=TARGET_LLAMADAS, col_tmo=TARGET_TMO):
-    """
-    Factores robustos por HORA para ajustar predicciones en feriados:
-      factor_h = mediana(feriado, h) / mediana(no_feriado, h)
-    """
     dfh = add_time_features(df_hist[[col_calls, col_tmo]].copy())
     dfh["is_holiday"] = mark_holidays_index(dfh.index, holidays_set).values
 
@@ -209,16 +228,11 @@ def compute_holiday_factors(df_hist, holidays_set, col_calls=TARGET_LLAMADAS, co
     factors_calls_by_hour = {h: _safe_ratio(med_hol_calls.get(h, np.nan), med_nor_calls.get(h, np.nan), fallback=global_calls_factor) for h in range(24)}
     factors_tmo_by_hour   = {h: _safe_ratio(med_hol_tmo.get(h, np.nan),   med_nor_tmo.get(h, np.nan),   fallback=global_tmo_factor)   for h in range(24)}
 
-    # límites razonables
     factors_calls_by_hour = {h: float(np.clip(v, 0.10, 1.20)) for h, v in factors_calls_by_hour.items()}
     factors_tmo_by_hour   = {h: float(np.clip(v, 0.70, 1.50)) for h, v in factors_tmo_by_hour.items()}
-
     return factors_calls_by_hour, factors_tmo_by_hour, global_calls_factor, global_tmo_factor
 
 def apply_holiday_adjustment(df_future, holidays_set, factors_calls_by_hour, factors_tmo_by_hour):
-    """
-    Aplica factores por HORA solo en fechas feriado a pred_llamadas y pred_tmo_seg.
-    """
     df = add_time_features(df_future.copy())
     is_hol = mark_holidays_index(df.index, holidays_set).values
     hours = df["hour"].values
@@ -290,7 +304,12 @@ def main():
     pred_tmo = predecir_futuro_iterativo(df_hist, model_tmo, scaler_tmo, TARGET_TMO, future_ts)
     df_final["pred_tmo_seg"] = np.maximum(0, np.round(pred_tmo)).astype(int)
 
-    # Suavizado robusto basado en HISTÓRICO (menos planchado)
+    # === Paso 1: Recalibración estacional (dow-hour) sobre TODO el horizonte ===
+    print("Aplicando recalibración estacional (dow-hour) basada en histórico reciente...")
+    seasonal_w = compute_seasonal_weights(df_hist, TARGET_LLAMADAS, weeks=8, clip_min=0.75, clip_max=1.30)
+    df_final = apply_seasonal_weights(df_final, seasonal_w)
+
+    # === Paso 2: Suavizado robusto basado en HISTÓRICO (sólo recorta outliers) ===
     print("Aplicando suavizado robusto (baseline histórico)...")
     base_hist = baseline_from_history(df_hist, TARGET_LLAMADAS)
     df_tmp = df_final.copy()
@@ -301,7 +320,7 @@ def main():
     )
     df_final_smoothed["pred_llamadas"] = df_final_smoothed["pred_llamadas"].round().astype(int)
 
-    # Ajuste por feriados
+    # === Paso 3: Ajuste por feriados ===
     if holidays_set:
         print("Calculando factores de ajuste por feriados a partir del histórico...")
         f_calls_by_hour, f_tmo_by_hour, g_calls, g_tmo = compute_holiday_factors(df_hist, holidays_set)
@@ -340,4 +359,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
