@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from utils_release import download_asset_from_latest
+from pandas.tseries.offsets import MonthEnd
 
 # --- Parámetros generales ---
 OWNER = "Supervision-Inbound"
@@ -121,7 +122,7 @@ def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timest
         prediccion = modelo.predict(X_step_scaled, verbose=0).flatten()[0]
         df_prediccion.loc[ts, target_col] = prediccion
         
-        # <<< CAMBIO CRÍTICO: Reordenar el índice para asegurar que 'asof' funcione >>>
+        # <<< CAMBIO CRÍTICO: Reordenar el índice en cada paso para asegurar que 'asof' funcione >>>
         df_prediccion.sort_index(inplace=True)
 
     return df_prediccion.loc[future_timestamps, target_col]
@@ -154,12 +155,14 @@ def main():
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
+    df_hist = df_hist[~df_hist.index.duplicated(keep='last')] # Evita duplicados en el índice
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO, 'feriados']].dropna(subset=[TARGET_LLAMADAS])
 
     # --- Definir el rango de fechas futuras a predecir ---
     last_known_date = df_hist.index.max()
     start_pred = last_known_date + pd.Timedelta(hours=1)
-    end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_localize(TIMEZONE)
+    # <<< CAMBIO: Mejorada la forma de calcular la fecha final para eliminar UserWarning >>>
+    end_pred = (last_known_date + MonthEnd(0) + pd.DateOffset(months=3)).replace(hour=23, minute=59, second=59)
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ)
     print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
 
