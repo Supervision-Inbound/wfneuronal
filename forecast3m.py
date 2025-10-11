@@ -27,7 +27,6 @@ ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
 
 TIMEZONE = "America/Santiago"
-# <<< CAMBIO: Corregida advertencia de 'H' a 'h' >>>
 FREQ = "h"
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
@@ -162,7 +161,6 @@ def main():
     # --- Definir el rango de fechas futuras a predecir ---
     last_known_date = df_hist.index.max()
     start_pred = last_known_date + pd.Timedelta(hours=1)
-    # <<< CAMBIO: Mejorada la forma de calcular la fecha final para eliminar UserWarning >>>
     end_pred = (last_known_date + MonthEnd(0) + pd.DateOffset(months=3)).replace(hour=23, minute=59, second=59)
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ)
     print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
