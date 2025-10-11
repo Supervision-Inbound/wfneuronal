@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN FINAL CON LÓGICA DE FERIADOS FUTUROS)
+# forecast3m.py (VERSIÓN FINAL CON LÓGICA DE FERIADOS FUTUROS CORREGIDA)
 # =======================================================================
 
 import os, json
@@ -35,7 +35,6 @@ SUAVIZADO = "cap"
 
 # --- Funciones de preprocesamiento (del script de entrenamiento) ---
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
-    # dayfirst=True es correcto para historical_data.csv (DD-MM-YYYY)
     df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
     df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce", format='%Y-%m-%d %H:%M')
@@ -59,6 +58,7 @@ def add_time_features(df, set_feriados):
     df_copy["dow"] = df_copy.index.dayofweek
     df_copy["month"] = df_copy.index.month
     df_copy["hour"] = df_copy.index.hour
+    # <<< IMPORTANTE: Esta línea ahora se usa principalmente para las fechas futuras >>>
     df_copy['feriados'] = df_copy.index.to_series().dt.date.isin(set_feriados).astype(int)
     df_copy["sin_hour"] = np.sin(2 * np.pi * df_copy["hour"] / 24)
     df_copy["cos_hour"] = np.cos(2 * np.pi * df_copy["hour"] / 24)
@@ -138,7 +138,6 @@ def main():
     print(f"Cargando feriados desde {FERIADOS_FILE}...")
     df_feriados = pd.read_csv(FERIADOS_FILE, delimiter=';', encoding='latin-1')
     df_feriados.columns = df_feriados.columns.str.strip()
-    # <<< CAMBIO CRÍTICO: Se elimina dayfirst=True porque Feriados_Chile.csv usa YYYY-MM-DD >>>
     set_feriados = set(pd.to_datetime(df_feriados['Fecha']).dt.date)
 
     # --- Cargar y procesar datos históricos ---
@@ -146,8 +145,21 @@ def main():
     df_hist_raw = pd.read_csv(DATA_FILE, delimiter=';')
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
+    
+    # <<< CAMBIO CRÍTICO: Usar el 'feriados' del archivo histórico y no sobreescribirlo >>>
+    # 1. Procesar fechas y mantener todas las columnas originales
     df_hist = ensure_datetime(df_hist_raw)
-    df_hist = add_time_features(df_hist, set_feriados)
+    
+    # 2. Generar las características de seno/coseno sin tocar la columna 'feriados'
+    df_hist["dow"] = df_hist.index.dayofweek
+    df_hist["month"] = df_hist.index.month
+    df_hist["hour"] = df_hist.index.hour
+    df_hist["sin_hour"] = np.sin(2 * np.pi * df_hist["hour"] / 24)
+    df_hist["cos_hour"] = np.cos(2 * np.pi * df_hist["hour"] / 24)
+    df_hist["sin_dow"]  = np.sin(2 * np.pi * df_hist["dow"]  / 7)
+    df_hist["cos_dow"]  = np.cos(2 * np.pi * df_hist["dow"]  / 7)
+    
+    # 3. Seleccionar las columnas finales, usando la columna 'feriados' original del CSV
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO, 'feriados']].dropna(subset=[TARGET_LLAMADAS])
 
     # --- Definir el rango de fechas futuras a predecir ---
