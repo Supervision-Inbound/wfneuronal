@@ -146,6 +146,10 @@ def main():
     # --- Cargar y procesar datos históricos ---
     print(f"Cargando datos históricos desde {DATA_FILE}...")
     df_hist_raw = pd.read_csv(DATA_FILE)
+    
+    # <<< CAMBIO CRÍTICO: Limpiar los nombres de las columnas >>>
+    df_hist_raw.columns = df_hist_raw.columns.str.strip()
+    
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
