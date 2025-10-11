@@ -26,7 +26,8 @@ ASSET_TMO = "modelo_tmo_nn.h5"
 ASSET_SCALER_TMO = "scaler_tmo.pkl"
 
 TIMEZONE = "America/Santiago"
-FREQ = "H"
+# <<< CAMBIO: Corregida advertencia de 'H' a 'h' >>>
+FREQ = "h"
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
 
@@ -53,9 +54,7 @@ def parse_tmo_to_seconds(val):
         return float(s)
     except: return np.nan
 
-# <<< CAMBIO: Se crea una función específica para generar features para UN solo paso futuro >>>
 def create_features_for_step(timestamp, df_history, target_col, set_feriados):
-    """Crea un DataFrame de una sola fila con todas las features para un timestamp futuro."""
     features = {}
     features['dow'] = timestamp.dayofweek
     features['month'] = timestamp.month
@@ -67,7 +66,6 @@ def create_features_for_step(timestamp, df_history, target_col, set_feriados):
     features["sin_dow"]  = np.sin(2 * np.pi * features["dow"]  / 7)
     features["cos_dow"]  = np.cos(2 * np.pi * features["dow"]  / 7)
     
-    # Calcular features dependientes del tiempo (lag, rolling)
     features[f"{target_col}_lag24"] = df_history[target_col].asof(timestamp - pd.Timedelta(hours=24))
     
     start_ma24 = timestamp - pd.Timedelta(hours=25)
@@ -80,7 +78,6 @@ def create_features_for_step(timestamp, df_history, target_col, set_feriados):
     
     return pd.DataFrame([features], index=[timestamp])
 
-# <<< CAMBIO: Esta función ahora se usa solo para el suavizado final, no en el bucle >>>
 def add_time_features_for_smoothing(df, set_feriados):
     df_copy = df.copy()
     df_copy["dow"] = df_copy.index.dayofweek
@@ -90,14 +87,9 @@ def add_time_features_for_smoothing(df, set_feriados):
 
 def build_feature_matrix_nn(df_step, training_columns):
     df_dummies = pd.get_dummies(df_step[["dow", "month"]], drop_first=False, dtype=int)
-    
-    # Une las features base con los dummies
     X = pd.concat([df_step, df_dummies], axis=1)
-
-    # Asegura que todas las columnas de entrenamiento existan
     for c in set(training_columns) - set(X.columns):
         X[c] = 0
-    
     return X[training_columns].fillna(0)
 
 def robust_baseline_by_dow_hour(df, col):
@@ -120,21 +112,17 @@ def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
 # --- Lógica principal de predicción (Reestructurada) ---
 def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timestamps, set_feriados):
     training_columns = scaler.get_feature_names_out()
-    df_prediccion = df_hist.copy() # df_prediccion ahora crece con cada predicción
+    df_prediccion = df_hist.copy()
 
     for ts in future_timestamps:
-        # 1. Crear features SOLO para el paso actual, usando el historial disponible
         df_step_features = create_features_for_step(ts, df_prediccion, target_col, set_feriados)
-        
-        # 2. Preparar la matriz de features para el modelo
         X_step = build_feature_matrix_nn(df_step_features, training_columns)
-        
-        # 3. Escalar y Predecir
         X_step_scaled = scaler.transform(X_step)
         prediccion = modelo.predict(X_step_scaled, verbose=0).flatten()[0]
-        
-        # 4. Añadir la predicción al historial para el siguiente paso
         df_prediccion.loc[ts, target_col] = prediccion
+        
+        # <<< CAMBIO CRÍTICO: Reordenar el índice para asegurar que 'asof' funcione >>>
+        df_prediccion.sort_index(inplace=True)
 
     return df_prediccion.loc[future_timestamps, target_col]
 
@@ -165,8 +153,6 @@ def main():
     df_hist_raw = pd.read_csv(DATA_FILE, delimiter=';')
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
-    
-    # <<< CAMBIO: Se usa la columna 'feriados' original del archivo histórico. No se sobreescribe. >>>
     df_hist = ensure_datetime(df_hist_raw)
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO, 'feriados']].dropna(subset=[TARGET_LLAMADAS])
 
