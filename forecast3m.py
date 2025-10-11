@@ -35,6 +35,7 @@ SUAVIZADO = "cap"
 
 # --- Funciones de preprocesamiento (del script de entrenamiento) ---
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
+    # dayfirst=True es correcto para historical_data.csv (DD-MM-YYYY)
     df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
     df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce", format='%Y-%m-%d %H:%M')
@@ -135,10 +136,10 @@ def main():
 
     # --- Cargar y procesar la lista de feriados ---
     print(f"Cargando feriados desde {FERIADOS_FILE}...")
-    # <<< CAMBIO CRÍTICO: Especificar la codificación 'latin-1' para leer tildes >>>
     df_feriados = pd.read_csv(FERIADOS_FILE, delimiter=';', encoding='latin-1')
     df_feriados.columns = df_feriados.columns.str.strip()
-    set_feriados = set(pd.to_datetime(df_feriados['Fecha'], dayfirst=True).dt.date)
+    # <<< CAMBIO CRÍTICO: Se elimina dayfirst=True porque Feriados_Chile.csv usa YYYY-MM-DD >>>
+    set_feriados = set(pd.to_datetime(df_feriados['Fecha']).dt.date)
 
     # --- Cargar y procesar datos históricos ---
     print(f"Cargando datos históricos desde {DATA_FILE}...")
@@ -146,7 +147,7 @@ def main():
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
-    df_hist = add_time_features(df_hist, set_feriados) # Añadir feriados al historial también
+    df_hist = add_time_features(df_hist, set_feriados)
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO, 'feriados']].dropna(subset=[TARGET_LLAMADAS])
 
     # --- Definir el rango de fechas futuras a predecir ---
