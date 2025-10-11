@@ -13,7 +13,6 @@ from utils_release import download_asset_from_latest
 OWNER = "Supervision-Inbound"
 REPO  = "wfneuronal"
 MODELS_DIR = "models"
-# <<< CAMBIO: Simplificado el nombre del archivo para mayor robustez.
 # Asegúrate de que tu archivo en el repositorio se llame 'historical_data.csv'
 # y esté dentro de la carpeta 'data/'.
 DATA_FILE = "data/historical_data.csv"
