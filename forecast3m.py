@@ -155,7 +155,8 @@ def main():
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
-    df_hist = df_hist[~df_hist.index.duplicated(keep='last')] # Evita duplicados en el índice
+    # <<< CAMBIO: Eliminar duplicados en el índice para mayor robustez >>>
+    df_hist = df_hist[~df_hist.index.duplicated(keep='last')]
     df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO, 'feriados']].dropna(subset=[TARGET_LLAMADAS])
 
     # --- Definir el rango de fechas futuras a predecir ---
