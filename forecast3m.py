@@ -1,200 +1,367 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN FINAL CON DESCARGA DE RELEASE Y PREDICCIÓN ITERATIVA)
+# forecast3m.py — Inferencia con historial sembrado, lags/MAs y predicción recursiva
+# Salidas: /public/predicciones.json, /public/erlang_forecast.json, /public/last_update.json
+# Mantiene compatibilidad con utils_release.download_asset_from_latest (owner, repo, asset_name, target_dir)
 # =======================================================================
 
-import os, json
+import os
+import json
+import math
 import joblib
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+from pathlib import Path
+from datetime import datetime
 from utils_release import download_asset_from_latest
 
-# --- Parámetros generales ---
+# ----------------------- Parámetros del repositorio ----------------------
 OWNER = "Supervision-Inbound"
 REPO  = "wfneuronal"
-MODELS_DIR = "models"
-# <<< CAMBIO: Simplificado el nombre del archivo para mayor robustez.
-# Asegúrate de que tu archivo en el repositorio se llame 'historical_data.csv'
-# y esté dentro de la carpeta 'data/'.
-DATA_FILE = "data/historical_data.csv"
-OUT_CSV_DATAOUT = "public/predicciones.csv"
-OUT_JSON_PUBLIC = "public/predicciones.json"
-OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
-STAMP_JSON = "public/last_update.json"
 
-ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
-ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
-ASSET_TMO = "modelo_tmo_nn.h5"
-ASSET_SCALER_TMO = "scaler_tmo.pkl"
+# ----------------------- Parámetros de horizonte -------------------------
+def month_bounds(anchor=None):
+    """Del 1 del mes anterior al fin del próximo mes (versión estable)"""
+    anchor = pd.Timestamp.today().normalize() if anchor is None else pd.Timestamp(anchor)
+    first_of_month = anchor.replace(day=1)
+    first_prev = (first_of_month - pd.offsets.MonthBegin(1))
+    last_next = (first_of_month + pd.offsets.MonthEnd(2))
+    return first_prev, last_next
 
-TIMEZONE = "America/Santiago"
-FREQ = "H"
-TARGET_LLAMADAS = "recibidos"
-TARGET_TMO = "tmo_seg"
+# ----------------------- Paths de salida ---------------------------------
+PUBLIC_DIR = Path("public")
+PUBLIC_DIR.mkdir(exist_ok=True)
 
-MAD_K = 3.5
-SUAVIZADO = "cap"
+OUT_JSON_PRED = PUBLIC_DIR / "predicciones.json"
+OUT_JSON_ERLANG = PUBLIC_DIR / "erlang_forecast.json"
+STAMP_JSON = PUBLIC_DIR / "last_update.json"
 
-# --- Funciones de preprocesamiento (del script de entrenamiento) ---
-def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
-    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce").dt.date
-    df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
-    df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce")
-    # Se convierte a la zona horaria correcta y se establece como índice
-    df = df.dropna(subset=["ts"]).sort_values("ts")
-    df['ts'] = df['ts'].dt.tz_localize(TIMEZONE, ambiguous='NaT', nonexistent='NaT')
-    return df.set_index("ts")
+# ----------------------- Directorio de modelos ---------------------------
+MODELS_DIR = Path("models")
+MODELS_DIR.mkdir(exist_ok=True)
 
-def parse_tmo_to_seconds(val):
-    if pd.isna(val): return np.nan
-    s = str(val).strip()
-    if s.replace('.','',1).isdigit(): return float(s)
-    parts = s.split(":")
+# ----------------------- Nombres de artefactos esperados -----------------
+ARTIFACTS = {
+    "calls_model": [
+        "modelo_llamadas_nn.h5",  # nombre que guardas desde el entrenamiento NN
+        "modelo_llamadas.h5",
+        "model_llamadas.h5",
+        "model.h5"
+    ],
+    "calls_scaler": [
+        "scaler_llamadas.pkl",
+        "scaler.pkl"
+    ],
+    "calls_features": [
+        "training_columns_llamadas.json",
+        "training_columns.json"
+    ]
+}
+
+TMO_ARTIFACTS = {
+    "tmo_model": ["modelo_tmo_nn.h5", "modelo_tmo.h5", "model_tmo.h5"],
+    "tmo_scaler": ["scaler_tmo.pkl"],
+    "tmo_features": ["training_columns_tmo.json"]
+}
+
+# ----------------------- Parámetros de Erlang ----------------------------
+SLA_TARGET = 0.90
+ASA_TARGET_S = 22.0
+MAX_OCC = 0.85
+SHRINKAGE = 0.30
+ABSENTEEISM_RATE = 0.23
+USE_ERLANG_A = True
+MEAN_PATIENCE_S = 60.0
+ABANDON_MAX = 0.06
+AWT_MAX_S = 120.0
+
+# ======================= Utilidades generales ============================
+def try_download(names, target_dir):
+    """Intenta descargar una lista de posibles nombres desde el último Release hacia target_dir."""
+    for fname in names:
+        try:
+            print(f"[Descarga] Buscando asset en release: {fname}")
+            path = download_asset_from_latest(OWNER, REPO, fname, str(target_dir))
+            if path and os.path.exists(path):
+                print(f"[Descarga] OK -> {path}")
+                return path
+        except Exception as e:
+            print(f"[Descarga] No se pudo descargar {fname}: {e}")
+    return None
+
+def load_artifacts():
+    """Carga modelo/scaler/columns de llamadas y opcionalmente TMO desde Release o desde /models."""
+    # Llamadas
+    model_calls_path = try_download(ARTIFACTS["calls_model"], MODELS_DIR) or str(MODELS_DIR / "modelo_llamadas_nn.h5")
+    scaler_calls_path = try_download(ARTIFACTS["calls_scaler"], MODELS_DIR) or str(MODELS_DIR / "scaler_llamadas.pkl")
+    feat_calls_path = try_download(ARTIFACTS["calls_features"], MODELS_DIR) or str(MODELS_DIR / "training_columns_llamadas.json")
+
+    print(f"[Artefactos] model_calls_path={model_calls_path}")
+    print(f"[Artefactos] scaler_calls_path={scaler_calls_path}")
+    print(f"[Artefactos] feat_calls_path={feat_calls_path}")
+
+    # Modelo de llamadas
     try:
-        if len(parts) == 3: return float(parts[0])*3600 + float(parts[1])*60 + float(parts[2])
-        if len(parts) == 2: return float(parts[0])*60 + float(parts[1])
-        return float(s)
-    except: return np.nan
+        import tensorflow as tf
+        model_calls = tf.keras.models.load_model(model_calls_path)
+    except Exception as e:
+        searched = ARTIFACTS["calls_model"] + [str(MODELS_DIR / "modelo_llamadas_nn.h5")]
+        raise RuntimeError(
+            f"No pude cargar el modelo de llamadas. Rutas probadas: {searched}. Error base: {e}"
+        )
+
+    # Scaler de llamadas
+    scaler_calls = joblib.load(scaler_calls_path) if os.path.exists(scaler_calls_path) else None
+
+    # Columnas de entrenamiento de llamadas
+    feat_calls = None
+    if feat_calls_path and os.path.exists(feat_calls_path):
+        with open(feat_calls_path, "r", encoding="utf-8") as f:
+            try:
+                feat_calls = json.load(f)
+            except Exception:
+                # fallback por si viene como lista en texto
+                txt = f.read()
+                try:
+                    feat_calls = json.loads(txt)
+                except Exception:
+                    feat_calls = None
+
+    # TMO (si existe en Release)
+    model_tmo = scaler_tmo = feat_tmo = None
+    tmo_model_path = try_download(TMO_ARTIFACTS["tmo_model"], MODELS_DIR)
+    tmo_scaler_path = try_download(TMO_ARTIFACTS["tmo_scaler"], MODELS_DIR)
+    tmo_feat_path   = try_download(TMO_ARTIFACTS["tmo_features"], MODELS_DIR)
+
+    if tmo_model_path and os.path.exists(tmo_model_path):
+        import tensorflow as tf
+        model_tmo = tf.keras.models.load_model(tmo_model_path)
+        scaler_tmo = joblib.load(tmo_scaler_path) if tmo_scaler_path and os.path.exists(tmo_scaler_path) else None
+        if tmo_feat_path and os.path.exists(tmo_feat_path):
+            with open(tmo_feat_path, "r", encoding="utf-8") as f:
+                feat_tmo = json.load(f)
+
+    return (model_calls, scaler_calls, feat_calls, model_tmo, scaler_tmo, feat_tmo)
+
+def try_load_history():
+    """
+    Intenta conseguir historial de llamadas para sembrar lags/MAs.
+    Prioridad:
+    1) Hosting ia.xlsx (hoja 0) con columnas [fecha, hora, recibidos] o [datetime, recibidos]
+    2) public/predicciones.json (si ya existe)
+    """
+    # 1) Excel
+    for path in ["Hosting ia.xlsx", "/mnt/data/Hosting ia.xlsx"]:
+        if os.path.exists(path):
+            try:
+                df = pd.read_excel(path, sheet_name=0)
+                cols = [c.lower() for c in df.columns]
+                df.columns = cols
+                if "datetime" in cols:
+                    df["ts"] = pd.to_datetime(df["datetime"])
+                elif "datatime" in cols:
+                    df["ts"] = pd.to_datetime(df["datatime"])
+                elif "fecha" in cols and "hora" in cols:
+                    df["ts"] = pd.to_datetime(df["fecha"].astype(str) + " " + df["hora"].astype(str), dayfirst=True, errors="coerce")
+                else:
+                    continue
+                if "recibidos" not in cols:
+                    continue
+                hist = df[["ts","recibidos"]].dropna().sort_values("ts")
+                hist = hist[hist["ts"] >= (hist["ts"].max() - pd.Timedelta(days=60))]
+                return hist
+            except Exception:
+                pass
+    # 2) predicciones.json existente
+    if OUT_JSON_PRED.exists():
+        try:
+            data = json.loads(OUT_JSON_PRED.read_text(encoding="utf-8"))
+            df = pd.DataFrame(data)
+            if "ts" in df.columns and "recibidos" in df.columns:
+                df["ts"] = pd.to_datetime(df["ts"])
+                hist = df[["ts","recibidos"]].dropna().sort_values("ts")
+                return hist
+        except Exception:
+            pass
+    return None
+
+def calendar_df(start, end):
+    idx = pd.date_range(start, end, freq="H", inclusive="left")
+    df = pd.DataFrame({"ts": idx})
+    df["dow"] = df["ts"].dt.dayofweek
+    df["month"] = df["ts"].dt.month
+    df["hour"] = df["ts"].dt.hour
+    return df
 
 def add_time_features(df):
-    df_copy = df.copy()
-    df_copy["dow"] = df_copy.index.dayofweek
-    df_copy["month"] = df_copy.index.month
-    df_copy["hour"] = df_copy.index.hour
-    df_copy["sin_hour"] = np.sin(2 * np.pi * df_copy["hour"] / 24)
-    df_copy["cos_hour"] = np.cos(2 * np.pi * df_copy["hour"] / 24)
-    df_copy["sin_dow"]  = np.sin(2 * np.pi * df_copy["dow"]  / 7)
-    df_copy["cos_dow"]  = np.cos(2 * np.pi * df_copy["dow"]  / 7)
-    return df_copy
+    df["sin_hour"] = np.sin(2 * np.pi * df["hour"] / 24)
+    df["cos_hour"] = np.cos(2 * np.pi * df["hour"] / 24)
+    df["sin_dow"]  = np.sin(2 * np.pi * df["dow"] / 7)
+    df["cos_dow"]  = np.cos(2 * np.pi * df["dow"] / 7)
+    return df
 
-def rolling_features(df, target_col):
-    df_copy = df.copy()
-    df_copy[f"{target_col}_lag24"]  = df_copy[target_col].shift(24)
-    df_copy[f"{target_col}_ma24"]   = df_copy[target_col].shift(1).rolling(24, min_periods=1).mean()
-    df_copy[f"{target_col}_ma168"]  = df_copy[target_col].shift(1).rolling(24*7, min_periods=1).mean()
-    return df_copy
+def add_lags_ma(df, col):
+    df[f"{col}_lag24"] = df[col].shift(24)
+    df[f"{col}_lag48"] = df[col].shift(48)
+    df[f"{col}_lag72"] = df[col].shift(72)
+    df[f"{col}_ma24"]  = df[col].rolling(24, min_periods=1).mean()
+    df[f"{col}_ma72"]  = df[col].rolling(72, min_periods=1).mean()
+    df[f"{col}_ma168"] = df[col].rolling(24*7, min_periods=1).mean()
+    return df
 
-# --- Funciones auxiliares de inferencia (Modificadas) ---
-def build_feature_matrix_nn(df, training_columns, target_col):
-    df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
-    
-    base_feats = [
-        "sin_hour", "cos_hour", "sin_dow", "cos_dow",
-        f"{target_col}_lag24", f"{target_col}_ma24", f"{target_col}_ma168"
-    ]
-    
-    existing_feats = [feat for feat in base_feats if feat in df.columns]
-    X = pd.concat([df[existing_feats], df_dummies], axis=1)
+def ensure_columns(X, training_columns):
+    if training_columns is None:
+        return X
+    for c in training_columns:
+        if c not in X.columns:
+            X[c] = 0.0
+    X = X[training_columns]
+    return X
 
-    for c in set(training_columns) - set(X.columns):
-        X[c] = 0
-    
-    return X[training_columns].fillna(0)
+def build_X(df, target_col, training_columns=None):
+    dummies = pd.get_dummies(df[["dow","month"]], columns=["dow","month"], drop_first=False)
+    feats = df[[
+        "sin_hour","cos_hour","sin_dow","cos_dow",
+        f"{target_col}_lag24", f"{target_col}_lag48", f"{target_col}_lag72",
+        f"{target_col}_ma24",  f"{target_col}_ma72",  f"{target_col}_ma168"
+    ]].copy()
+    X = pd.concat([feats, dummies], axis=1).replace([np.inf,-np.inf], np.nan).fillna(0)
+    X = ensure_columns(X, training_columns)
+    return X
 
-def robust_baseline_by_dow_hour(df, col):
-    grouped = df.groupby(["dow", "hour"])[col].agg(["median"])
-    grouped.rename(columns={"median": "med"}, inplace=True)
-    grouped["mad"] = df.groupby(["dow", "hour"])[col].apply(lambda x: np.median(np.abs(x - np.median(x)))).values
-    return grouped
+# ====================== Erlang (C/A simplificado) ========================
+def erlang_c_prob_wait(a, n):
+    rho = a / n
+    if rho >= 1: 
+        return 1.0
+    summation = sum((a**k)/math.factorial(k) for k in range(n))
+    pn = (a**n)/(math.factorial(n)*(1-rho)) / (summation + (a**n)/(math.factorial(n)*(1-rho)))
+    return pn
 
-def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
-    baseline = robust_baseline_by_dow_hour(df, col)
-    df = df.merge(baseline, left_on=["dow", "hour"], right_index=True, how="left")
-    df["upper_cap"] = df["med"] + mad_k * df["mad"].replace(0, df["mad"].median())
-    df["is_peak"] = (df[col] > df["upper_cap"]).astype(int)
-    if method == "cap":
-        df[col] = np.where(df["is_peak"] == 1, df["upper_cap"], df[col])
-    elif method == "med":
-        df[col] = np.where(df["is_peak"] == 1, df["med"], df[col])
-    return df.drop(columns=["med", "mad", "upper_cap", "is_peak"], errors='ignore')
+def service_level_erlang_c(a, n, asa_target):
+    rho = a / n
+    if rho >= 1:
+        return 0.0
+    pw = erlang_c_prob_wait(a, n)
+    return 1 - pw * math.exp(-(n - a) * (asa_target / 3600.0))
 
-# --- Lógica principal de predicción iterativa ---
-def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timestamps):
-    training_columns = scaler.get_feature_names_out()
-    df_prediccion = df_hist.copy()
+def required_agents(contacts_per_hour, aht_s, sla=SLA_TARGET, asa_s=ASA_TARGET_S, max_occ=MAX_OCC):
+    if aht_s <= 0:
+        aht_s = 1.0
+    a = contacts_per_hour * (aht_s / 3600.0)
+    n = max(1, int(math.ceil(a / max_occ)))
+    for _ in range(200):
+        sl = service_level_erlang_c(a, n, asa_s)
+        if sl >= sla:
+            break
+        n += 1
+    scheduled = math.ceil(n / (1 - SHRINKAGE))
+    return n, scheduled
 
-    for ts in future_timestamps:
-        temp_df = pd.DataFrame(index=[ts])
-        df_completo = pd.concat([df_prediccion, temp_df])
-        
-        df_completo = add_time_features(df_completo)
-        df_completo = rolling_features(df_completo, target_col)
-        
-        X_step = build_feature_matrix_nn(df_completo.tail(1), training_columns, target_col)
-        X_step_scaled = scaler.transform(X_step)
-        prediccion = modelo.predict(X_step_scaled, verbose=0).flatten()[0]
-        
-        df_prediccion.loc[ts, target_col] = prediccion
+# ======================= Predicción recursiva ============================
+def recursive_predict(model, scaler, training_columns, hist_df, future_calendar, target_col="recibidos"):
+    hist_df = hist_df.copy().sort_values("ts").reset_index(drop=True)
+    hist_df = add_time_features(hist_df.assign(hour=hist_df["ts"].dt.hour, 
+                                               dow=hist_df["ts"].dt.dayofweek,
+                                               month=hist_df["ts"].dt.month))
+    hist_df = add_lags_ma(hist_df, target_col)
 
-    return df_prediccion.loc[future_timestamps, target_col]
+    out_rows = []
+    concat = pd.concat([
+        hist_df[["ts", target_col, "dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow",
+                 f"{target_col}_lag24", f"{target_col}_lag48", f"{target_col}_lag72",
+                 f"{target_col}_ma24",  f"{target_col}_ma72",  f"{target_col}_ma168"
+                ]]
+    ], axis=0, ignore_index=True)
 
+    for ts in future_calendar["ts"]:
+        row = {"ts": ts, "dow": ts.dayofweek, "month": ts.month, "hour": ts.hour}
+        tmp = pd.DataFrame([row])
+        tmp = add_time_features(tmp)
+        concat = pd.concat([concat, tmp.assign(recibidos=np.nan)], ignore_index=True)
+
+        concat = add_lags_ma(concat, target_col)
+        X_row = build_X(concat.tail(1), target_col, training_columns)
+        if scaler is not None:
+            Xs = scaler.transform(X_row.values)
+        else:
+            Xs = X_row.values
+        yhat = float(model.predict(Xs, verbose=0).reshape(-1)[0])
+        concat.iloc[-1, concat.columns.get_loc(target_col)] = max(yhat, 0.0)
+        out_rows.append({"ts": ts, target_col: max(yhat, 0.0)})
+
+    return pd.DataFrame(out_rows)
+
+# ============================== MAIN =====================================
 def main():
-    os.makedirs(MODELS_DIR, exist_ok=True)
-    os.makedirs("public", exist_ok=True)
+    # 1) Cargar artefactos (desde Release -> /models)
+    (model_calls, scaler_calls, feat_calls, model_tmo, scaler_tmo, feat_tmo) = load_artifacts()
 
-    # --- Descargar modelos y scalers ---
-    print("Descargando modelos desde el release de GitHub...")
-    for asset in [ASSET_LLAMADAS, ASSET_SCALER_LLAMADAS, ASSET_TMO, ASSET_SCALER_TMO]:
-        download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
+    # 2) Horizonte
+    start, end = month_bounds()
+    cal_fut = calendar_df(start, end)
 
-    # --- Cargar modelos y scalers ---
-    print("Cargando modelos y scalers...")
-    model_ll = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_LLAMADAS}")
-    scaler_ll = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_LLAMADAS}")
-    model_tmo = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_TMO}")
-    scaler_tmo = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_TMO}")
+    # 3) Historial
+    hist = try_load_history()
+    if hist is None or len(hist) < 24*7:
+        raise RuntimeError("No se encontró historial suficiente (mín. 7 días). Asegura 'Hosting ia.xlsx' o un JSON previo.")
 
-    # --- Cargar y procesar datos históricos ---
-    print(f"Cargando datos históricos desde {DATA_FILE}...")
-    df_hist_raw = pd.read_csv(DATA_FILE)
-    df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
-    df_hist = ensure_datetime(df_hist_raw)
-    df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
+    # 4) Predicción recursiva de llamadas
+    pred_calls = recursive_predict(model_calls, scaler_calls, feat_calls, hist, cal_fut, target_col="recibidos")
 
-    # --- Definir el rango de fechas futuras a predecir ---
-    last_known_date = df_hist.index.max()
-    start_pred = last_known_date + pd.Timedelta(hours=1)
-    end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_convert(TIMEZONE)
-    future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ)
-    print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
+    # 5) TMO (si hay modelo). Si no, usa patrón robusto.
+    if model_tmo is not None:
+        df_tmo = cal_fut.copy()
+        df_tmo = add_time_features(df_tmo)
+        dummies = pd.get_dummies(df_tmo[["dow","month"]], columns=["dow","month"], drop_first=False)
+        feats = df_tmo[["sin_hour","cos_hour","sin_dow","cos_dow"]].copy()
+        X_tmo = pd.concat([feats, dummies], axis=1).replace([np.inf,-np.inf], np.nan).fillna(0)
+        if feat_tmo is not None:
+            for c in feat_tmo:
+                if c not in X_tmo.columns:
+                    X_tmo[c] = 0.0
+            X_tmo = X_tmo[feat_tmo]
+        Xs = scaler_tmo.transform(X_tmo.values) if scaler_tmo is not None else X_tmo.values
+        tmo_pred = model_tmo.predict(Xs, verbose=0).reshape(-1)
+        tmo_pred = np.clip(tmo_pred, 60, 1200)
+        tmo_series = pd.Series(tmo_pred, index=cal_fut["ts"])
+    else:
+        # Patrón simple si no hay modelo TMO: constante por hora (ajustable)
+        hour_mean = hist.assign(hour=hist["ts"].dt.hour).groupby("hour")["recibidos"].mean()
+        tmo_series = cal_fut["hour"].map(hour_mean).fillna(hour_mean.mean())
+        tmo_series = pd.Series(np.clip(tmo_series.values*0 + 300.0, 240, 480), index=cal_fut["ts"])
 
-    # --- Predicción iterativa ---
-    print("Realizando predicción iterativa de llamadas...")
-    pred_ll = predecir_futuro_iterativo(df_hist, model_ll, scaler_ll, TARGET_LLAMADAS, future_ts)
-    
-    df_final = pd.DataFrame(index=future_ts)
-    df_final["pred_llamadas"] = np.maximum(0, np.round(pred_ll)).astype(int)
+    # 6) Construir JSON de predicciones
+    pred = pred_calls.copy()
+    pred["tmo_seg"] = tmo_series.values
+    pred["ts"] = pred["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
 
-    print("Realizando predicción iterativa de TMO...")
-    pred_tmo = predecir_futuro_iterativo(df_hist, model_tmo, scaler_tmo, TARGET_TMO, future_ts)
-    df_final["pred_tmo_seg"] = np.maximum(0, np.round(pred_tmo)).astype(int)
+    with open(OUT_JSON_PRED, "w", encoding="utf-8") as f:
+        json.dump(pred.to_dict(orient="records"), f, ensure_ascii=False, indent=2)
 
-    # --- Aplicar suavizado de picos ---
-    print("Aplicando suavizado de picos...")
-    df_final_with_features = add_time_features(df_final)
-    df_final_smoothed = apply_peak_smoothing(df_final_with_features, "pred_llamadas", mad_k=MAD_K, method=SUAVIZADO)
-    
-    # --- Guardar outputs ---
-    print("Guardando archivos de salida...")
-    out = df_final_smoothed[["pred_llamadas", "pred_tmo_seg"]].reset_index().rename(columns={"index": "ts"})
-    out["ts"] = out["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
-    out.to_csv(OUT_CSV_DATAOUT, index=False)
-    out.to_json(OUT_JSON_PUBLIC, orient="records", indent=2)
+    # 7) Dimensionamiento (Erlang-C aproximado)
+    erlang_rows = []
+    for _, r in pred.iterrows():
+        ts = r["ts"]
+        calls = float(r["recibidos"])
+        aht = float(r["tmo_seg"])
+        productive, scheduled = required_agents(calls, aht, sla=SLA_TARGET, asa_s=ASA_TARGET_S, max_occ=MAX_OCC)
+        erlang_rows.append({
+            "ts": ts,
+            "llamadas": round(calls),
+            "tmo_seg": round(aht),
+            "agentes_productivos": int(productive),
+            "agentes_programados": int(scheduled)
+        })
 
-    # --- Diarios ---
-    daily = (out.assign(date=pd.to_datetime(out["ts"]).dt.date)
-               .groupby("date", as_index=False)["pred_llamadas"]
-               .sum()
-               .rename(columns={"pred_llamadas": "total_llamadas"}))
-    daily.to_csv(OUT_CSV_DAILY, index=False)
+    with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f:
+        json.dump(erlang_rows, f, ensure_ascii=False, indent=2)
 
-    # --- Timestamp ---
-    json.dump(
-        {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")},
-        open(STAMP_JSON, "w")
-    )
+    # 8) Timestamp
+    stamp = {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")}
+    with open(STAMP_JSON, "w", encoding="utf-8") as f:
+        json.dump(stamp, f)
 
-    print("✔ Inferencia completada con éxito.")
+    print("✔ Proceso de inferencia completado. Archivos creados en /public")
 
 if __name__ == "__main__":
     main()
