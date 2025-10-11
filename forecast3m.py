@@ -55,7 +55,7 @@ def robust_baseline_by_dow_hour(df, col):
     grouped["mad"] = df.groupby(["dow", "hour"])[col].apply(lambda x: np.median(np.abs(x - np.median(x)))).values
     return grouped
 
-def apply_peak_smoothing(df, col, mad_k=3.5, method="cap"):
+def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
     baseline = robust_baseline_by_dow_hour(df, col)
     df = df.merge(baseline, left_on=["dow", "hour"], right_index=True, how="left")
     df["upper_cap"] = df["med"] + mad_k * df["mad"].replace(0, df["mad"].median())
