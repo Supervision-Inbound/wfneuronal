@@ -34,16 +34,17 @@ SUAVIZADO = "cap"
 
 # --- Funciones de preprocesamiento (del script de entrenamiento) ---
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
-    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True) # Añadido dayfirst=True
+    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
-    df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce")
+    # <<< CAMBIO 1: Añadido 'format' para eliminar UserWarning y ser más eficiente >>>
+    df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce", format='%Y-%m-%d %H:%M')
     df = df.dropna(subset=["ts"]).sort_values("ts")
     df['ts'] = df['ts'].dt.tz_localize(TIMEZONE, ambiguous='NaT', nonexistent='NaT')
     return df.set_index("ts")
 
 def parse_tmo_to_seconds(val):
     if pd.isna(val): return np.nan
-    s = str(val).strip().replace(',', '.') # Reemplaza comas por puntos para decimales
+    s = str(val).strip().replace(',', '.')
     if s.replace('.','',1).isdigit(): return float(s)
     parts = s.split(":")
     try:
@@ -133,9 +134,7 @@ def main():
 
     # --- Cargar y procesar datos históricos ---
     print(f"Cargando datos históricos desde {DATA_FILE}...")
-    # <<< CAMBIO CRÍTICO: Especificar el delimitador punto y coma (;) >>>
     df_hist_raw = pd.read_csv(DATA_FILE, delimiter=';')
-    
     df_hist_raw.columns = df_hist_raw.columns.str.strip()
     df_hist_raw['tmo_seg'] = df_hist_raw['tmo (segundos)'].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
@@ -144,7 +143,8 @@ def main():
     # --- Definir el rango de fechas futuras a predecir ---
     last_known_date = df_hist.index.max()
     start_pred = last_known_date + pd.Timedelta(hours=1)
-    end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_convert(TIMEZONE)
+    # <<< CAMBIO 2: Cambiado tz_convert a tz_localize para corregir el TypeError >>>
+    end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_localize(TIMEZONE)
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ)
     print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
 
