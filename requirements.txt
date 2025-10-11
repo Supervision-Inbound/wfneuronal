@@ -1,11 +1,9 @@
-tensorflow==2.15.0
-keras==2.15.0
-h5py==3.10.0
-
+tensorflow
+keras
 pandas==2.2.2
 numpy==1.26.4
-scikit-learn==1.2.2
+scikit-learn==1.7.2  # <-- Versión actualizada para coincidir con el scaler
 joblib==1.4.2
 python-dateutil==2.9.0.post0
-openpyxl==3.1.5
 requests==2.32.3
+openpyxl
