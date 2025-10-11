@@ -36,7 +36,6 @@ SUAVIZADO = "cap"
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
     df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
-    # <<< CAMBIO 1: Añadido 'format' para eliminar UserWarning y ser más eficiente >>>
     df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce", format='%Y-%m-%d %H:%M')
     df = df.dropna(subset=["ts"]).sort_values("ts")
     df['ts'] = df['ts'].dt.tz_localize(TIMEZONE, ambiguous='NaT', nonexistent='NaT')
@@ -143,7 +142,6 @@ def main():
     # --- Definir el rango de fechas futuras a predecir ---
     last_known_date = df_hist.index.max()
     start_pred = last_known_date + pd.Timedelta(hours=1)
-    # <<< CAMBIO 2: Cambiado tz_convert a tz_localize para corregir el TypeError >>>
     end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_localize(TIMEZONE)
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ)
     print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
@@ -163,6 +161,9 @@ def main():
     df_final_with_features = add_time_features(df_final)
     df_final_smoothed = apply_peak_smoothing(df_final_with_features, "pred_llamadas", mad_k=MAD_K, method=SUAVIZADO)
 
+    # <<< CAMBIO CRÍTICO: Asegurar que la salida final sea de números enteros >>>
+    df_final_smoothed["pred_llamadas"] = df_final_smoothed["pred_llamadas"].round().astype(int)
+    
     # --- Guardar outputs ---
     print("Guardando archivos de salida...")
     out = df_final_smoothed[["pred_llamadas", "pred_tmo_seg"]].reset_index().rename(columns={"index": "ts"})
