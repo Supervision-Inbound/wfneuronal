@@ -1,5 +1,5 @@
 # =======================================================================
-# forecast3m.py (VERSIÓN ADAPTADA PARA MODELOS TRANSFORMER)
+# forecast3m.py (VERSIÓN FINAL PARA MODELOS TRANSFORMER)
 # =======================================================================
 
 import os
@@ -8,16 +8,16 @@ import joblib
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from tensorflow import keras  # Importar keras directamente
+from tensorflow import keras
 from utils_release import download_asset_from_latest
 
-# ---------- Parámetros ----------
+# ---------- Parámetros de Modelo y Repositorio ----------
 OWNER = "Supervision-Inbound"
 REPO = "wfneuronal"
-SEQ_LEN = 90  # ¡IMPORTANTE! Debe coincidir con el entrenamiento.
-HORIZON = 90  # ¡IMPORTANTE! Debe coincidir con el entrenamiento.
+SEQ_LEN = 2160  # ¡CORREGIDO! Debe ser 24 * 90 para coincidir con el entrenamiento.
+HORIZON = 2160  # ¡CORREGIDO! Debe ser 24 * 90 para coincidir con el entrenamiento.
 
-# --- NOMBRES DE LOS ARCHIVOS (formato .keras) ---
+# --- Nombres de los Archivos en el Release ---
 ASSET_LLAMADAS = "modelo_llamadas.keras"
 ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
 ASSET_TMO = "modelo_tmo.keras"
@@ -26,24 +26,25 @@ ASSET_SCALER_TMO = "scaler_tmo.pkl"
 MODELS_DIR = "models"
 PUBLIC_DIR = "public"
 
-# --- Archivo de datos históricos para la predicción ---
+# --- Archivo de datos históricos para la predicción (se auto-alimenta) ---
 HISTORICAL_DATA_URL = f"https://raw.githubusercontent.com/{OWNER}/{REPO}/main/{PUBLIC_DIR}/predicciones.csv"
 
-# --- Archivos de Salida ---
+# --- Nombres de los Archivos de Salida ---
 OUT_CSV_PRED = os.path.join(PUBLIC_DIR, "predicciones.csv")
 OUT_JSON_PRED = os.path.join(PUBLIC_DIR, "predicciones.json")
 OUT_JSON_ERLANG = os.path.join(PUBLIC_DIR, "erlang_forecast.json")
 STAMP_JSON = os.path.join(PUBLIC_DIR, "last_update.json")
 OUT_CSV_DAILY = os.path.join(PUBLIC_DIR, "llamadas_por_dia.csv")
 
-# Parámetros de Fechas y Erlang
-TIMEZONE = "America/Santiago"; FREQ = "H"
+# --- Parámetros de Fechas y Erlang ---
+TIMEZONE = "America/Santiago"
+FREQ = "H"
 SLA_TARGET = 0.90; ASA_TARGET_S = 22; MAX_OCC = 0.85; SHIFT_HOURS = 10.0
 LUNCH_HOURS = 1.0; BREAKS_MIN = [15, 15]; AUX_RATE = 0.15; ABSENTEEISM_RATE = 0.23
 USE_ERLANG_A = True; MEAN_PATIENCE_S = 60.0; ABANDON_MAX = 0.06
 AWT_MAX_S = 120.0; INTERCALL_GAP_S = 10.0
 
-# --- Funciones de Erlang ---
+# --- Funciones de Erlang (sin cambios) ---
 def erlang_c(R, N):
     if N <= R: return 0.0
     inv_erlang_b = 1.0
@@ -79,11 +80,24 @@ def get_prod_factor(shift_h, lunch_h, breaks_m):
 
 # --- LÓGICA DE PREDICCIÓN PARA TRANSFORMER ---
 def predict_sequence(model, scaler, historical_data, seq_len, horizon):
+    """
+    Toma los últimos `seq_len` puntos y predice los siguientes `horizon` puntos.
+    """
+    # 1. Tomar la última secuencia necesaria.
     last_sequence = historical_data[-seq_len:].values.reshape(-1, 1)
+
+    # 2. Escalar los datos.
     last_sequence_scaled = scaler.transform(last_sequence)
+
+    # 3. Preparar el formato para el Transformer: (1, seq_len, 1).
     input_data = last_sequence_scaled.reshape(1, seq_len, 1)
+
+    # 4. Predecir.
     pred_scaled = model.predict(input_data)
+
+    # 5. Des-escalar el resultado.
     pred_unscaled = scaler.inverse_transform(pred_scaled.reshape(-1, 1))
+
     return np.maximum(0, pred_unscaled).flatten().round().astype(int)
 
 def main():
@@ -97,6 +111,7 @@ def main():
     print("✔ Modelos y scalers descargados.")
 
     print("Cargando modelos y scalers…")
+    # Cargar modelos Keras 3 sin compilar para inferencia
     model_ll = keras.models.load_model(os.path.join(MODELS_DIR, ASSET_LLAMADAS), compile=False)
     scaler_ll = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_LLAMADAS))
     model_tmo = keras.models.load_model(os.path.join(MODELS_DIR, ASSET_TMO), compile=False)
@@ -106,7 +121,7 @@ def main():
     try:
         df_hist = pd.read_csv(HISTORICAL_DATA_URL)
         df_hist['ts'] = pd.to_datetime(df_hist['ts'])
-        if len(df_hist) < SEQ_LEN: raise ValueError("Historial insuficiente")
+        if len(df_hist) < SEQ_LEN: raise ValueError(f"Historial insuficiente. Se necesitan {SEQ_LEN} registros, se encontraron {len(df_hist)}.")
         print(f"Se cargaron {len(df_hist)} registros históricos.")
     except Exception as e:
         print(f"ADVERTENCIA: No se pudo cargar el historial, se usará data de emergencia. Error: {e}")
@@ -120,10 +135,11 @@ def main():
 
     last_historical_date = df_hist['ts'].max()
     prediction_dates = pd.date_range(start=last_historical_date + pd.Timedelta(hours=1), periods=HORIZON, freq=FREQ)
+    
     df_new_preds = pd.DataFrame({"ts": prediction_dates, "pred_llamadas": pred_ll, "pred_tmo_seg": pred_tmo})
     
     df_full = pd.concat([df_hist, df_new_preds], ignore_index=True).drop_duplicates(subset='ts', keep='last')
-    df_full = df_full.sort_values('ts').tail(3 * 30 * 24)
+    df_full = df_full.sort_values('ts').tail(3 * 30 * 24) # Mantener aprox. los últimos 3 meses
     out = df_full.copy()
     out['ts'] = out['ts'].dt.strftime("%Y-%m-%d %H:%M:%S")
     out_dict = out.to_dict(orient="records")
@@ -155,4 +171,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
