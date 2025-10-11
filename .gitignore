@@ -11,13 +11,12 @@ env/
 venv/
 ENV/
 
-# Archivos generados por el script de inferencia
-# No queremos versionar los datos de salida, ya que se generan en cada ejecución
-/public/*.json
-/data_out/
+# --- CORRECCIÓN ---
+# Los archivos en /public SÍ deben ser versionados por la Action.
+# Comentamos la siguiente línea para permitirlo:
+# /public/*.json
 
-# Directorio de modelos descargados
-# Los modelos se obtienen del Release, no se guardan en el repositorio
+# Directorio de modelos descargados (correcto, no se versionan)
 /models/
 
 # Archivos de configuración de IDEs
