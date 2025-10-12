@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN FINAL CORREGIDA: Se añade safe_mode=False para cargar el modelo
-# con capas Lambda y se neutraliza la influencia del TMO en la inferencia.
+# VERSIÓN FINAL: Adaptado para cargar el modelo causal en formato .keras
+# y realizar una inferencia estable.
 # =======================================================================
 
 import os
@@ -25,7 +25,8 @@ OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
 STAMP_JSON = "public/last_update.json"
 OUT_JSON_ERLANG = "public/erlang_forecast.json"
 
-ASSET_MODELO_UNIFICADO = "modelo_unificado_nn.h5"
+# Apuntar a los nuevos artefactos, incluyendo el formato .keras
+ASSET_MODELO_UNIFICADO = "modelo_unificado.keras"
 ASSET_SCALER_UNIFICADO = "scaler_unificado.pkl"
 ASSET_COLUMNAS = "training_columns_unificado.json"
 
@@ -98,24 +99,18 @@ def rolling_features(df, target_col):
     return df_copy
 
 def build_feature_matrix_nn(df, training_columns):
-    # Ya no necesita target_cols, usa todas las columnas de df
     df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
-    
-    # Lista de todas las posibles features (excepto dummies) que podrían existir
     feature_cols = [col for col in training_columns if col not in df_dummies.columns and col in df.columns]
-    
     X = pd.concat([df[feature_cols], df_dummies], axis=1)
-    
-    # Reindex asegura que el orden y la presencia de columnas sea idéntico al entrenamiento
     return X.reindex(columns=training_columns, fill_value=0)
 
 # =======================================================================
-# FUNCIÓN DE PREDICCIÓN (Simplificada)
+# FUNCIÓN DE PREDICCIÓN PARA MODELO CAUSAL
 # =======================================================================
 def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps):
     df_prediccion = df_hist.copy()
     
-    # Relleno estable para el TMO en el bucle
+    # Relleno estable para el TMO que se usará para crear las features de TMO
     df_hist_con_tiempo = add_time_features(df_hist)
     tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[TARGET_TMO].median()
     tmo_global_fallback = df_hist[TARGET_TMO].median()
@@ -127,7 +122,7 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         # Retroalimentamos el TMO estable para los cálculos de features del TMO
         dow_actual, hour_actual = ts.dayofweek, ts.hour
         tmo_estable = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
-        df_completo.loc[ts, TARGET_TMO] = tmo_estable # Usamos TMO estable para crear features
+        df_completo.loc[ts, TARGET_TMO] = tmo_estable
 
         df_features = add_time_features(df_completo)
         df_features = rolling_features(df_features, TARGET_CALLS)
@@ -136,11 +131,12 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         X_step = build_feature_matrix_nn(df_features.tail(1), training_columns)
         X_step_scaled = scaler.transform(X_step)
         
+        # El modelo causal se encarga internamente de la separación
         prediccion = modelo.predict(X_step_scaled, verbose=0)[0]
         
-        # Guardamos la predicción de llamadas para la siguiente iteración
+        # La predicción de llamadas se retroalimenta para la siguiente iteración
         df_prediccion.loc[ts, TARGET_CALLS] = prediccion[0]
-        # Guardamos la predicción de TMO del modelo solo para el output final
+        # La predicción de TMO del modelo se guarda solo para el output final
         df_prediccion.loc[ts, TARGET_TMO] = prediccion[1]
         
     return df_prediccion.loc[future_timestamps, [TARGET_CALLS, TARGET_TMO]]
@@ -256,8 +252,9 @@ def erlang_c_prob_wait(agents, load_erlangs):
     for n in range(1, int(agents)):
         term *= load_erlangs / n
         summation += term
-    if (summation * (1 - rho) + (term * load_erlangs / int(agents))) == 0: return 1.0
-    p_wait = (term * load_erlangs / int(agents)) / (summation * (1 - rho) + (term * load_erlangs / int(agents)))
+    denominator = (summation * (1 - rho) + (term * load_erlangs / int(agents)))
+    if denominator == 0: return 1.0
+    p_wait = (term * load_erlangs / int(agents)) / denominator
     return float(np.clip(p_wait, 0.0, 1.0))
 
 def required_agents(arrivals, aht_s, asa_target_s=ASA_TARGET_S, sla_target=SLA_TARGET, interval_s=INTERVAL_S, max_occ=MAX_OCC):
@@ -286,12 +283,11 @@ def main():
         download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
 
     print("Cargando modelo unificado, scaler y columnas de entrenamiento...")
-    # --- LÍNEA MODIFICADA ---
-    model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}", safe_mode=False)
+    # Carga el modelo desde el formato .keras (no necesita safe_mode=False)
+    model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}")
     
     scaler_unificado = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_UNIFICADO}")
     
-    # El json ahora es un diccionario, cargamos solo la lista de todas las columnas
     with open(f"{MODELS_DIR}/{ASSET_COLUMNAS}", "r") as f:
         training_artifacts = json.load(f)
         training_columns = training_artifacts["all_training_cols"]
