@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN DEFINITIVA: Incluye la capa personalizada SlicerLayer para
-# cargar el modelo causal correctamente.
+# VERSIÓN DE DIAGNÓSTICO: Guarda el pronóstico "crudo" antes de los
+# ajustes para analizar la causa de las predicciones bajas.
 # =======================================================================
 
 import os
@@ -19,6 +19,8 @@ MODELS_DIR = "models"
 DATA_FILE = "data/historical_data.csv"
 HOLIDAYS_FILE = "data/Feriados_Chilev2.csv"
 
+# --- Archivos de Salida ---
+OUT_CSV_RAW = "public/predicciones_raw.csv" # <-- NUEVO ARCHIVO DE DIAGNÓSTICO
 OUT_CSV_DATAOUT = "public/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
 OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
@@ -35,13 +37,14 @@ TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
 
 HORIZON_DAYS = 120
-MAD_K = 5.0
-MAD_K_WEEKEND = 6.5
+MAD_K = 5.0            # K base (lunes-viernes)
+MAD_K_WEEKEND = 6.5    # K fin de semana
 
+# --- Parámetros Erlang ---
 SLA_TARGET, ASA_TARGET_S, INTERVAL_S = 0.90, 22, 3600
 MAX_OCC, SHRINKAGE, ABSENTEEISM_RATE = 0.85, 0.30, 0.23
 
-# === CAMBIO CLAVE: DEFINIR LA CAPA PERSONALIZADA ===
+# === CAPA PERSONALIZADA (necesaria para cargar el modelo) ===
 @tf.keras.utils.register_keras_serializable()
 class SlicerLayer(tf.keras.layers.Layer):
     def __init__(self, indices, **kwargs):
@@ -54,10 +57,10 @@ class SlicerLayer(tf.keras.layers.Layer):
         config.update({"indices": self.indices})
         return config
 
-# --- UTILITARIOS (sin cambios) ---
+# --- El resto del script (utilidades, predicción, etc.) ---
+# ... (No hay cambios en las funciones auxiliares, se dejan igual)
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
-    df = df.copy()
-    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
+    df = df.copy(); df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
     df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
     df["ts"] = pd.to_datetime(df["fecha_dt"].astype(str) + " " + df["hora_str"], errors="coerce", format="%Y-%m-%d %H:%M")
     df = df.dropna(subset=["ts"]).sort_values("ts")
@@ -66,7 +69,7 @@ def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
 
 def parse_tmo_to_seconds(val):
     if pd.isna(val): return np.nan
-    s = str(val).strip().replace(",", ".")
+    s = str(val).strip().replace(",", ".");
     if s.replace(".", "", 1).isdigit():
         try: return float(s)
         except: return np.nan
@@ -78,10 +81,9 @@ def parse_tmo_to_seconds(val):
     except: return np.nan
 
 def add_time_features(df):
-    df_copy = df.copy()
-    df_copy["dow"], df_copy["month"], df_copy["hour"] = df_copy.index.dayofweek, df_copy.index.month, df_copy.index.hour
-    df_copy["sin_hour"], df_copy["cos_hour"] = np.sin(2 * np.pi * df_copy["hour"] / 24), np.cos(2 * np.pi * df_copy["hour"] / 24)
-    df_copy["sin_dow"], df_copy["cos_dow"] = np.sin(2 * np.pi * df_copy["dow"] / 7), np.cos(2 * np.pi * df_copy["dow"] / 7)
+    df_copy = df.copy(); df_copy["dow"], df_copy["month"], df_copy["hour"] = df_copy.index.dayofweek, df_copy.index.month, df_copy.index.hour
+    df_copy["sin_hour"], df_copy["cos_hour"] = np.sin(2*np.pi*df_copy["hour"]/24), np.cos(2*np.pi*df_copy["hour"]/24)
+    df_copy["sin_dow"], df_copy["cos_dow"] = np.sin(2*np.pi*df_copy["dow"]/7), np.cos(2*np.pi*df_copy["dow"]/7)
     return df_copy
 
 def rolling_features(df, target_col):
@@ -101,10 +103,8 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
     df_hist_con_tiempo = add_time_features(df_hist)
     tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[target_tmo_col].median()
     tmo_global_fallback = df_hist[target_tmo_col].median()
-
     for ts in future_timestamps:
-        temp_df = pd.DataFrame(index=[ts])
-        df_completo = pd.concat([df_prediccion, temp_df])
+        temp_df = pd.DataFrame(index=[ts]); df_completo = pd.concat([df_prediccion, temp_df])
         dow_actual, hour_actual = ts.dayofweek, ts.hour
         tmo_estable = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
         df_completo.loc[ts, target_tmo_col] = tmo_estable
@@ -117,7 +117,6 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         df_prediccion.loc[ts, target_calls_col], df_prediccion.loc[ts, target_tmo_col] = prediccion[0], prediccion[1]
     return df_prediccion.loc[future_timestamps, [target_calls_col, target_tmo_col]]
 
-# ... (El resto de funciones de post-procesamiento y Erlang son idénticas)
 def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
     d = df_hist.copy(); end = d.index.max(); start = end - pd.Timedelta(weeks=weeks)
     d = d.loc[d.index >= start]; d = add_time_features(d[[col]])
@@ -210,7 +209,6 @@ def main():
         download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
     
     print("Cargando modelo unificado, scaler y columnas de entrenamiento...")
-    # === CAMBIO CLAVE: Cargar el modelo con el custom_object ===
     custom_objects = {"SlicerLayer": SlicerLayer}
     model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}", custom_objects=custom_objects)
     
@@ -240,6 +238,13 @@ def main():
     df_final["pred_llamadas"] = np.maximum(0, np.round(predicciones[TARGET_LLAMADAS])).astype(int)
     df_final["pred_tmo_seg"] = np.maximum(0, np.round(predicciones[TARGET_TMO])).astype(int)
     
+    # --- INICIO DEL CAMBIO PARA DIAGNÓSTICO ---
+    print("Guardando predicciones crudas (raw) para diagnóstico...")
+    out_raw = df_final.copy().reset_index().rename(columns={"index": "ts"})
+    out_raw["ts"] = out_raw["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
+    out_raw.to_csv(OUT_CSV_RAW, index=False)
+    # --- FIN DEL CAMBIO PARA DIAGNÓSTICO ---
+    
     print("Aplicando recalibración estacional y suavizado...")
     seasonal_w = compute_seasonal_weights(df_hist, TARGET_LLAMADAS)
     df_final = apply_seasonal_weights(df_final, seasonal_w)
@@ -252,7 +257,7 @@ def main():
         df_final_adj = apply_holiday_adjustment(df_final_smoothed, holidays_set, f_calls, f_tmo)
     else: df_final_adj = df_final_smoothed
 
-    print("Guardando archivos de salida...")
+    print("Guardando archivos de salida finales...")
     out = df_final_adj.reset_index().rename(columns={"index": "ts"}); out["ts"] = out["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
     out.to_csv(OUT_CSV_DATAOUT, index=False); out.to_json(OUT_JSON_PUBLIC, orient="records", indent=2)
 
