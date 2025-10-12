@@ -1,8 +1,7 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN FINAL CORREGIDA: Sin errores de sintaxis y con inferencia estable.
-# ADAPTADO PARA MODELO UNIFICADO (LLAMADAS + TMO).
-# DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA, RECALIBRACIÓN, AJUSTES Y ERLANG-C
+# VERSIÓN FINAL CORREGIDA: Se neutraliza la influencia del TMO en la inferencia
+# para asegurar que no afecte el pronóstico de llamadas.
 # =======================================================================
 
 import os
@@ -112,46 +111,53 @@ def build_feature_matrix_nn(df, training_columns, target_cols):
     return X.reindex(columns=training_columns, fill_value=0)
 
 # =======================================================================
-# FUNCIÓN DE PREDICCIÓN CORREGIDA Y ESTABLE
+# FUNCIÓN DE PREDICCIÓN CON NEUTRALIZACIÓN DE TMO
 # =======================================================================
 def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps):
     df_prediccion = df_hist.copy()
     target_cols = [TARGET_LLAMADAS, TARGET_TMO]
 
-    print("Calculando TMO histórico estable para la inferencia...")
+    # --- INICIO DE LA MODIFICACIÓN CLAVE ---
+    # Identificar los índices de las columnas de TMO para neutralizarlas
+    tmo_col_name_base = TARGET_TMO.split(' ')[0] # Usar 'tmo' como base
+    tmo_indices = [i for i, col in enumerate(training_columns) if col.startswith(tmo_col_name_base)]
+    print(f"Se neutralizarán {len(tmo_indices)} características de TMO durante la inferencia.")
+    # --- FIN DE LA MODIFICACIÓN CLAVE ---
+
+    # Relleno estable para el TMO en el bucle
     df_hist_con_tiempo = add_time_features(df_hist)
     tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[TARGET_TMO].median()
     tmo_global_fallback = df_hist[TARGET_TMO].median()
 
-    df_prediccion['pred_tmo_final'] = np.nan
-
     for ts in future_timestamps:
         temp_df = pd.DataFrame(index=[ts])
         df_completo = pd.concat([df_prediccion, temp_df])
-
         df_features = add_time_features(df_completo)
+        
+        # Retroalimentamos el TMO estable para los cálculos de features
+        dow_actual, hour_actual = ts.dayofweek, ts.hour
+        tmo_estable = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
+        df_completo.loc[ts, TARGET_TMO] = tmo_estable
+        
+        # Creamos features para ambos, ya que el modelo los espera
         for col in target_cols:
             df_features = rolling_features(df_features, col)
 
         X_step = build_feature_matrix_nn(df_features.tail(1), training_columns, target_cols)
         X_step_scaled = scaler.transform(X_step)
         
+        # --- NEUTRALIZACIÓN ---
+        # Forzamos a cero las características de TMO para que no influyan en la predicción
+        X_step_scaled[:, tmo_indices] = 0
+        # --- FIN DE NEUTRALIZACIÓN ---
+        
         prediccion = modelo.predict(X_step_scaled, verbose=0)[0]
         
-        pred_llamadas = prediccion[0]
-        df_prediccion.loc[ts, TARGET_LLAMADAS] = pred_llamadas
+        # Guardamos ambas predicciones, pero solo la de llamadas se retroalimentará
+        df_prediccion.loc[ts, TARGET_LLAMADAS] = prediccion[0]
+        df_prediccion.loc[ts, TARGET_TMO] = prediccion[1] # Guardamos la predicción real para el output
         
-        dow_actual = ts.dayofweek
-        hour_actual = ts.hour
-        tmo_estable_para_paso = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
-        df_prediccion.loc[ts, TARGET_TMO] = tmo_estable_para_paso
-        
-        df_prediccion.loc[ts, 'pred_tmo_final'] = prediccion[1]
-
-    df_resultado = df_prediccion.loc[future_timestamps, [TARGET_LLAMADAS, 'pred_tmo_final']]
-    df_resultado = df_resultado.rename(columns={'pred_tmo_final': TARGET_TMO})
-    
-    return df_resultado
+    return df_prediccion.loc[future_timestamps, target_cols]
 
 # =======================================================================
 # Funciones de post-procesamiento
@@ -193,7 +199,6 @@ def baseline_from_history(df_hist, col):
     base = base.join([mad, q95])
     if base["mad"].isna().all():
         base["mad"] = 0
-    # === LÍNEA CORREGIDA ===
     base["mad"] = base["mad"].replace(0, base["mad"].median() if not np.isnan(base["mad"].median()) else 1.0)
     base["q95"] = base["q95"].fillna(base["med"])
     return base
@@ -316,7 +321,7 @@ def main():
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ, tz=TIMEZONE)
     print(f"Se predecirán {len(future_ts)} horas (≈ {HORIZON_DAYS} días).")
 
-    print("Realizando predicción iterativa estabilizada (llamadas y TMO)...")
+    print("Realizando predicción iterativa con neutralización de TMO...")
     predicciones = predecir_futuro_unificado(
         df_hist, model_unificado, scaler_unificado, training_columns, future_ts
     )
