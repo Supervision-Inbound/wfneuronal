@@ -1,0 +1,191 @@
+# =======================================================================
+# PIPELINE AUTOCONTENIDO para obtener datos climáticos históricos
+# Fuentes: 1. Open-Meteo (Archive) → 2. Meteostat
+# Desde 2022-01-01 hasta HOY | America/Santiago
+#
+# No requiere subir archivos. Las comunas se definen directamente en el código.
+# =======================================================================
+
+# Instalar dependencias si no están presentes
+!pip -q install openmeteo-requests retry-requests pandas requests-cache python-dateutil openpyxl meteostat pytz
+
+import pandas as pd
+import datetime as dt
+import time
+import warnings
+from dateutil import tz
+from google.colab import files
+
+# APIs de clima
+import openmeteo_requests
+from retry_requests import retry
+import requests_cache
+from meteostat import Hourly as MsHourly, Point as MsPoint
+
+# Para escritura en Excel
+from openpyxl import Workbook
+from openpyxl.utils.dataframe import dataframe_to_rows
+
+warnings.filterwarnings("ignore")
+
+# =======================================================================
+# ---------- 1. DATOS DE LAS COMUNAS FALTANTES ----------
+# =======================================================================
+# Coordenadas de las comunas que fallaron en la ejecución anterior.
+locations_data = [
+    {"comuna": "Santa Barbara", "lat": -37.6687, "lon": -72.0197},
+    {"comuna": "Santa Juana", "lat": -37.1724, "lon": -72.9348},
+    {"comuna": "Teodoro Schmidt", "lat": -38.9833, "lon": -73.05},
+    {"comuna": "Tirua", "lat": -38.35, "lon": -73.4833},
+    {"comuna": "Tolten", "lat": -39.2333, "lon": -73.1667},
+    {"comuna": "Traiguen", "lat": -38.25, "lon": -72.6667},
+    {"comuna": "Tucapel", "lat": -37.2833, "lon": -71.95},
+    {"comuna": "Victoria", "lat": -38.2333, "lon": -72.3333},
+    {"comuna": "Vilcun", "lat": -38.65, "lon": -72.2333},
+    {"comuna": "Yumbel", "lat": -37.1, "lon": -72.5667},
+    {"comuna": "Yungay", "lat": -37.1208, "lon": -72.0016}
+]
+# =======================================================================
+
+
+# ---------- Parámetros Generales (iguales al script original) ----------
+OVERALL_START_DATE = "2022-01-01"
+TZ_STR = "America/Santiago"
+OVERALL_END_DATE = dt.datetime.now(tz.gettz(TZ_STR)).date().isoformat()
+
+HOURLY_VARS = ["temperature_2m", "precipitation", "rain", "wind_speed_10m", "wind_gusts_10m"]
+UNITS = {"temperature_unit": "celsius", "wind_speed_unit": "kmh", "precipitation_unit": "mm"}
+OM_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/era5"
+
+BASE_SLEEP_S = 1.8 # Aumentamos la pausa para ser más cuidadosos con la API
+MAX_RETRIES = 3
+BACKOFF_FACTOR = 2.0
+COOL_DOWN_429 = 70
+
+OUT_CSV = "clima_comunas_faltantes.csv"
+OUT_XLSX = "clima_comunas_faltantes.xlsx"
+FAILED_CSV = "fallidas_en_reintento.csv"
+
+
+# ---------- Funciones de Obtención de Datos (sin cambios) ----------
+def fetch_openmeteo_archive(client, lat, lon, start_date, end_date):
+    params = {"latitude": float(lat), "longitude": float(lon), "start_date": start_date,
+              "end_date": end_date, "timezone": TZ_STR, "hourly": HOURLY_VARS, **UNITS}
+    return client.weather_api(OM_ARCHIVE_URL, params=params)[0]
+
+def build_from_openmeteo(resp, comuna):
+    hourly = resp.Hourly()
+    dt_index = pd.to_datetime(hourly.Time(), unit="s", utc=True).tz_convert(TZ_STR)
+    data = {"datetime": dt_index, **{var: hourly.Variables(idx).ValuesAsNumpy() for idx, var in enumerate(HOURLY_VARS)}}
+    df = pd.DataFrame(data)
+    df["fecha"] = df["datetime"].dt.date.astype(str)
+    df["hora"] = df["datetime"].dt.strftime("%H:%M")
+    df.insert(0, "comuna", comuna)
+    return df[["comuna", "fecha", "hora"] + HOURLY_VARS]
+
+def fetch_meteostat(lat, lon, start_date, end_date):
+    start, end = dt.datetime.fromisoformat(start_date), dt.datetime.fromisoformat(end_date)
+    loc = MsPoint(float(lat), float(lon))
+    df = MsHourly(loc, start, end, timezone=TZ_STR).fetch()
+    if df is None or df.empty: return None
+    out = pd.DataFrame({"temperature_2m": df.get("temp"), "precipitation": df.get("prcp"), "rain": df.get("prcp"),
+                        "wind_speed_10m": df.get("wspd"), "wind_gusts_10m": df.get("wpgt")})
+    out["datetime"] = out.index
+    return out
+
+def build_from_meteostat(df_ms, comuna):
+    df = df_ms.copy()
+    for c in HOURLY_VARS:
+        if c in df.columns: df[c] = pd.to_numeric(df[c], errors="coerce").astype('Float64')
+    df["fecha"] = pd.to_datetime(df["datetime"]).dt.date.astype(str)
+    df["hora"] = pd.to_datetime(df["datetime"]).dt.strftime("%H:%M")
+    df.insert(0, "comuna", comuna)
+    return df[["comuna", "fecha", "hora"] + HOURLY_VARS]
+
+
+# ---------- Loop Principal ----------
+def main():
+    if not locations_data:
+        print("🛑 Error: La lista 'locations_data' está vacía.")
+        return
+
+    df_locations = pd.DataFrame(locations_data)
+    print(f"📍 Se procesarán {len(df_locations)} comunas definidas en el código.")
+
+    cache_session = requests_cache.CachedSession(".openmeteo_cache", expire_after=3600*24*7)
+    retry_session = retry(cache_session, retries=3, backoff_factor=0.6)
+    om_client = openmeteo_requests.Client(session=retry_session)
+
+    wb = Workbook(); wb.remove(wb.active)
+    all_successful_dfs = []
+    fallidas = []
+    
+    date_ranges = []
+    date_chunks = pd.date_range(start=OVERALL_START_DATE, end=OVERALL_END_DATE, freq='AS')
+    for i, start_date in enumerate(date_chunks):
+        end_date = date_chunks[i+1] - dt.timedelta(days=1) if i + 1 < len(date_chunks) else pd.to_datetime(OVERALL_END_DATE)
+        date_ranges.append((start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')))
+
+    for i, row in df_locations.iterrows():
+        comuna, lat, lon = row["comuna"], row["lat"], row["lon"]
+        print(f"\n[{i+1}/{len(df_locations)}] Procesando {comuna}...")
+        
+        all_data_for_location = []
+        fuente_exitosa_final = "N/A"
+
+        for start_chunk, end_chunk in date_ranges:
+            print(f"  ↳ Obteniendo período: {start_chunk} a {end_chunk}")
+            df_chunk, fuente_exitosa = None, None
+            try: # 1. Intentar Open-Meteo
+                response = fetch_openmeteo_archive(om_client, lat, lon, start_chunk, end_chunk)
+                df_chunk, fuente_exitosa = build_from_openmeteo(response, comuna), "OM-Archive"
+            except Exception as e_om:
+                print(f"    - OM-Archive falló: {e_om}. Intentando fallback...")
+                try: # 2. Si falla, intentar Meteostat
+                    df_ms = fetch_meteostat(lat, lon, start_chunk, end_chunk)
+                    if df_ms is not None and not df_ms.empty:
+                        df_chunk, fuente_exitosa = build_from_meteostat(df_ms, comuna), "Meteostat"
+                except Exception as e_ms:
+                    print(f"    - Meteostat también falló: {e_ms}")
+                    pass
+            
+            if df_chunk is not None:
+                all_data_for_location.append(df_chunk)
+                fuente_exitosa_final = fuente_exitosa
+            time.sleep(BASE_SLEEP_S)
+
+        if all_data_for_location:
+            df_final = pd.concat(all_data_for_location, ignore_index=True)
+            all_successful_dfs.append(df_final)
+            print(f"  ✅ OK ({fuente_exitosa_final}): {comuna} - {len(df_final)} filas obtenidas.")
+            # Escribir en hoja de Excel individual
+            ws = wb.create_sheet(title=str(comuna)[:31])
+            for r in dataframe_to_rows(df_final, index=False, header=True):
+                ws.append(r)
+        else:
+            fallidas.append(comuna)
+            print(f"  ❌ FALLÓ: {comuna} con ambos proveedores.")
+
+    # --- Guardar archivos finales ---
+    if not all_successful_dfs:
+        print("\n⚠️ No se pudo obtener datos para ninguna comuna.")
+        return
+
+    df_combined = pd.concat(all_successful_dfs, ignore_index=True)
+    df_combined.to_csv(OUT_CSV, index=False, encoding="utf-8")
+    wb.save(OUT_XLSX)
+    
+    if fallidas:
+        pd.DataFrame({"comuna": fallidas}).to_csv(FAILED_CSV, index=False)
+
+    print("\n✅ Proceso finalizado.")
+    print(f" - CSV combinado: {OUT_CSV}")
+    print(f" - Excel multi-hojas: {OUT_XLSX}")
+    if fallidas: print(f" - Fallidas: {FAILED_CSV} ({len(fallidas)})")
+
+    files.download(OUT_CSV)
+    files.download(OUT_XLSX)
+    if fallidas: files.download(FAILED_CSV)
+
+if __name__ == "__main__":
+    main()
