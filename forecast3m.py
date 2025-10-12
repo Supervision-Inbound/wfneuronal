@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN FINAL: Adaptado para cargar el modelo causal en formato .keras
-# y realizar una inferencia estable.
+# VERSIÓN FINAL: Reintroduce safe_mode=False para cargar el modelo .keras
+# con capas Lambda.
 # =======================================================================
 
 import os
@@ -25,7 +25,6 @@ OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
 STAMP_JSON = "public/last_update.json"
 OUT_JSON_ERLANG = "public/erlang_forecast.json"
 
-# Apuntar a los nuevos artefactos, incluyendo el formato .keras
 ASSET_MODELO_UNIFICADO = "modelo_unificado.keras"
 ASSET_SCALER_UNIFICADO = "scaler_unificado.pkl"
 ASSET_COLUMNAS = "training_columns_unificado.json"
@@ -104,13 +103,8 @@ def build_feature_matrix_nn(df, training_columns):
     X = pd.concat([df[feature_cols], df_dummies], axis=1)
     return X.reindex(columns=training_columns, fill_value=0)
 
-# =======================================================================
-# FUNCIÓN DE PREDICCIÓN PARA MODELO CAUSAL
-# =======================================================================
 def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps):
     df_prediccion = df_hist.copy()
-    
-    # Relleno estable para el TMO que se usará para crear las features de TMO
     df_hist_con_tiempo = add_time_features(df_hist)
     tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[TARGET_TMO].median()
     tmo_global_fallback = df_hist[TARGET_TMO].median()
@@ -119,7 +113,6 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         temp_df = pd.DataFrame(index=[ts])
         df_completo = pd.concat([df_prediccion, temp_df])
         
-        # Retroalimentamos el TMO estable para los cálculos de features del TMO
         dow_actual, hour_actual = ts.dayofweek, ts.hour
         tmo_estable = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
         df_completo.loc[ts, TARGET_TMO] = tmo_estable
@@ -131,23 +124,16 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         X_step = build_feature_matrix_nn(df_features.tail(1), training_columns)
         X_step_scaled = scaler.transform(X_step)
         
-        # El modelo causal se encarga internamente de la separación
         prediccion = modelo.predict(X_step_scaled, verbose=0)[0]
         
-        # La predicción de llamadas se retroalimenta para la siguiente iteración
         df_prediccion.loc[ts, TARGET_CALLS] = prediccion[0]
-        # La predicción de TMO del modelo se guarda solo para el output final
         df_prediccion.loc[ts, TARGET_TMO] = prediccion[1]
         
     return df_prediccion.loc[future_timestamps, [TARGET_CALLS, TARGET_TMO]]
 
-# =======================================================================
-# Funciones de post-procesamiento
-# =======================================================================
 def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
     d = df_hist.copy()
-    if len(d) == 0:
-        return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
+    if len(d) == 0: return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
     end = d.index.max()
     start = end - pd.Timedelta(weeks=weeks)
     d = d.loc[d.index >= start]
@@ -160,8 +146,7 @@ def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30
             num = med_dow_hour.get((dow,h), np.nan)
             den = med_hour.get(h, np.nan)
             w = 1.0
-            if not np.isnan(num) and not np.isnan(den) and den != 0:
-                w = float(num / den)
+            if not np.isnan(num) and not np.isnan(den) and den != 0: w = float(num / den)
             weights[(dow,h)] = float(np.clip(w, clip_min, clip_max))
     return weights
 
@@ -179,8 +164,7 @@ def baseline_from_history(df_hist, col):
     mad = g.apply(lambda x: np.median(np.abs(x - np.median(x)))).rename("mad")
     q95 = g.quantile(0.95).rename("q95")
     base = base.join([mad, q95])
-    if base["mad"].isna().all():
-        base["mad"] = 0
+    if base["mad"].isna().all(): base["mad"] = 0
     base["mad"] = base["mad"].replace(0, base["mad"].median() if not np.isnan(base["mad"].median()) else 1.0)
     base["q95"] = base["q95"].fillna(base["med"])
     return base
@@ -211,8 +195,7 @@ def mark_holidays_index(index, holidays_set):
     return pd.Series([d in holidays_set for d in idx_dates], index=index, dtype=bool, name="is_holiday")
 
 def _safe_ratio(num, den, fallback=1.0):
-    if num is None or den is None or np.isnan(num) or np.isnan(den) or den == 0:
-        return fallback
+    if num is None or den is None or np.isnan(num) or np.isnan(den) or den == 0: return fallback
     return num / den
 
 def compute_holiday_factors(df_hist, holidays_set, col_calls=TARGET_LLAMADAS, col_tmo=TARGET_TMO):
@@ -266,14 +249,10 @@ def required_agents(arrivals, aht_s, asa_target_s=ASA_TARGET_S, sla_target=SLA_T
         if p_wait > 0 and aht > 0:
             sla = 1.0 - p_wait * np.exp(-(agents - load) * asa_target_s / aht)
             if sla >= sla_target: break
-        else:
-            break
+        else: break
         agents += 1
     return agents, load
 
-# =======================================================================
-# Función principal
-# =======================================================================
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs("public", exist_ok=True)
@@ -283,8 +262,8 @@ def main():
         download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
 
     print("Cargando modelo unificado, scaler y columnas de entrenamiento...")
-    # Carga el modelo desde el formato .keras (no necesita safe_mode=False)
-    model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}")
+    # === CAMBIO CLAVE: Reintroducimos safe_mode=False ===
+    model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}", safe_mode=False)
     
     scaler_unificado = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_UNIFICADO}")
     
