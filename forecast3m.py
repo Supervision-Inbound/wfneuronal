@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN FINAL: Reintroduce safe_mode=False para cargar el modelo .keras
-# con capas Lambda.
+# VERSIÓN FINAL: Corregido el NameError pasando los targets como argumentos
+# a la función de predicción.
 # =======================================================================
 
 import os
@@ -30,7 +30,7 @@ ASSET_SCALER_UNIFICADO = "scaler_unificado.pkl"
 ASSET_COLUMNAS = "training_columns_unificado.json"
 
 TIMEZONE = "America/Santiago"
-FREQ = "H"
+FREQ = "h" # Corregido de 'H' a 'h' para evitar FutureWarning
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
 
@@ -103,11 +103,14 @@ def build_feature_matrix_nn(df, training_columns):
     X = pd.concat([df[feature_cols], df_dummies], axis=1)
     return X.reindex(columns=training_columns, fill_value=0)
 
-def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps):
+# =======================================================================
+# FUNCIÓN DE PREDICCIÓN CORREGIDA
+# =======================================================================
+def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps, target_calls_col, target_tmo_col):
     df_prediccion = df_hist.copy()
     df_hist_con_tiempo = add_time_features(df_hist)
-    tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[TARGET_TMO].median()
-    tmo_global_fallback = df_hist[TARGET_TMO].median()
+    tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[target_tmo_col].median()
+    tmo_global_fallback = df_hist[target_tmo_col].median()
 
     for ts in future_timestamps:
         temp_df = pd.DataFrame(index=[ts])
@@ -115,22 +118,25 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         
         dow_actual, hour_actual = ts.dayofweek, ts.hour
         tmo_estable = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
-        df_completo.loc[ts, TARGET_TMO] = tmo_estable
+        df_completo.loc[ts, target_tmo_col] = tmo_estable
 
         df_features = add_time_features(df_completo)
-        df_features = rolling_features(df_features, TARGET_CALLS)
-        df_features = rolling_features(df_features, TARGET_TMO)
+        df_features = rolling_features(df_features, target_calls_col)
+        df_features = rolling_features(df_features, target_tmo_col)
 
         X_step = build_feature_matrix_nn(df_features.tail(1), training_columns)
         X_step_scaled = scaler.transform(X_step)
         
         prediccion = modelo.predict(X_step_scaled, verbose=0)[0]
         
-        df_prediccion.loc[ts, TARGET_CALLS] = prediccion[0]
-        df_prediccion.loc[ts, TARGET_TMO] = prediccion[1]
+        df_prediccion.loc[ts, target_calls_col] = prediccion[0]
+        df_prediccion.loc[ts, target_tmo_col] = prediccion[1]
         
-    return df_prediccion.loc[future_timestamps, [TARGET_CALLS, TARGET_TMO]]
+    return df_prediccion.loc[future_timestamps, [target_calls_col, target_tmo_col]]
 
+# =======================================================================
+# Funciones de post-procesamiento
+# =======================================================================
 def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
     d = df_hist.copy()
     if len(d) == 0: return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
@@ -262,7 +268,6 @@ def main():
         download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
 
     print("Cargando modelo unificado, scaler y columnas de entrenamiento...")
-    # === CAMBIO CLAVE: Reintroducimos safe_mode=False ===
     model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}", safe_mode=False)
     
     scaler_unificado = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_UNIFICADO}")
@@ -276,7 +281,7 @@ def main():
     df_hist_raw.columns = df_hist_raw.columns.str.strip().str.lower()
     df_hist_raw[TARGET_TMO] = df_hist_raw["tmo (segundos)"].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
-    df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
+    df_hist = df_hist[[TARGET_LLAMadas, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
 
     print(f"Cargando feriados desde {HOLIDAYS_FILE}...")
     holidays_set = load_holidays(HOLIDAYS_FILE)
@@ -288,8 +293,9 @@ def main():
     print(f"Se predecirán {len(future_ts)} horas (≈ {HORIZON_DAYS} días).")
 
     print("Realizando predicción iterativa con modelo causal...")
+    # --- CAMBIO CLAVE: Pasar los nombres de las columnas a la función ---
     predicciones = predecir_futuro_unificado(
-        df_hist, model_unificado, scaler_unificado, training_columns, future_ts
+        df_hist, model_unificado, scaler_unificado, training_columns, future_ts, TARGET_LLAMADAS, TARGET_TMO
     )
     
     df_final = pd.DataFrame(index=future_ts)
