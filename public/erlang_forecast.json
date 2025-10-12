@@ -2779,49 +2779,49 @@
     "ts": "2025-08-11 10:00:00",
     "calls": 386,
     "aht_s": 7314,
-    "agents_prod": 1123,
+    "agents_prod": 923,
     "erlangs": 784.2233333333334,
-    "agents_sched": 2084
+    "agents_sched": 1713
   },
   {
     "ts": "2025-08-11 11:00:00",
     "calls": 412,
     "aht_s": 7348,
-    "agents_prod": 1190,
+    "agents_prod": 990,
     "erlangs": 840.9377777777778,
-    "agents_sched": 2208
+    "agents_sched": 1837
   },
   {
     "ts": "2025-08-11 12:00:00",
     "calls": 393,
     "aht_s": 7383,
-    "agents_prod": 1149,
+    "agents_prod": 949,
     "erlangs": 805.9775,
-    "agents_sched": 2132
+    "agents_sched": 1761
   },
   {
     "ts": "2025-08-11 13:00:00",
     "calls": 354,
     "aht_s": 7419,
-    "agents_prod": 1059,
+    "agents_prod": 859,
     "erlangs": 729.535,
-    "agents_sched": 1965
+    "agents_sched": 1594
   },
   {
     "ts": "2025-08-11 14:00:00",
     "calls": 348,
     "aht_s": 7455,
-    "agents_prod": 1048,
+    "agents_prod": 848,
     "erlangs": 720.65,
-    "agents_sched": 1945
+    "agents_sched": 1574
   },
   {
     "ts": "2025-08-11 15:00:00",
     "calls": 352,
     "aht_s": 7492,
-    "agents_prod": 1062,
+    "agents_prod": 862,
     "erlangs": 732.5511111111111,
-    "agents_sched": 1971
+    "agents_sched": 1600
   },
   {
     "ts": "2025-08-11 16:00:00",
@@ -2835,9 +2835,9 @@
     "ts": "2025-08-11 17:00:00",
     "calls": 351,
     "aht_s": 7565,
-    "agents_prod": 1068,
+    "agents_prod": 868,
     "erlangs": 737.5875,
-    "agents_sched": 1982
+    "agents_sched": 1611
   },
   {
     "ts": "2025-08-11 18:00:00",
@@ -2971,73 +2971,73 @@
     "ts": "2025-08-12 10:00:00",
     "calls": 366,
     "aht_s": 8145,
-    "agents_prod": 1175,
+    "agents_prod": 975,
     "erlangs": 828.075,
-    "agents_sched": 2180
+    "agents_sched": 1809
   },
   {
     "ts": "2025-08-12 11:00:00",
     "calls": 403,
     "aht_s": 8177,
-    "agents_prod": 1277,
+    "agents_prod": 1077,
     "erlangs": 915.3697222222222,
-    "agents_sched": 2370
+    "agents_sched": 1999
   },
   {
     "ts": "2025-08-12 12:00:00",
     "calls": 411,
     "aht_s": 8212,
-    "agents_prod": 1303,
+    "agents_prod": 1103,
     "erlangs": 937.5366666666666,
-    "agents_sched": 2418
+    "agents_sched": 2047
   },
   {
     "ts": "2025-08-12 13:00:00",
     "calls": 342,
     "aht_s": 8247,
-    "agents_prod": 1122,
+    "agents_prod": 922,
     "erlangs": 783.465,
-    "agents_sched": 2082
+    "agents_sched": 1711
   },
   {
     "ts": "2025-08-12 14:00:00",
     "calls": 343,
     "aht_s": 8282,
-    "agents_prod": 1129,
+    "agents_prod": 929,
     "erlangs": 789.0905555555555,
-    "agents_sched": 2095
+    "agents_sched": 1724
   },
   {
     "ts": "2025-08-12 15:00:00",
     "calls": 354,
     "aht_s": 8318,
-    "agents_prod": 1163,
+    "agents_prod": 963,
     "erlangs": 817.9366666666666,
-    "agents_sched": 2158
+    "agents_sched": 1787
   },
   {
     "ts": "2025-08-12 16:00:00",
     "calls": 352,
     "aht_s": 8354,
-    "agents_prod": 1161,
+    "agents_prod": 961,
     "erlangs": 816.8355555555555,
-    "agents_sched": 2154
+    "agents_sched": 1783
   },
   {
     "ts": "2025-08-12 17:00:00",
     "calls": 323,
     "aht_s": 8391,
-    "agents_prod": 1086,
+    "agents_prod": 886,
     "erlangs": 752.8591666666666,
-    "agents_sched": 2015
+    "agents_sched": 1644
   },
   {
     "ts": "2025-08-12 18:00:00",
     "calls": 306,
     "aht_s": 8429,
-    "agents_prod": 1043,
+    "agents_prod": 843,
     "erlangs": 716.465,
-    "agents_sched": 1936
+    "agents_sched": 1565
   },
   {
     "ts": "2025-08-12 19:00:00",
@@ -3163,81 +3163,81 @@
     "ts": "2025-08-13 10:00:00",
     "calls": 365,
     "aht_s": 8957,
-    "agents_prod": 1269,
+    "agents_prod": 1069,
     "erlangs": 908.1402777777778,
-    "agents_sched": 2355
+    "agents_sched": 1984
   },
   {
     "ts": "2025-08-13 11:00:00",
     "calls": 378,
     "aht_s": 8985,
-    "agents_prod": 1310,
+    "agents_prod": 1110,
     "erlangs": 943.425,
-    "agents_sched": 2431
+    "agents_sched": 2060
   },
   {
     "ts": "2025-08-13 12:00:00",
     "calls": 373,
     "aht_s": 9016,
-    "agents_prod": 1300,
+    "agents_prod": 1100,
     "erlangs": 934.1577777777778,
-    "agents_sched": 2412
+    "agents_sched": 2041
   },
   {
     "ts": "2025-08-13 13:00:00",
     "calls": 335,
     "aht_s": 9048,
-    "agents_prod": 1191,
+    "agents_prod": 991,
     "erlangs": 841.9666666666667,
-    "agents_sched": 2210
+    "agents_sched": 1839
   },
   {
     "ts": "2025-08-13 14:00:00",
     "calls": 337,
     "aht_s": 9082,
-    "agents_prod": 1201,
+    "agents_prod": 1001,
     "erlangs": 850.1761111111111,
-    "agents_sched": 2229
+    "agents_sched": 1858
   },
   {
     "ts": "2025-08-13 15:00:00",
     "calls": 369,
     "aht_s": 9116,
-    "agents_prod": 1300,
+    "agents_prod": 1100,
     "erlangs": 934.39,
-    "agents_sched": 2412
+    "agents_sched": 2041
   },
   {
     "ts": "2025-08-13 16:00:00",
     "calls": 337,
     "aht_s": 9151,
-    "agents_prod": 1208,
+    "agents_prod": 1008,
     "erlangs": 856.6352777777778,
-    "agents_sched": 2242
+    "agents_sched": 1871
   },
   {
     "ts": "2025-08-13 17:00:00",
     "calls": 338,
     "aht_s": 9187,
-    "agents_prod": 1215,
+    "agents_prod": 1015,
     "erlangs": 862.5572222222222,
-    "agents_sched": 2255
+    "agents_sched": 1884
   },
   {
     "ts": "2025-08-13 18:00:00",
     "calls": 348,
     "aht_s": 9222,
-    "agents_prod": 1249,
+    "agents_prod": 1049,
     "erlangs": 891.46,
-    "agents_sched": 2318
+    "agents_sched": 1947
   },
   {
     "ts": "2025-08-13 19:00:00",
     "calls": 282,
     "aht_s": 9259,
-    "agents_prod": 1054,
+    "agents_prod": 854,
     "erlangs": 725.2883333333333,
-    "agents_sched": 1956
+    "agents_sched": 1585
   },
   {
     "ts": "2025-08-13 20:00:00",
@@ -3291,137 +3291,137 @@
     "ts": "2025-08-14 02:00:00",
     "calls": 269,
     "aht_s": 9588,
-    "agents_prod": 1043,
+    "agents_prod": 843,
     "erlangs": 716.4366666666666,
-    "agents_sched": 1936
+    "agents_sched": 1565
   },
   {
     "ts": "2025-08-14 03:00:00",
     "calls": 269,
     "aht_s": 9620,
-    "agents_prod": 1046,
+    "agents_prod": 846,
     "erlangs": 718.8277777777778,
-    "agents_sched": 1941
+    "agents_sched": 1570
   },
   {
     "ts": "2025-08-14 04:00:00",
     "calls": 269,
     "aht_s": 9638,
-    "agents_prod": 1048,
+    "agents_prod": 848,
     "erlangs": 720.1727777777778,
-    "agents_sched": 1945
+    "agents_sched": 1574
   },
   {
     "ts": "2025-08-14 05:00:00",
     "calls": 269,
     "aht_s": 9649,
-    "agents_prod": 1049,
+    "agents_prod": 849,
     "erlangs": 720.9947222222222,
-    "agents_sched": 1947
+    "agents_sched": 1576
   },
   {
     "ts": "2025-08-14 06:00:00",
     "calls": 269,
     "aht_s": 9653,
-    "agents_prod": 1049,
+    "agents_prod": 849,
     "erlangs": 721.2936111111111,
-    "agents_sched": 1947
+    "agents_sched": 1576
   },
   {
     "ts": "2025-08-14 07:00:00",
     "calls": 269,
     "aht_s": 9658,
-    "agents_prod": 1050,
+    "agents_prod": 850,
     "erlangs": 721.6672222222222,
-    "agents_sched": 1949
+    "agents_sched": 1577
   },
   {
     "ts": "2025-08-14 08:00:00",
     "calls": 269,
     "aht_s": 9673,
-    "agents_prod": 1051,
+    "agents_prod": 851,
     "erlangs": 722.7880555555555,
-    "agents_sched": 1950
+    "agents_sched": 1579
   },
   {
     "ts": "2025-08-14 09:00:00",
     "calls": 269,
     "aht_s": 9691,
-    "agents_prod": 1052,
+    "agents_prod": 852,
     "erlangs": 724.1330555555555,
-    "agents_sched": 1952
+    "agents_sched": 1581
   },
   {
     "ts": "2025-08-14 10:00:00",
     "calls": 350,
     "aht_s": 9713,
-    "agents_prod": 1311,
+    "agents_prod": 1111,
     "erlangs": 944.3194444444445,
-    "agents_sched": 2433
+    "agents_sched": 2062
   },
   {
     "ts": "2025-08-14 11:00:00",
     "calls": 372,
     "aht_s": 9738,
-    "agents_prod": 1384,
+    "agents_prod": 1184,
     "erlangs": 1006.26,
-    "agents_sched": 2568
+    "agents_sched": 2197
   },
   {
     "ts": "2025-08-14 12:00:00",
     "calls": 356,
     "aht_s": 9767,
-    "agents_prod": 1337,
+    "agents_prod": 1137,
     "erlangs": 965.8477777777778,
-    "agents_sched": 2481
+    "agents_sched": 2110
   },
   {
     "ts": "2025-08-14 13:00:00",
     "calls": 330,
     "aht_s": 9797,
-    "agents_prod": 1257,
+    "agents_prod": 1057,
     "erlangs": 898.0583333333333,
-    "agents_sched": 2333
+    "agents_sched": 1962
   },
   {
     "ts": "2025-08-14 14:00:00",
     "calls": 304,
     "aht_s": 9827,
-    "agents_prod": 1177,
+    "agents_prod": 977,
     "erlangs": 829.8355555555555,
-    "agents_sched": 2184
+    "agents_sched": 1813
   },
   {
     "ts": "2025-08-14 15:00:00",
     "calls": 312,
     "aht_s": 9858,
-    "agents_prod": 1206,
+    "agents_prod": 1006,
     "erlangs": 854.36,
-    "agents_sched": 2238
+    "agents_sched": 1867
   },
   {
     "ts": "2025-08-14 16:00:00",
     "calls": 314,
     "aht_s": 9889,
-    "agents_prod": 1215,
+    "agents_prod": 1015,
     "erlangs": 862.5405555555556,
-    "agents_sched": 2255
+    "agents_sched": 1884
   },
   {
     "ts": "2025-08-14 17:00:00",
     "calls": 316,
     "aht_s": 9920,
-    "agents_prod": 1225,
+    "agents_prod": 1025,
     "erlangs": 870.7555555555556,
-    "agents_sched": 2273
+    "agents_sched": 1902
   },
   {
     "ts": "2025-08-14 18:00:00",
     "calls": 336,
     "aht_s": 9952,
-    "agents_prod": 1293,
+    "agents_prod": 1093,
     "erlangs": 928.8533333333334,
-    "agents_sched": 2399
+    "agents_sched": 2028
   },
   {
     "ts": "2025-08-14 19:00:00",
@@ -3435,9 +3435,9 @@
     "ts": "2025-08-14 20:00:00",
     "calls": 258,
     "aht_s": 10021,
-    "agents_prod": 1045,
+    "agents_prod": 845,
     "erlangs": 718.1716666666666,
-    "agents_sched": 1939
+    "agents_sched": 1568
   },
   {
     "ts": "2025-08-14 21:00:00",
@@ -3659,177 +3659,177 @@
     "ts": "2025-08-16 00:00:00",
     "calls": 311,
     "aht_s": 10813,
-    "agents_prod": 1299,
+    "agents_prod": 1099,
     "erlangs": 934.1230555555555,
-    "agents_sched": 2411
+    "agents_sched": 2039
   },
   {
     "ts": "2025-08-16 01:00:00",
     "calls": 311,
     "aht_s": 10856,
-    "agents_prod": 1304,
+    "agents_prod": 1104,
     "erlangs": 937.8377777777778,
-    "agents_sched": 2420
+    "agents_sched": 2049
   },
   {
     "ts": "2025-08-16 02:00:00",
     "calls": 311,
     "aht_s": 10891,
-    "agents_prod": 1307,
+    "agents_prod": 1107,
     "erlangs": 940.8613888888889,
-    "agents_sched": 2425
+    "agents_sched": 2054
   },
   {
     "ts": "2025-08-16 03:00:00",
     "calls": 311,
     "aht_s": 10915,
-    "agents_prod": 1310,
+    "agents_prod": 1110,
     "erlangs": 942.9347222222223,
-    "agents_sched": 2431
+    "agents_sched": 2060
   },
   {
     "ts": "2025-08-16 04:00:00",
     "calls": 311,
     "aht_s": 10927,
-    "agents_prod": 1311,
+    "agents_prod": 1111,
     "erlangs": 943.9713888888889,
-    "agents_sched": 2433
+    "agents_sched": 2062
   },
   {
     "ts": "2025-08-16 05:00:00",
     "calls": 311,
     "aht_s": 10931,
-    "agents_prod": 1311,
+    "agents_prod": 1111,
     "erlangs": 944.3169444444444,
-    "agents_sched": 2433
+    "agents_sched": 2062
   },
   {
     "ts": "2025-08-16 06:00:00",
     "calls": 311,
     "aht_s": 10931,
-    "agents_prod": 1311,
+    "agents_prod": 1111,
     "erlangs": 944.3169444444444,
-    "agents_sched": 2433
+    "agents_sched": 2062
   },
   {
     "ts": "2025-08-16 07:00:00",
     "calls": 311,
     "aht_s": 10936,
-    "agents_prod": 1312,
+    "agents_prod": 1112,
     "erlangs": 944.7488888888889,
-    "agents_sched": 2435
+    "agents_sched": 2064
   },
   {
     "ts": "2025-08-16 08:00:00",
     "calls": 311,
     "aht_s": 10942,
-    "agents_prod": 1313,
+    "agents_prod": 1113,
     "erlangs": 945.2672222222222,
-    "agents_sched": 2436
+    "agents_sched": 2065
   },
   {
     "ts": "2025-08-16 09:00:00",
     "calls": 311,
     "aht_s": 10950,
-    "agents_prod": 1313,
+    "agents_prod": 1113,
     "erlangs": 945.9583333333334,
-    "agents_sched": 2436
+    "agents_sched": 2065
   },
   {
     "ts": "2025-08-16 10:00:00",
     "calls": 300,
     "aht_s": 10960,
-    "agents_prod": 1275,
+    "agents_prod": 1075,
     "erlangs": 913.3333333333334,
-    "agents_sched": 2366
+    "agents_sched": 1995
   },
   {
     "ts": "2025-08-16 11:00:00",
     "calls": 310,
     "aht_s": 10974,
-    "agents_prod": 1312,
+    "agents_prod": 1112,
     "erlangs": 944.9833333333333,
-    "agents_sched": 2435
+    "agents_sched": 2064
   },
   {
     "ts": "2025-08-16 12:00:00",
     "calls": 302,
     "aht_s": 10992,
-    "agents_prod": 1285,
+    "agents_prod": 1085,
     "erlangs": 922.1066666666667,
-    "agents_sched": 2385
+    "agents_sched": 2013
   },
   {
     "ts": "2025-08-16 13:00:00",
     "calls": 276,
     "aht_s": 11011,
-    "agents_prod": 1194,
+    "agents_prod": 994,
     "erlangs": 844.1766666666666,
-    "agents_sched": 2216
+    "agents_sched": 1845
   },
   {
     "ts": "2025-08-16 14:00:00",
     "calls": 286,
     "aht_s": 11030,
-    "agents_prod": 1231,
+    "agents_prod": 1031,
     "erlangs": 876.2722222222222,
-    "agents_sched": 2284
+    "agents_sched": 1913
   },
   {
     "ts": "2025-08-16 15:00:00",
     "calls": 268,
     "aht_s": 11051,
-    "agents_prod": 1168,
+    "agents_prod": 968,
     "erlangs": 822.6855555555555,
-    "agents_sched": 2167
+    "agents_sched": 1796
   },
   {
     "ts": "2025-08-16 16:00:00",
     "calls": 259,
     "aht_s": 11073,
-    "agents_prod": 1138,
+    "agents_prod": 938,
     "erlangs": 796.6408333333334,
-    "agents_sched": 2112
+    "agents_sched": 1741
   },
   {
     "ts": "2025-08-16 17:00:00",
     "calls": 262,
     "aht_s": 11096,
-    "agents_prod": 1151,
+    "agents_prod": 951,
     "erlangs": 807.5422222222222,
-    "agents_sched": 2136
+    "agents_sched": 1765
   },
   {
     "ts": "2025-08-16 18:00:00",
     "calls": 322,
     "aht_s": 11119,
-    "agents_prod": 1371,
+    "agents_prod": 1171,
     "erlangs": 994.5327777777778,
-    "agents_sched": 2544
+    "agents_sched": 2173
   },
   {
     "ts": "2025-08-16 19:00:00",
     "calls": 247,
     "aht_s": 11145,
-    "agents_prod": 1100,
+    "agents_prod": 900,
     "erlangs": 764.6708333333333,
-    "agents_sched": 2041
+    "agents_sched": 1670
   },
   {
     "ts": "2025-08-16 20:00:00",
     "calls": 277,
     "aht_s": 11175,
-    "agents_prod": 1212,
+    "agents_prod": 1012,
     "erlangs": 859.8541666666666,
-    "agents_sched": 2249
+    "agents_sched": 1878
   },
   {
     "ts": "2025-08-16 21:00:00",
     "calls": 255,
     "aht_s": 11205,
-    "agents_prod": 1134,
+    "agents_prod": 934,
     "erlangs": 793.6875,
-    "agents_sched": 2104
+    "agents_sched": 1733
   },
   {
     "ts": "2025-08-16 22:00:00",
@@ -3851,121 +3851,121 @@
     "ts": "2025-08-17 00:00:00",
     "calls": 311,
     "aht_s": 11300,
-    "agents_prod": 1349,
+    "agents_prod": 1149,
     "erlangs": 976.1944444444445,
-    "agents_sched": 2503
+    "agents_sched": 2132
   },
   {
     "ts": "2025-08-17 01:00:00",
     "calls": 311,
     "aht_s": 11332,
-    "agents_prod": 1352,
+    "agents_prod": 1152,
     "erlangs": 978.9588888888889,
-    "agents_sched": 2509
+    "agents_sched": 2138
   },
   {
     "ts": "2025-08-17 02:00:00",
     "calls": 311,
     "aht_s": 11360,
-    "agents_prod": 1355,
+    "agents_prod": 1155,
     "erlangs": 981.3777777777777,
-    "agents_sched": 2514
+    "agents_sched": 2143
   },
   {
     "ts": "2025-08-17 03:00:00",
     "calls": 311,
     "aht_s": 11378,
-    "agents_prod": 1357,
+    "agents_prod": 1157,
     "erlangs": 982.9327777777778,
-    "agents_sched": 2518
+    "agents_sched": 2147
   },
   {
     "ts": "2025-08-17 04:00:00",
     "calls": 311,
     "aht_s": 11383,
-    "agents_prod": 1357,
+    "agents_prod": 1157,
     "erlangs": 983.3647222222222,
-    "agents_sched": 2518
+    "agents_sched": 2147
   },
   {
     "ts": "2025-08-17 05:00:00",
     "calls": 311,
     "aht_s": 11385,
-    "agents_prod": 1358,
+    "agents_prod": 1158,
     "erlangs": 983.5375,
-    "agents_sched": 2520
+    "agents_sched": 2149
   },
   {
     "ts": "2025-08-17 06:00:00",
     "calls": 311,
     "aht_s": 11384,
-    "agents_prod": 1358,
+    "agents_prod": 1158,
     "erlangs": 983.4511111111111,
-    "agents_sched": 2520
+    "agents_sched": 2149
   },
   {
     "ts": "2025-08-17 07:00:00",
     "calls": 311,
     "aht_s": 11384,
-    "agents_prod": 1358,
+    "agents_prod": 1158,
     "erlangs": 983.4511111111111,
-    "agents_sched": 2520
+    "agents_sched": 2149
   },
   {
     "ts": "2025-08-17 08:00:00",
     "calls": 311,
     "aht_s": 11385,
-    "agents_prod": 1358,
+    "agents_prod": 1158,
     "erlangs": 983.5375,
-    "agents_sched": 2520
+    "agents_sched": 2149
   },
   {
     "ts": "2025-08-17 09:00:00",
     "calls": 311,
     "aht_s": 11386,
-    "agents_prod": 1358,
+    "agents_prod": 1158,
     "erlangs": 983.6238888888889,
-    "agents_sched": 2520
+    "agents_sched": 2149
   },
   {
     "ts": "2025-08-17 10:00:00",
     "calls": 274,
     "aht_s": 11389,
-    "agents_prod": 1220,
+    "agents_prod": 1020,
     "erlangs": 866.8294444444444,
-    "agents_sched": 2264
+    "agents_sched": 1893
   },
   {
     "ts": "2025-08-17 11:00:00",
     "calls": 244,
     "aht_s": 11395,
-    "agents_prod": 1109,
+    "agents_prod": 909,
     "erlangs": 772.3277777777778,
-    "agents_sched": 2058
+    "agents_sched": 1687
   },
   {
     "ts": "2025-08-17 12:00:00",
     "calls": 267,
     "aht_s": 11406,
-    "agents_prod": 1196,
+    "agents_prod": 996,
     "erlangs": 845.945,
-    "agents_sched": 2219
+    "agents_sched": 1848
   },
   {
     "ts": "2025-08-17 13:00:00",
     "calls": 259,
     "aht_s": 11418,
-    "agents_prod": 1167,
+    "agents_prod": 967,
     "erlangs": 821.4616666666667,
-    "agents_sched": 2166
+    "agents_sched": 1795
   },
   {
     "ts": "2025-08-17 14:00:00",
     "calls": 225,
     "aht_s": 11431,
-    "agents_prod": 1041,
+    "agents_prod": 841,
     "erlangs": 714.4375,
-    "agents_sched": 1932
+    "agents_sched": 1561
   },
   {
     "ts": "2025-08-17 15:00:00",
@@ -3979,49 +3979,49 @@
     "ts": "2025-08-17 16:00:00",
     "calls": 226,
     "aht_s": 11460,
-    "agents_prod": 1047,
+    "agents_prod": 847,
     "erlangs": 719.4333333333333,
-    "agents_sched": 1943
+    "agents_sched": 1572
   },
   {
     "ts": "2025-08-17 17:00:00",
     "calls": 256,
     "aht_s": 11475,
-    "agents_prod": 1160,
+    "agents_prod": 960,
     "erlangs": 816.0,
-    "agents_sched": 2153
+    "agents_sched": 1782
   },
   {
     "ts": "2025-08-17 18:00:00",
     "calls": 352,
     "aht_s": 11492,
-    "agents_prod": 1522,
+    "agents_prod": 1322,
     "erlangs": 1123.6622222222222,
-    "agents_sched": 2824
+    "agents_sched": 2453
   },
   {
     "ts": "2025-08-17 19:00:00",
     "calls": 354,
     "aht_s": 11511,
-    "agents_prod": 1532,
+    "agents_prod": 1332,
     "erlangs": 1131.915,
-    "agents_sched": 2843
+    "agents_sched": 2472
   },
   {
     "ts": "2025-08-17 20:00:00",
     "calls": 330,
     "aht_s": 11534,
-    "agents_prod": 1444,
+    "agents_prod": 1244,
     "erlangs": 1057.2833333333333,
-    "agents_sched": 2680
+    "agents_sched": 2308
   },
   {
     "ts": "2025-08-17 21:00:00",
     "calls": 305,
     "aht_s": 11557,
-    "agents_prod": 1352,
+    "agents_prod": 1152,
     "erlangs": 979.1347222222222,
-    "agents_sched": 2509
+    "agents_sched": 2138
   },
   {
     "ts": "2025-08-17 22:00:00",
@@ -4043,177 +4043,177 @@
     "ts": "2025-08-18 00:00:00",
     "calls": 269,
     "aht_s": 11625,
-    "agents_prod": 1222,
+    "agents_prod": 1022,
     "erlangs": 868.6458333333334,
-    "agents_sched": 2268
+    "agents_sched": 1897
   },
   {
     "ts": "2025-08-18 01:00:00",
     "calls": 269,
     "aht_s": 11647,
-    "agents_prod": 1224,
+    "agents_prod": 1024,
     "erlangs": 870.2897222222222,
-    "agents_sched": 2271
+    "agents_sched": 1900
   },
   {
     "ts": "2025-08-18 02:00:00",
     "calls": 269,
     "aht_s": 11663,
-    "agents_prod": 1226,
+    "agents_prod": 1026,
     "erlangs": 871.4852777777778,
-    "agents_sched": 2275
+    "agents_sched": 1904
   },
   {
     "ts": "2025-08-18 03:00:00",
     "calls": 269,
     "aht_s": 11673,
-    "agents_prod": 1227,
+    "agents_prod": 1027,
     "erlangs": 872.2325,
-    "agents_sched": 2277
+    "agents_sched": 1906
   },
   {
     "ts": "2025-08-18 04:00:00",
     "calls": 269,
     "aht_s": 11674,
-    "agents_prod": 1227,
+    "agents_prod": 1027,
     "erlangs": 872.3072222222222,
-    "agents_sched": 2277
+    "agents_sched": 1906
   },
   {
     "ts": "2025-08-18 05:00:00",
     "calls": 269,
     "aht_s": 11670,
-    "agents_prod": 1226,
+    "agents_prod": 1026,
     "erlangs": 872.0083333333333,
-    "agents_sched": 2275
+    "agents_sched": 1904
   },
   {
     "ts": "2025-08-18 06:00:00",
     "calls": 269,
     "aht_s": 11661,
-    "agents_prod": 1226,
+    "agents_prod": 1026,
     "erlangs": 871.3358333333333,
-    "agents_sched": 2275
+    "agents_sched": 1904
   },
   {
     "ts": "2025-08-18 07:00:00",
     "calls": 269,
     "aht_s": 11652,
-    "agents_prod": 1225,
+    "agents_prod": 1025,
     "erlangs": 870.6633333333333,
-    "agents_sched": 2273
+    "agents_sched": 1902
   },
   {
     "ts": "2025-08-18 08:00:00",
     "calls": 269,
     "aht_s": 11644,
-    "agents_prod": 1224,
+    "agents_prod": 1024,
     "erlangs": 870.0655555555555,
-    "agents_sched": 2271
+    "agents_sched": 1900
   },
   {
     "ts": "2025-08-18 09:00:00",
     "calls": 269,
     "aht_s": 11637,
-    "agents_prod": 1223,
+    "agents_prod": 1023,
     "erlangs": 869.5425,
-    "agents_sched": 2270
+    "agents_sched": 1898
   },
   {
     "ts": "2025-08-18 10:00:00",
     "calls": 386,
     "aht_s": 11631,
-    "agents_prod": 1668,
+    "agents_prod": 1468,
     "erlangs": 1247.1016666666667,
-    "agents_sched": 3095
+    "agents_sched": 2724
   },
   {
     "ts": "2025-08-18 11:00:00",
     "calls": 412,
     "aht_s": 11628,
-    "agents_prod": 1766,
+    "agents_prod": 1566,
     "erlangs": 1330.76,
-    "agents_sched": 3277
+    "agents_sched": 2906
   },
   {
     "ts": "2025-08-18 12:00:00",
     "calls": 393,
     "aht_s": 11630,
-    "agents_prod": 1694,
+    "agents_prod": 1494,
     "erlangs": 1269.6083333333333,
-    "agents_sched": 3143
+    "agents_sched": 2772
   },
   {
     "ts": "2025-08-18 13:00:00",
     "calls": 354,
     "aht_s": 11633,
-    "agents_prod": 1546,
+    "agents_prod": 1346,
     "erlangs": 1143.9116666666666,
-    "agents_sched": 2869
+    "agents_sched": 2498
   },
   {
     "ts": "2025-08-18 14:00:00",
     "calls": 348,
     "aht_s": 11638,
-    "agents_prod": 1524,
+    "agents_prod": 1324,
     "erlangs": 1125.0066666666667,
-    "agents_sched": 2828
+    "agents_sched": 2457
   },
   {
     "ts": "2025-08-18 15:00:00",
     "calls": 352,
     "aht_s": 11643,
-    "agents_prod": 1540,
+    "agents_prod": 1340,
     "erlangs": 1138.4266666666667,
-    "agents_sched": 2858
+    "agents_sched": 2487
   },
   {
     "ts": "2025-08-18 16:00:00",
     "calls": 327,
     "aht_s": 11650,
-    "agents_prod": 1445,
+    "agents_prod": 1245,
     "erlangs": 1058.2083333333333,
-    "agents_sched": 2681
+    "agents_sched": 2310
   },
   {
     "ts": "2025-08-18 17:00:00",
     "calls": 351,
     "aht_s": 11658,
-    "agents_prod": 1538,
+    "agents_prod": 1338,
     "erlangs": 1136.655,
-    "agents_sched": 2854
+    "agents_sched": 2483
   },
   {
     "ts": "2025-08-18 18:00:00",
     "calls": 314,
     "aht_s": 11666,
-    "agents_prod": 1398,
+    "agents_prod": 1198,
     "erlangs": 1017.5344444444445,
-    "agents_sched": 2594
+    "agents_sched": 2223
   },
   {
     "ts": "2025-08-18 19:00:00",
     "calls": 277,
     "aht_s": 11677,
-    "agents_prod": 1258,
+    "agents_prod": 1058,
     "erlangs": 898.4802777777778,
-    "agents_sched": 2334
+    "agents_sched": 1963
   },
   {
     "ts": "2025-08-18 20:00:00",
     "calls": 270,
     "aht_s": 11691,
-    "agents_prod": 1232,
+    "agents_prod": 1032,
     "erlangs": 876.825,
-    "agents_sched": 2286
+    "agents_sched": 1915
   },
   {
     "ts": "2025-08-18 21:00:00",
     "calls": 248,
     "aht_s": 11705,
-    "agents_prod": 1149,
+    "agents_prod": 949,
     "erlangs": 806.3444444444444,
-    "agents_sched": 2132
+    "agents_sched": 1761
   },
   {
     "ts": "2025-08-18 22:00:00",
@@ -4235,177 +4235,177 @@
     "ts": "2025-08-19 00:00:00",
     "calls": 269,
     "aht_s": 11713,
-    "agents_prod": 1230,
+    "agents_prod": 1030,
     "erlangs": 875.2213888888889,
-    "agents_sched": 2283
+    "agents_sched": 1911
   },
   {
     "ts": "2025-08-19 01:00:00",
     "calls": 269,
     "aht_s": 11716,
-    "agents_prod": 1230,
+    "agents_prod": 1030,
     "erlangs": 875.4455555555555,
-    "agents_sched": 2283
+    "agents_sched": 1911
   },
   {
     "ts": "2025-08-19 02:00:00",
     "calls": 269,
     "aht_s": 11717,
-    "agents_prod": 1231,
+    "agents_prod": 1031,
     "erlangs": 875.5202777777778,
-    "agents_sched": 2284
+    "agents_sched": 1913
   },
   {
     "ts": "2025-08-19 03:00:00",
     "calls": 269,
     "aht_s": 11715,
-    "agents_prod": 1230,
+    "agents_prod": 1030,
     "erlangs": 875.3708333333333,
-    "agents_sched": 2283
+    "agents_sched": 1911
   },
   {
     "ts": "2025-08-19 04:00:00",
     "calls": 269,
     "aht_s": 11709,
-    "agents_prod": 1230,
+    "agents_prod": 1030,
     "erlangs": 874.9225,
-    "agents_sched": 2283
+    "agents_sched": 1911
   },
   {
     "ts": "2025-08-19 05:00:00",
     "calls": 269,
     "aht_s": 11701,
-    "agents_prod": 1229,
+    "agents_prod": 1029,
     "erlangs": 874.3247222222222,
-    "agents_sched": 2281
+    "agents_sched": 1910
   },
   {
     "ts": "2025-08-19 06:00:00",
     "calls": 269,
     "aht_s": 11691,
-    "agents_prod": 1228,
+    "agents_prod": 1028,
     "erlangs": 873.5775,
-    "agents_sched": 2279
+    "agents_sched": 1908
   },
   {
     "ts": "2025-08-19 07:00:00",
     "calls": 269,
     "aht_s": 11680,
-    "agents_prod": 1227,
+    "agents_prod": 1027,
     "erlangs": 872.7555555555556,
-    "agents_sched": 2277
+    "agents_sched": 1906
   },
   {
     "ts": "2025-08-19 08:00:00",
     "calls": 269,
     "aht_s": 11669,
-    "agents_prod": 1226,
+    "agents_prod": 1026,
     "erlangs": 871.9336111111111,
-    "agents_sched": 2275
+    "agents_sched": 1904
   },
   {
     "ts": "2025-08-19 09:00:00",
     "calls": 269,
     "aht_s": 11659,
-    "agents_prod": 1225,
+    "agents_prod": 1025,
     "erlangs": 871.1863888888889,
-    "agents_sched": 2273
+    "agents_sched": 1902
   },
   {
     "ts": "2025-08-19 10:00:00",
     "calls": 366,
     "aht_s": 11650,
-    "agents_prod": 1594,
+    "agents_prod": 1394,
     "erlangs": 1184.4166666666667,
-    "agents_sched": 2958
+    "agents_sched": 2587
   },
   {
     "ts": "2025-08-19 11:00:00",
     "calls": 403,
     "aht_s": 11643,
-    "agents_prod": 1734,
+    "agents_prod": 1534,
     "erlangs": 1303.3691666666666,
-    "agents_sched": 3218
+    "agents_sched": 2847
   },
   {
     "ts": "2025-08-19 12:00:00",
     "calls": 411,
     "aht_s": 11638,
-    "agents_prod": 1764,
+    "agents_prod": 1564,
     "erlangs": 1328.6716666666666,
-    "agents_sched": 3273
+    "agents_sched": 2902
   },
   {
     "ts": "2025-08-19 13:00:00",
     "calls": 342,
     "aht_s": 11633,
-    "agents_prod": 1501,
+    "agents_prod": 1301,
     "erlangs": 1105.135,
-    "agents_sched": 2785
+    "agents_sched": 2414
   },
   {
     "ts": "2025-08-19 14:00:00",
     "calls": 343,
     "aht_s": 11628,
-    "agents_prod": 1504,
+    "agents_prod": 1304,
     "erlangs": 1107.89,
-    "agents_sched": 2791
+    "agents_sched": 2420
   },
   {
     "ts": "2025-08-19 15:00:00",
     "calls": 354,
     "aht_s": 11622,
-    "agents_prod": 1545,
+    "agents_prod": 1345,
     "erlangs": 1142.83,
-    "agents_sched": 2867
+    "agents_sched": 2496
   },
   {
     "ts": "2025-08-19 16:00:00",
     "calls": 352,
     "aht_s": 11615,
-    "agents_prod": 1537,
+    "agents_prod": 1337,
     "erlangs": 1135.6888888888889,
-    "agents_sched": 2852
+    "agents_sched": 2481
   },
   {
     "ts": "2025-08-19 17:00:00",
     "calls": 323,
     "aht_s": 11607,
-    "agents_prod": 1426,
+    "agents_prod": 1226,
     "erlangs": 1041.4058333333332,
-    "agents_sched": 2646
+    "agents_sched": 2275
   },
   {
     "ts": "2025-08-19 18:00:00",
     "calls": 306,
     "aht_s": 11599,
-    "agents_prod": 1360,
+    "agents_prod": 1160,
     "erlangs": 985.915,
-    "agents_sched": 2524
+    "agents_sched": 2153
   },
   {
     "ts": "2025-08-19 19:00:00",
     "calls": 298,
     "aht_s": 11591,
-    "agents_prod": 1329,
+    "agents_prod": 1129,
     "erlangs": 959.4772222222222,
-    "agents_sched": 2466
+    "agents_sched": 2095
   },
   {
     "ts": "2025-08-19 20:00:00",
     "calls": 274,
     "aht_s": 11586,
-    "agents_prod": 1238,
+    "agents_prod": 1038,
     "erlangs": 881.8233333333334,
-    "agents_sched": 2297
+    "agents_sched": 1926
   },
   {
     "ts": "2025-08-19 21:00:00",
     "calls": 234,
     "aht_s": 11582,
-    "agents_prod": 1086,
+    "agents_prod": 886,
     "erlangs": 752.83,
-    "agents_sched": 2015
+    "agents_sched": 1644
   },
   {
     "ts": "2025-08-19 22:00:00",
@@ -4427,169 +4427,169 @@
     "ts": "2025-08-20 00:00:00",
     "calls": 269,
     "aht_s": 11563,
-    "agents_prod": 1217,
+    "agents_prod": 1017,
     "erlangs": 864.0130555555555,
-    "agents_sched": 2258
+    "agents_sched": 1887
   },
   {
     "ts": "2025-08-20 01:00:00",
     "calls": 269,
     "aht_s": 11557,
-    "agents_prod": 1216,
+    "agents_prod": 1016,
     "erlangs": 863.5647222222223,
-    "agents_sched": 2257
+    "agents_sched": 1885
   },
   {
     "ts": "2025-08-20 02:00:00",
     "calls": 269,
     "aht_s": 11548,
-    "agents_prod": 1216,
+    "agents_prod": 1016,
     "erlangs": 862.8922222222222,
-    "agents_sched": 2257
+    "agents_sched": 1885
   },
   {
     "ts": "2025-08-20 03:00:00",
     "calls": 269,
     "aht_s": 11537,
-    "agents_prod": 1215,
+    "agents_prod": 1015,
     "erlangs": 862.0702777777777,
-    "agents_sched": 2255
+    "agents_sched": 1884
   },
   {
     "ts": "2025-08-20 04:00:00",
     "calls": 269,
     "aht_s": 11523,
-    "agents_prod": 1213,
+    "agents_prod": 1013,
     "erlangs": 861.0241666666667,
-    "agents_sched": 2251
+    "agents_sched": 1880
   },
   {
     "ts": "2025-08-20 05:00:00",
     "calls": 269,
     "aht_s": 11507,
-    "agents_prod": 1212,
+    "agents_prod": 1012,
     "erlangs": 859.8286111111111,
-    "agents_sched": 2249
+    "agents_sched": 1878
   },
   {
     "ts": "2025-08-20 06:00:00",
     "calls": 269,
     "aht_s": 11489,
-    "agents_prod": 1210,
+    "agents_prod": 1010,
     "erlangs": 858.4836111111111,
-    "agents_sched": 2245
+    "agents_sched": 1874
   },
   {
     "ts": "2025-08-20 07:00:00",
     "calls": 269,
     "aht_s": 11470,
-    "agents_prod": 1209,
+    "agents_prod": 1009,
     "erlangs": 857.0638888888889,
-    "agents_sched": 2244
+    "agents_sched": 1872
   },
   {
     "ts": "2025-08-20 08:00:00",
     "calls": 269,
     "aht_s": 11452,
-    "agents_prod": 1207,
+    "agents_prod": 1007,
     "erlangs": 855.7188888888888,
-    "agents_sched": 2240
+    "agents_sched": 1869
   },
   {
     "ts": "2025-08-20 09:00:00",
     "calls": 269,
     "aht_s": 11435,
-    "agents_prod": 1206,
+    "agents_prod": 1006,
     "erlangs": 854.4486111111111,
-    "agents_sched": 2238
+    "agents_sched": 1867
   },
   {
     "ts": "2025-08-20 10:00:00",
     "calls": 365,
     "aht_s": 11418,
-    "agents_prod": 1562,
+    "agents_prod": 1362,
     "erlangs": 1157.6583333333333,
-    "agents_sched": 2898
+    "agents_sched": 2527
   },
   {
     "ts": "2025-08-20 11:00:00",
     "calls": 378,
     "aht_s": 11404,
-    "agents_prod": 1609,
+    "agents_prod": 1409,
     "erlangs": 1197.42,
-    "agents_sched": 2986
+    "agents_sched": 2615
   },
   {
     "ts": "2025-08-20 12:00:00",
     "calls": 373,
     "aht_s": 11392,
-    "agents_prod": 1589,
+    "agents_prod": 1389,
     "erlangs": 1180.3377777777778,
-    "agents_sched": 2949
+    "agents_sched": 2577
   },
   {
     "ts": "2025-08-20 13:00:00",
     "calls": 335,
     "aht_s": 11379,
-    "agents_prod": 1446,
+    "agents_prod": 1246,
     "erlangs": 1058.8791666666666,
-    "agents_sched": 2683
+    "agents_sched": 2312
   },
   {
     "ts": "2025-08-20 14:00:00",
     "calls": 337,
     "aht_s": 11366,
-    "agents_prod": 1452,
+    "agents_prod": 1252,
     "erlangs": 1063.983888888889,
-    "agents_sched": 2694
+    "agents_sched": 2323
   },
   {
     "ts": "2025-08-20 15:00:00",
     "calls": 369,
     "aht_s": 11353,
-    "agents_prod": 1570,
+    "agents_prod": 1370,
     "erlangs": 1163.6825,
-    "agents_sched": 2913
+    "agents_sched": 2542
   },
   {
     "ts": "2025-08-20 16:00:00",
     "calls": 337,
     "aht_s": 11339,
-    "agents_prod": 1449,
+    "agents_prod": 1249,
     "erlangs": 1061.4563888888888,
-    "agents_sched": 2689
+    "agents_sched": 2318
   },
   {
     "ts": "2025-08-20 17:00:00",
     "calls": 338,
     "aht_s": 11325,
-    "agents_prod": 1451,
+    "agents_prod": 1251,
     "erlangs": 1063.2916666666667,
-    "agents_sched": 2693
+    "agents_sched": 2321
   },
   {
     "ts": "2025-08-20 18:00:00",
     "calls": 348,
     "aht_s": 11309,
-    "agents_prod": 1487,
+    "agents_prod": 1287,
     "erlangs": 1093.2033333333334,
-    "agents_sched": 2759
+    "agents_sched": 2388
   },
   {
     "ts": "2025-08-20 19:00:00",
     "calls": 282,
     "aht_s": 11294,
-    "agents_prod": 1241,
+    "agents_prod": 1041,
     "erlangs": 884.6966666666667,
-    "agents_sched": 2303
+    "agents_sched": 1932
   },
   {
     "ts": "2025-08-20 20:00:00",
     "calls": 244,
     "aht_s": 11282,
-    "agents_prod": 1100,
+    "agents_prod": 900,
     "erlangs": 764.6688888888889,
-    "agents_sched": 2041
+    "agents_sched": 1670
   },
   {
     "ts": "2025-08-20 21:00:00",
@@ -4619,169 +4619,169 @@
     "ts": "2025-08-21 00:00:00",
     "calls": 269,
     "aht_s": 11208,
-    "agents_prod": 1186,
+    "agents_prod": 986,
     "erlangs": 837.4866666666667,
-    "agents_sched": 2201
+    "agents_sched": 1830
   },
   {
     "ts": "2025-08-21 01:00:00",
     "calls": 269,
     "aht_s": 11188,
-    "agents_prod": 1184,
+    "agents_prod": 984,
     "erlangs": 835.9922222222223,
-    "agents_sched": 2197
+    "agents_sched": 1826
   },
   {
     "ts": "2025-08-21 02:00:00",
     "calls": 269,
     "aht_s": 11168,
-    "agents_prod": 1182,
+    "agents_prod": 982,
     "erlangs": 834.4977777777777,
-    "agents_sched": 2193
+    "agents_sched": 1822
   },
   {
     "ts": "2025-08-21 03:00:00",
     "calls": 269,
     "aht_s": 11148,
-    "agents_prod": 1181,
+    "agents_prod": 981,
     "erlangs": 833.0033333333333,
-    "agents_sched": 2192
+    "agents_sched": 1821
   },
   {
     "ts": "2025-08-21 04:00:00",
     "calls": 269,
     "aht_s": 11128,
-    "agents_prod": 1179,
+    "agents_prod": 979,
     "erlangs": 831.5088888888889,
-    "agents_sched": 2188
+    "agents_sched": 1817
   },
   {
     "ts": "2025-08-21 05:00:00",
     "calls": 269,
     "aht_s": 11108,
-    "agents_prod": 1177,
+    "agents_prod": 977,
     "erlangs": 830.0144444444444,
-    "agents_sched": 2184
+    "agents_sched": 1813
   },
   {
     "ts": "2025-08-21 06:00:00",
     "calls": 269,
     "aht_s": 11089,
-    "agents_prod": 1175,
+    "agents_prod": 975,
     "erlangs": 828.5947222222222,
-    "agents_sched": 2180
+    "agents_sched": 1809
   },
   {
     "ts": "2025-08-21 07:00:00",
     "calls": 269,
     "aht_s": 11071,
-    "agents_prod": 1174,
+    "agents_prod": 974,
     "erlangs": 827.2497222222222,
-    "agents_sched": 2179
+    "agents_sched": 1808
   },
   {
     "ts": "2025-08-21 08:00:00",
     "calls": 269,
     "aht_s": 11052,
-    "agents_prod": 1172,
+    "agents_prod": 972,
     "erlangs": 825.83,
-    "agents_sched": 2175
+    "agents_sched": 1804
   },
   {
     "ts": "2025-08-21 09:00:00",
     "calls": 269,
     "aht_s": 11034,
-    "agents_prod": 1170,
+    "agents_prod": 970,
     "erlangs": 824.485,
-    "agents_sched": 2171
+    "agents_sched": 1800
   },
   {
     "ts": "2025-08-21 10:00:00",
     "calls": 350,
     "aht_s": 11016,
-    "agents_prod": 1460,
+    "agents_prod": 1260,
     "erlangs": 1071.0,
-    "agents_sched": 2709
+    "agents_sched": 2338
   },
   {
     "ts": "2025-08-21 11:00:00",
     "calls": 372,
     "aht_s": 10995,
-    "agents_prod": 1537,
+    "agents_prod": 1337,
     "erlangs": 1136.15,
-    "agents_sched": 2852
+    "agents_sched": 2481
   },
   {
     "ts": "2025-08-21 12:00:00",
     "calls": 356,
     "aht_s": 10976,
-    "agents_prod": 1477,
+    "agents_prod": 1277,
     "erlangs": 1085.4044444444444,
-    "agents_sched": 2741
+    "agents_sched": 2370
   },
   {
     "ts": "2025-08-21 13:00:00",
     "calls": 330,
     "aht_s": 10958,
-    "agents_prod": 1382,
+    "agents_prod": 1182,
     "erlangs": 1004.4833333333333,
-    "agents_sched": 2565
+    "agents_sched": 2193
   },
   {
     "ts": "2025-08-21 14:00:00",
     "calls": 304,
     "aht_s": 10939,
-    "agents_prod": 1287,
+    "agents_prod": 1087,
     "erlangs": 923.7377777777778,
-    "agents_sched": 2388
+    "agents_sched": 2017
   },
   {
     "ts": "2025-08-21 15:00:00",
     "calls": 312,
     "aht_s": 10919,
-    "agents_prod": 1314,
+    "agents_prod": 1114,
     "erlangs": 946.3133333333334,
-    "agents_sched": 2438
+    "agents_sched": 2067
   },
   {
     "ts": "2025-08-21 16:00:00",
     "calls": 314,
     "aht_s": 10898,
-    "agents_prod": 1319,
+    "agents_prod": 1119,
     "erlangs": 950.5477777777778,
-    "agents_sched": 2448
+    "agents_sched": 2077
   },
   {
     "ts": "2025-08-21 17:00:00",
     "calls": 316,
     "aht_s": 10877,
-    "agents_prod": 1324,
+    "agents_prod": 1124,
     "erlangs": 954.7588888888889,
-    "agents_sched": 2457
+    "agents_sched": 2086
   },
   {
     "ts": "2025-08-21 18:00:00",
     "calls": 336,
     "aht_s": 10851,
-    "agents_prod": 1392,
+    "agents_prod": 1192,
     "erlangs": 1012.76,
-    "agents_sched": 2583
+    "agents_sched": 2212
   },
   {
     "ts": "2025-08-21 19:00:00",
     "calls": 250,
     "aht_s": 10823,
-    "agents_prod": 1085,
+    "agents_prod": 885,
     "erlangs": 751.5972222222222,
-    "agents_sched": 2013
+    "agents_sched": 1642
   },
   {
     "ts": "2025-08-21 20:00:00",
     "calls": 258,
     "aht_s": 10796,
-    "agents_prod": 1111,
+    "agents_prod": 911,
     "erlangs": 773.7133333333334,
-    "agents_sched": 2062
+    "agents_sched": 1691
   },
   {
     "ts": "2025-08-21 21:00:00",
@@ -4811,161 +4811,161 @@
     "ts": "2025-08-22 00:00:00",
     "calls": 269,
     "aht_s": 10691,
-    "agents_prod": 1140,
+    "agents_prod": 940,
     "erlangs": 798.8552777777778,
-    "agents_sched": 2116
+    "agents_sched": 1744
   },
   {
     "ts": "2025-08-22 01:00:00",
     "calls": 269,
     "aht_s": 10665,
-    "agents_prod": 1138,
+    "agents_prod": 938,
     "erlangs": 796.9125,
-    "agents_sched": 2112
+    "agents_sched": 1741
   },
   {
     "ts": "2025-08-22 02:00:00",
     "calls": 269,
     "aht_s": 10640,
-    "agents_prod": 1136,
+    "agents_prod": 936,
     "erlangs": 795.0444444444445,
-    "agents_sched": 2108
+    "agents_sched": 1737
   },
   {
     "ts": "2025-08-22 03:00:00",
     "calls": 269,
     "aht_s": 10614,
-    "agents_prod": 1134,
+    "agents_prod": 934,
     "erlangs": 793.1016666666667,
-    "agents_sched": 2104
+    "agents_sched": 1733
   },
   {
     "ts": "2025-08-22 04:00:00",
     "calls": 269,
     "aht_s": 10588,
-    "agents_prod": 1131,
+    "agents_prod": 931,
     "erlangs": 791.1588888888889,
-    "agents_sched": 2099
+    "agents_sched": 1728
   },
   {
     "ts": "2025-08-22 05:00:00",
     "calls": 269,
     "aht_s": 10564,
-    "agents_prod": 1129,
+    "agents_prod": 929,
     "erlangs": 789.3655555555556,
-    "agents_sched": 2095
+    "agents_sched": 1724
   },
   {
     "ts": "2025-08-22 06:00:00",
     "calls": 269,
     "aht_s": 10541,
-    "agents_prod": 1127,
+    "agents_prod": 927,
     "erlangs": 787.6469444444444,
-    "agents_sched": 2091
+    "agents_sched": 1720
   },
   {
     "ts": "2025-08-22 07:00:00",
     "calls": 269,
     "aht_s": 10520,
-    "agents_prod": 1125,
+    "agents_prod": 925,
     "erlangs": 786.0777777777778,
-    "agents_sched": 2088
+    "agents_sched": 1717
   },
   {
     "ts": "2025-08-22 08:00:00",
     "calls": 269,
     "aht_s": 10499,
-    "agents_prod": 1123,
+    "agents_prod": 923,
     "erlangs": 784.5086111111111,
-    "agents_sched": 2084
+    "agents_sched": 1713
   },
   {
     "ts": "2025-08-22 09:00:00",
     "calls": 269,
     "aht_s": 10479,
-    "agents_prod": 1122,
+    "agents_prod": 922,
     "erlangs": 783.0141666666667,
-    "agents_sched": 2082
+    "agents_sched": 1711
   },
   {
     "ts": "2025-08-22 10:00:00",
     "calls": 326,
     "aht_s": 10458,
-    "agents_prod": 1315,
+    "agents_prod": 1115,
     "erlangs": 947.03,
-    "agents_sched": 2440
+    "agents_sched": 2069
   },
   {
     "ts": "2025-08-22 11:00:00",
     "calls": 366,
     "aht_s": 10438,
-    "agents_prod": 1449,
+    "agents_prod": 1249,
     "erlangs": 1061.1966666666667,
-    "agents_sched": 2689
+    "agents_sched": 2318
   },
   {
     "ts": "2025-08-22 12:00:00",
     "calls": 345,
     "aht_s": 10418,
-    "agents_prod": 1375,
+    "agents_prod": 1175,
     "erlangs": 998.3916666666667,
-    "agents_sched": 2552
+    "agents_sched": 2180
   },
   {
     "ts": "2025-08-22 13:00:00",
     "calls": 304,
     "aht_s": 10397,
-    "agents_prod": 1233,
+    "agents_prod": 1033,
     "erlangs": 877.9688888888888,
-    "agents_sched": 2288
+    "agents_sched": 1917
   },
   {
     "ts": "2025-08-22 14:00:00",
     "calls": 333,
     "aht_s": 10373,
-    "agents_prod": 1329,
+    "agents_prod": 1129,
     "erlangs": 959.5025,
-    "agents_sched": 2466
+    "agents_sched": 2095
   },
   {
     "ts": "2025-08-22 15:00:00",
     "calls": 320,
     "aht_s": 10349,
-    "agents_prod": 1283,
+    "agents_prod": 1083,
     "erlangs": 919.9111111111112,
-    "agents_sched": 2381
+    "agents_sched": 2010
   },
   {
     "ts": "2025-08-22 16:00:00",
     "calls": 320,
     "aht_s": 10322,
-    "agents_prod": 1280,
+    "agents_prod": 1080,
     "erlangs": 917.5111111111111,
-    "agents_sched": 2375
+    "agents_sched": 2004
   },
   {
     "ts": "2025-08-22 17:00:00",
     "calls": 309,
     "aht_s": 10293,
-    "agents_prod": 1240,
+    "agents_prod": 1040,
     "erlangs": 883.4825,
-    "agents_sched": 2301
+    "agents_sched": 1930
   },
   {
     "ts": "2025-08-22 18:00:00",
     "calls": 331,
     "aht_s": 10262,
-    "agents_prod": 1311,
+    "agents_prod": 1111,
     "erlangs": 943.5338888888889,
-    "agents_sched": 2433
+    "agents_sched": 2062
   },
   {
     "ts": "2025-08-22 19:00:00",
     "calls": 260,
     "aht_s": 10231,
-    "agents_prod": 1070,
+    "agents_prod": 870,
     "erlangs": 738.9055555555556,
-    "agents_sched": 1986
+    "agents_sched": 1615
   },
   {
     "ts": "2025-08-22 20:00:00",
@@ -5003,129 +5003,129 @@
     "ts": "2025-08-23 00:00:00",
     "calls": 311,
     "aht_s": 10081,
-    "agents_prod": 1225,
+    "agents_prod": 1025,
     "erlangs": 870.8863888888889,
-    "agents_sched": 2273
+    "agents_sched": 1902
   },
   {
     "ts": "2025-08-23 01:00:00",
     "calls": 311,
     "aht_s": 10051,
-    "agents_prod": 1222,
+    "agents_prod": 1022,
     "erlangs": 868.2947222222223,
-    "agents_sched": 2268
+    "agents_sched": 1897
   },
   {
     "ts": "2025-08-23 02:00:00",
     "calls": 311,
     "aht_s": 10022,
-    "agents_prod": 1219,
+    "agents_prod": 1019,
     "erlangs": 865.7894444444445,
-    "agents_sched": 2262
+    "agents_sched": 1891
   },
   {
     "ts": "2025-08-23 03:00:00",
     "calls": 311,
     "aht_s": 9993,
-    "agents_prod": 1216,
+    "agents_prod": 1016,
     "erlangs": 863.2841666666667,
-    "agents_sched": 2257
+    "agents_sched": 1885
   },
   {
     "ts": "2025-08-23 04:00:00",
     "calls": 311,
     "aht_s": 9964,
-    "agents_prod": 1213,
+    "agents_prod": 1013,
     "erlangs": 860.7788888888889,
-    "agents_sched": 2251
+    "agents_sched": 1880
   },
   {
     "ts": "2025-08-23 05:00:00",
     "calls": 311,
     "aht_s": 9935,
-    "agents_prod": 1210,
+    "agents_prod": 1010,
     "erlangs": 858.2736111111111,
-    "agents_sched": 2245
+    "agents_sched": 1874
   },
   {
     "ts": "2025-08-23 06:00:00",
     "calls": 311,
     "aht_s": 9908,
-    "agents_prod": 1207,
+    "agents_prod": 1007,
     "erlangs": 855.9411111111111,
-    "agents_sched": 2240
+    "agents_sched": 1869
   },
   {
     "ts": "2025-08-23 07:00:00",
     "calls": 311,
     "aht_s": 9882,
-    "agents_prod": 1205,
+    "agents_prod": 1005,
     "erlangs": 853.695,
-    "agents_sched": 2236
+    "agents_sched": 1865
   },
   {
     "ts": "2025-08-23 08:00:00",
     "calls": 311,
     "aht_s": 9858,
-    "agents_prod": 1202,
+    "agents_prod": 1002,
     "erlangs": 851.6216666666667,
-    "agents_sched": 2231
+    "agents_sched": 1859
   },
   {
     "ts": "2025-08-23 09:00:00",
     "calls": 311,
     "aht_s": 9834,
-    "agents_prod": 1200,
+    "agents_prod": 1000,
     "erlangs": 849.5483333333333,
-    "agents_sched": 2227
+    "agents_sched": 1856
   },
   {
     "ts": "2025-08-23 10:00:00",
     "calls": 300,
     "aht_s": 9810,
-    "agents_prod": 1162,
+    "agents_prod": 962,
     "erlangs": 817.5,
-    "agents_sched": 2156
+    "agents_sched": 1785
   },
   {
     "ts": "2025-08-23 11:00:00",
     "calls": 310,
     "aht_s": 9786,
-    "agents_prod": 1192,
+    "agents_prod": 992,
     "erlangs": 842.6833333333333,
-    "agents_sched": 2212
+    "agents_sched": 1841
   },
   {
     "ts": "2025-08-23 12:00:00",
     "calls": 302,
     "aht_s": 9763,
-    "agents_prod": 1164,
+    "agents_prod": 964,
     "erlangs": 819.0072222222223,
-    "agents_sched": 2160
+    "agents_sched": 1789
   },
   {
     "ts": "2025-08-23 13:00:00",
     "calls": 276,
     "aht_s": 9739,
-    "agents_prod": 1079,
+    "agents_prod": 879,
     "erlangs": 746.6566666666666,
-    "agents_sched": 2002
+    "agents_sched": 1631
   },
   {
     "ts": "2025-08-23 14:00:00",
     "calls": 286,
     "aht_s": 9713,
-    "agents_prod": 1108,
+    "agents_prod": 908,
     "erlangs": 771.6438888888889,
-    "agents_sched": 2056
+    "agents_sched": 1685
   },
   {
     "ts": "2025-08-23 15:00:00",
     "calls": 268,
     "aht_s": 9686,
-    "agents_prod": 1049,
+    "agents_prod": 849,
     "erlangs": 721.0688888888889,
-    "agents_sched": 1947
+    "agents_sched": 1576
   },
   {
     "ts": "2025-08-23 16:00:00",
@@ -5147,9 +5147,9 @@
     "ts": "2025-08-23 18:00:00",
     "calls": 322,
     "aht_s": 9593,
-    "agents_prod": 1210,
+    "agents_prod": 1010,
     "erlangs": 858.0405555555556,
-    "agents_sched": 2245
+    "agents_sched": 1874
   },
   {
     "ts": "2025-08-23 19:00:00",
@@ -5163,9 +5163,9 @@
     "ts": "2025-08-23 20:00:00",
     "calls": 277,
     "aht_s": 9526,
-    "agents_prod": 1063,
+    "agents_prod": 863,
     "erlangs": 732.9727777777778,
-    "agents_sched": 1973
+    "agents_sched": 1602
   },
   {
     "ts": "2025-08-23 21:00:00",
@@ -5195,81 +5195,81 @@
     "ts": "2025-08-24 00:00:00",
     "calls": 311,
     "aht_s": 9396,
-    "agents_prod": 1155,
+    "agents_prod": 955,
     "erlangs": 811.71,
-    "agents_sched": 2143
+    "agents_sched": 1772
   },
   {
     "ts": "2025-08-24 01:00:00",
     "calls": 311,
     "aht_s": 9365,
-    "agents_prod": 1152,
+    "agents_prod": 952,
     "erlangs": 809.0319444444444,
-    "agents_sched": 2138
+    "agents_sched": 1767
   },
   {
     "ts": "2025-08-24 02:00:00",
     "calls": 311,
     "aht_s": 9333,
-    "agents_prod": 1149,
+    "agents_prod": 949,
     "erlangs": 806.2675,
-    "agents_sched": 2132
+    "agents_sched": 1761
   },
   {
     "ts": "2025-08-24 03:00:00",
     "calls": 311,
     "aht_s": 9302,
-    "agents_prod": 1146,
+    "agents_prod": 946,
     "erlangs": 803.5894444444444,
-    "agents_sched": 2127
+    "agents_sched": 1756
   },
   {
     "ts": "2025-08-24 04:00:00",
     "calls": 311,
     "aht_s": 9271,
-    "agents_prod": 1143,
+    "agents_prod": 943,
     "erlangs": 800.9113888888888,
-    "agents_sched": 2121
+    "agents_sched": 1750
   },
   {
     "ts": "2025-08-24 05:00:00",
     "calls": 311,
     "aht_s": 9240,
-    "agents_prod": 1140,
+    "agents_prod": 940,
     "erlangs": 798.2333333333333,
-    "agents_sched": 2116
+    "agents_sched": 1744
   },
   {
     "ts": "2025-08-24 06:00:00",
     "calls": 311,
     "aht_s": 9209,
-    "agents_prod": 1136,
+    "agents_prod": 936,
     "erlangs": 795.5552777777777,
-    "agents_sched": 2108
+    "agents_sched": 1737
   },
   {
     "ts": "2025-08-24 07:00:00",
     "calls": 311,
     "aht_s": 9180,
-    "agents_prod": 1133,
+    "agents_prod": 933,
     "erlangs": 793.05,
-    "agents_sched": 2103
+    "agents_sched": 1731
   },
   {
     "ts": "2025-08-24 08:00:00",
     "calls": 311,
     "aht_s": 9153,
-    "agents_prod": 1131,
+    "agents_prod": 931,
     "erlangs": 790.7175,
-    "agents_sched": 2099
+    "agents_sched": 1728
   },
   {
     "ts": "2025-08-24 09:00:00",
     "calls": 311,
     "aht_s": 9128,
-    "agents_prod": 1128,
+    "agents_prod": 928,
     "erlangs": 788.5577777777778,
-    "agents_sched": 2093
+    "agents_sched": 1722
   },
   {
     "ts": "2025-08-24 10:00:00",
@@ -5339,33 +5339,33 @@
     "ts": "2025-08-24 18:00:00",
     "calls": 352,
     "aht_s": 8875,
-    "agents_prod": 1221,
+    "agents_prod": 1021,
     "erlangs": 867.7777777777778,
-    "agents_sched": 2266
+    "agents_sched": 1895
   },
   {
     "ts": "2025-08-24 19:00:00",
     "calls": 354,
     "aht_s": 8841,
-    "agents_prod": 1223,
+    "agents_prod": 1023,
     "erlangs": 869.365,
-    "agents_sched": 2270
+    "agents_sched": 1898
   },
   {
     "ts": "2025-08-24 20:00:00",
     "calls": 330,
     "aht_s": 8807,
-    "agents_prod": 1150,
+    "agents_prod": 950,
     "erlangs": 807.3083333333333,
-    "agents_sched": 2134
+    "agents_sched": 1763
   },
   {
     "ts": "2025-08-24 21:00:00",
     "calls": 305,
     "aht_s": 8773,
-    "agents_prod": 1075,
+    "agents_prod": 875,
     "erlangs": 743.2680555555555,
-    "agents_sched": 1995
+    "agents_sched": 1624
   },
   {
     "ts": "2025-08-24 22:00:00",
@@ -5467,65 +5467,65 @@
     "ts": "2025-08-25 10:00:00",
     "calls": 386,
     "aht_s": 8369,
-    "agents_prod": 1256,
+    "agents_prod": 1056,
     "erlangs": 897.3427777777778,
-    "agents_sched": 2331
+    "agents_sched": 1960
   },
   {
     "ts": "2025-08-25 11:00:00",
     "calls": 412,
     "aht_s": 8344,
-    "agents_prod": 1324,
+    "agents_prod": 1124,
     "erlangs": 954.9244444444445,
-    "agents_sched": 2457
+    "agents_sched": 2086
   },
   {
     "ts": "2025-08-25 12:00:00",
     "calls": 393,
     "aht_s": 8319,
-    "agents_prod": 1269,
+    "agents_prod": 1069,
     "erlangs": 908.1575,
-    "agents_sched": 2355
+    "agents_sched": 1984
   },
   {
     "ts": "2025-08-25 13:00:00",
     "calls": 354,
     "aht_s": 8293,
-    "agents_prod": 1160,
+    "agents_prod": 960,
     "erlangs": 815.4783333333334,
-    "agents_sched": 2153
+    "agents_sched": 1782
   },
   {
     "ts": "2025-08-25 14:00:00",
     "calls": 348,
     "aht_s": 8266,
-    "agents_prod": 1141,
+    "agents_prod": 941,
     "erlangs": 799.0466666666666,
-    "agents_sched": 2117
+    "agents_sched": 1746
   },
   {
     "ts": "2025-08-25 15:00:00",
     "calls": 352,
     "aht_s": 8237,
-    "agents_prod": 1148,
+    "agents_prod": 948,
     "erlangs": 805.3955555555556,
-    "agents_sched": 2130
+    "agents_sched": 1759
   },
   {
     "ts": "2025-08-25 16:00:00",
     "calls": 327,
     "aht_s": 8207,
-    "agents_prod": 1078,
+    "agents_prod": 878,
     "erlangs": 745.4691666666666,
-    "agents_sched": 2000
+    "agents_sched": 1629
   },
   {
     "ts": "2025-08-25 17:00:00",
     "calls": 351,
     "aht_s": 8175,
-    "agents_prod": 1138,
+    "agents_prod": 938,
     "erlangs": 797.0625,
-    "agents_sched": 2112
+    "agents_sched": 1741
   },
   {
     "ts": "2025-08-25 18:00:00",
@@ -5659,57 +5659,57 @@
     "ts": "2025-08-26 10:00:00",
     "calls": 366,
     "aht_s": 7640,
-    "agents_prod": 1114,
+    "agents_prod": 914,
     "erlangs": 776.7333333333333,
-    "agents_sched": 2067
+    "agents_sched": 1696
   },
   {
     "ts": "2025-08-26 11:00:00",
     "calls": 403,
     "aht_s": 7616,
-    "agents_prod": 1204,
+    "agents_prod": 1004,
     "erlangs": 852.5688888888889,
-    "agents_sched": 2234
+    "agents_sched": 1863
   },
   {
     "ts": "2025-08-26 12:00:00",
     "calls": 411,
     "aht_s": 7592,
-    "agents_prod": 1220,
+    "agents_prod": 1020,
     "erlangs": 866.7533333333333,
-    "agents_sched": 2264
+    "agents_sched": 1893
   },
   {
     "ts": "2025-08-26 13:00:00",
     "calls": 342,
     "aht_s": 7567,
-    "agents_prod": 1046,
+    "agents_prod": 846,
     "erlangs": 718.865,
-    "agents_sched": 1941
+    "agents_sched": 1570
   },
   {
     "ts": "2025-08-26 14:00:00",
     "calls": 343,
     "aht_s": 7541,
-    "agents_prod": 1046,
+    "agents_prod": 846,
     "erlangs": 718.4897222222222,
-    "agents_sched": 1941
+    "agents_sched": 1570
   },
   {
     "ts": "2025-08-26 15:00:00",
     "calls": 354,
     "aht_s": 7513,
-    "agents_prod": 1070,
+    "agents_prod": 870,
     "erlangs": 738.7783333333333,
-    "agents_sched": 1986
+    "agents_sched": 1615
   },
   {
     "ts": "2025-08-26 16:00:00",
     "calls": 352,
     "aht_s": 7484,
-    "agents_prod": 1061,
+    "agents_prod": 861,
     "erlangs": 731.7688888888889,
-    "agents_sched": 1969
+    "agents_sched": 1598
   },
   {
     "ts": "2025-08-26 17:00:00",
@@ -5859,17 +5859,17 @@
     "ts": "2025-08-27 11:00:00",
     "calls": 378,
     "aht_s": 6921,
-    "agents_prod": 1055,
+    "agents_prod": 855,
     "erlangs": 726.705,
-    "agents_sched": 1958
+    "agents_sched": 1587
   },
   {
     "ts": "2025-08-27 12:00:00",
     "calls": 373,
     "aht_s": 6898,
-    "agents_prod": 1041,
+    "agents_prod": 841,
     "erlangs": 714.7094444444444,
-    "agents_sched": 1932
+    "agents_sched": 1561
   },
   {
     "ts": "2025-08-27 13:00:00",
