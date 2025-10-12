@@ -1,260 +1,201 @@
 # =======================================================================
-# CLIMA HORARIO por LAT/LON — FALLBACK ROBUSTO (SIN API KEYS)
-# Fuentes: 1. Open-Meteo (Archive) → 2. Meteostat
-# Desde 2022-01-01 hasta HOY | America/Santiago
-#
-# v4: Optimizado para rangos históricos largos mediante "chunking" anual.
+# forecast3m.py
+# VERSIÓN FINAL CORREGIDA: Sin comandos de instalación y con inferencia estable.
+# ADAPTADO PARA MODELO UNIFICADO (LLAMADAS + TMO).
+# DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA, RECALIBRACIÓN, AJUSTES Y ERLANG-C
 # =======================================================================
 
-# Instalar dependencias si no están presentes
-!pip -q install openmeteo-requests retry-requests pandas requests-cache python-dateutil openpyxl chardet meteostat pytz
-
-import io
-import time
-import chardet
-import warnings
+import os
+import json
+import joblib
+import numpy as np
 import pandas as pd
-import datetime as dt
-from dateutil import tz
-from google.colab import files
+import tensorflow as tf
+from utils_release import download_asset_from_latest
 
-# APIs de clima
-import openmeteo_requests
-from retry_requests import retry
-import requests
-import requests_cache
-from meteostat import Hourly as MsHourly, Point as MsPoint
+# --- Parámetros generales ---
+OWNER = "Supervision-Inbound"
+REPO  = "wfneuronal"
+MODELS_DIR = "models"
+DATA_FILE = "data/historical_data.csv"
+HOLIDAYS_FILE = "data/Feriados_Chilev2.csv"
 
-# Para escritura optimizada en Excel
-from openpyxl import Workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
-from openpyxl.utils.exceptions import IllegalCharacterError
+OUT_CSV_DATAOUT = "public/predicciones.csv"
+OUT_JSON_PUBLIC = "public/predicciones.json"
+OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
+STAMP_JSON = "public/last_update.json"
+OUT_JSON_ERLANG = "public/erlang_forecast.json"
 
-warnings.filterwarnings("ignore")
+ASSET_MODELO_UNIFICADO = "modelo_unificado_nn.h5"
+ASSET_SCALER_UNIFICADO = "scaler_unificado.pkl"
+ASSET_COLUMNAS = "training_columns_unificado.json"
 
-# ---------- Parámetros ----------
-OVERALL_START_DATE = "2022-01-01"
-TZ_STR = "America/Santiago"
-# <-- La fecha final sigue siendo dinámica (hoy)
-OVERALL_END_DATE = dt.datetime.now(tz.gettz(TZ_STR)).date().isoformat()
+TIMEZONE = "America/Santiago"
+FREQ = "H"
+TARGET_LLAMADAS = "recibidos"
+TARGET_TMO = "tmo_seg"
 
+HORIZON_DAYS = 120
+MAD_K = 5.0
+MAD_K_WEEKEND = 6.5
 
-# Variables HORARIAS normalizadas
-HOURLY_VARS = [
-    "temperature_2m", "precipitation", "rain",
-    "wind_speed_10m", "wind_gusts_10m"
-]
-UNITS = {"temperature_unit": "celsius", "wind_speed_unit": "kmh", "precipitation_unit": "mm"}
-OM_ARCHIVE_URL = "https://archive-api.open-meteo.com/v1/era5"
+# --- Parámetros Erlang / Dimensionamiento ---
+SLA_TARGET        = 0.90
+ASA_TARGET_S      = 22
+INTERVAL_S        = 3600
+MAX_OCC           = 0.85
+SHRINKAGE         = 0.30
+ABSENTEEISM_RATE  = 0.23
 
-# Throttling / backoff
-BASE_SLEEP_S = 1.8
-MAX_RETRIES = 3
-BACKOFF_FACTOR = 2.0
-COOL_DOWN_429 = 70
+# =======================================================================
+# Utilidades
+# =======================================================================
+def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
+    df = df.copy()
+    df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
+    df["hora_str"] = df[col_hora].astype(str).str.slice(0, 5)
+    df["ts"] = pd.to_datetime(
+        df["fecha_dt"].astype(str) + " " + df["hora_str"],
+        errors="coerce", format="%Y-%m-%d %H:%M"
+    )
+    df = df.dropna(subset=["ts"]).sort_values("ts")
+    df["ts"] = df["ts"].dt.tz_localize(TIMEZONE, ambiguous="NaT", nonexistent="NaT")
+    df = df.dropna(subset=["ts"])
+    return df.set_index("ts")
 
-# Nombres de archivos de salida
-OUT_CSV = "clima_por_comuna_horario.csv"
-OUT_XLSX = "clima_por_comuna_horario.xlsx"
-ERR_GEO_CSV = "errores_geograficos.csv"
-FAILED_CSV = "fallidas.csv"
-RETRIED_CSV = "reintentadas.csv"
+def parse_tmo_to_seconds(val):
+    if pd.isna(val): return np.nan
+    s = str(val).strip().replace(",", ".")
+    if s.replace(".", "", 1).isdigit():
+        try: return float(s)
+        except: return np.nan
+    parts = s.split(":")
+    try:
+        if len(parts) == 3: return float(parts[0])*3600 + float(parts[1])*60 + float(parts[2])
+        if len(parts) == 2: return float(parts[0])*60 + float(parts[1])
+        return float(s)
+    except:
+        return np.nan
 
-# ---------- Lector robusto de CSV ----------
-def read_locations(bytes_blob):
-    enc_guess = chardet.detect(bytes_blob).get("encoding") or "utf-8"
-    attempts = [
-        (enc_guess, None), (enc_guess, ";"), ("utf-8-sig", None), ("utf-8-sig", ";"),
-        ("latin-1", None), ("latin-1", ";"), ("cp1252", None), ("cp1252", ";"),
-    ]
-    last_err = None
-    for enc, sep in attempts:
-        try:
-            df = pd.read_csv(io.BytesIO(bytes_blob), encoding=enc, sep=sep, engine="python")
-            df.columns = [c.strip().lower() for c in df.columns]
-            if "comunas" in df.columns and "comuna" not in df.columns:
-                df = df.rename(columns={"comunas": "comuna"})
-            req = {"comuna", "lat", "lon"}
-            if not req.issubset(df.columns): continue
-            for col in ("lat", "lon"):
-                df[col] = (df[col].astype(str).str.replace(",", ".", regex=False).str.strip())
-                df[col] = pd.to_numeric(df[col], errors="coerce")
-            df = df.dropna(subset=["comuna", "lat", "lon"]).reset_index(drop=True)
-            return df
-        except Exception as e:
-            last_err = e
-    raise last_err or ValueError("No se pudo leer el CSV con ningún intento")
+def add_time_features(df):
+    df_copy = df.copy()
+    df_copy["dow"] = df_copy.index.dayofweek
+    df_copy["month"] = df_copy.index.month
+    df_copy["hour"] = df_copy.index.hour
+    df_copy["sin_hour"] = np.sin(2 * np.pi * df_copy["hour"] / 24)
+    df_copy["cos_hour"] = np.cos(2 * np.pi * df_copy["hour"] / 24)
+    df_copy["sin_dow"]  = np.sin(2 * np.pi * df_copy["dow"]  / 7)
+    df_copy["cos_dow"]  = np.cos(2 * np.pi * df_copy["dow"]  / 7)
+    return df_copy
 
-# ---------- FUENTE 1: OPEN-METEO (ARCHIVE API) ----------
-# <-- CAMBIO: Acepta start y end para poder llamarla en bucle
-def fetch_openmeteo_archive(client, lat, lon, start_date, end_date):
-    params = {
-        "latitude": float(lat), "longitude": float(lon),
-        "start_date": start_date, "end_date": end_date,
-        "timezone": TZ_STR, "hourly": HOURLY_VARS, **UNITS
-    }
-    return client.weather_api(OM_ARCHIVE_URL, params=params)[0]
+def rolling_features(df, target_col):
+    df_copy = df.copy()
+    df_copy[f"{target_col}_lag24"]  = df_copy[target_col].shift(24)
+    df_copy[f"{target_col}_lag48"]  = df_copy[target_col].shift(48)
+    df_copy[f"{target_col}_lag72"]  = df_copy[target_col].shift(72)
+    df_copy[f"{target_col}_ma24"]   = df_copy[target_col].shift(1).rolling(24, min_periods=1).mean()
+    df_copy[f"{target_col}_ma72"]   = df_copy[target_col].shift(1).rolling(72, min_periods=1).mean()
+    df_copy[f"{target_col}_ma168"]  = df_copy[target_col].shift(1).rolling(168, min_periods=1).mean()
+    return df_copy
 
-def build_from_openmeteo(resp, comuna):
-    hourly = resp.Hourly()
-    dt_index = pd.to_datetime(hourly.Time(), unit="s", utc=True).tz_convert(TZ_STR)
-    data = {"datetime": dt_index, **{var: hourly.Variables(idx).ValuesAsNumpy() for idx, var in enumerate(HOURLY_VARS)}}
-    df = pd.DataFrame(data)
-    df["fecha"] = df["datetime"].dt.date.astype(str)
-    df["hora"] = df["datetime"].dt.strftime("%H:%M")
-    df.insert(0, "comuna", comuna)
-    return df[["comuna", "fecha", "hora"] + HOURLY_VARS]
+def build_feature_matrix_nn(df, training_columns, target_cols):
+    df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
+    base_feats = ["sin_hour", "cos_hour", "sin_dow", "cos_dow"]
+    rolling_feats = []
+    for target_col in target_cols:
+        rolling_feats.extend([
+            f"{target_col}_lag24", f"{target_col}_lag48", f"{target_col}_lag72",
+            f"{target_col}_ma24", f"{target_col}_ma72", f"{target_col}_ma168"
+        ])
+    existing_feats = [feat for feat in base_feats + rolling_feats if feat in df.columns]
+    X = pd.concat([df[existing_feats], df_dummies], axis=1)
+    return X.reindex(columns=training_columns, fill_value=0)
 
-# ---------- FUENTE 2: METEOSTAT (FALLBACK) ----------
-# <-- CAMBIO: Acepta start y end para poder llamarla en bucle
-def fetch_meteostat(lat, lon, start_date, end_date):
-    start = dt.datetime.fromisoformat(start_date)
-    end = dt.datetime.fromisoformat(end_date)
-    loc = MsPoint(float(lat), float(lon))
-    df = MsHourly(loc, start, end, timezone=TZ_STR).fetch()
-    if df is None or df.empty: return None
-    out = pd.DataFrame({
-        "temperature_2m": df.get("temp"), "precipitation": df.get("prcp"),
-        "rain": df.get("prcp"), "wind_speed_10m": df.get("wspd"),
-        "wind_gusts_10m": df.get("wpgt")
-    })
-    out["datetime"] = out.index
-    return out
+# =======================================================================
+# FUNCIÓN DE PREDICCIÓN CORREGIDA Y ESTABLE
+# =======================================================================
+def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps):
+    """
+    Realiza la predicción iterativa usando el modelo unificado.
+    CORRECCIÓN CLAVE: No retroalimenta la predicción de TMO para evitar inestabilidad.
+    En su lugar, usa un valor de relleno estable (mediana histórica) para el TMO.
+    """
+    df_prediccion = df_hist.copy()
+    target_cols = [TARGET_LLAMADAS, TARGET_TMO]
 
-def build_from_meteostat(df_ms, comuna):
-    df = df_ms.copy()
-    for c in HOURLY_VARS:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce").astype('Float64')
-    df["fecha"] = pd.to_datetime(df["datetime"]).dt.date.astype(str)
-    df["hora"] = pd.to_datetime(df["datetime"]).dt.strftime("%H:%M")
-    df.insert(0, "comuna", comuna)
-    return df[["comuna", "fecha", "hora"] + HOURLY_VARS]
+    print("Calculando TMO histórico estable para la inferencia...")
+    df_hist_con_tiempo = add_time_features(df_hist)
+    tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[TARGET_TMO].median()
+    tmo_global_fallback = df_hist[TARGET_TMO].median()
 
-# ---------- Funciones de I/O y Utilidades ----------
-def safe_sheet_name(name: str) -> str:
-    s = str(name); s = s.translate(str.maketrans({c: ' ' for c in '[]*?/\\:'}))
-    return s[:31]
+    df_prediccion['pred_tmo_final'] = np.nan
 
-def guardar_datos(df_chunk, comuna, workbook, is_first_write):
-    df_chunk.to_csv(OUT_CSV, index=False, encoding="utf-8", header=is_first_write, mode="w" if is_first_write else "a")
-    ws = workbook.create_sheet(title=safe_sheet_name(comuna))
-    for r in dataframe_to_rows(df_chunk, index=False, header=True):
-        sanitized_row = [None if cell is pd.NA else cell for cell in r]
-        try:
-            ws.append(sanitized_row)
-        except IllegalCharacterError:
-            ws.append([str(c).replace("\x00", "") if c is not None else "" for c in sanitized_row])
-    return False
+    for ts in future_timestamps:
+        temp_df = pd.DataFrame(index=[ts])
+        df_completo = pd.concat([df_prediccion, temp_df])
 
-# ---------- Loop Principal ----------
-def main():
-    print("🔼 Sube tu CSV con 'comuna,lat,lon'…")
-    uploaded = files.upload()
-    if not uploaded: raise RuntimeError("No se subió ningún archivo.")
+        df_features = add_time_features(df_completo)
+        for col in target_cols:
+            df_features = rolling_features(df_features, col)
 
-    df_locations = read_locations(list(uploaded.values())[0])
+        X_step = build_feature_matrix_nn(df_features.tail(1), training_columns, target_cols)
+        X_step_scaled = scaler.transform(X_step)
+        
+        prediccion = modelo.predict(X_step_scaled, verbose=0)[0]
+        
+        pred_llamadas = prediccion[0]
+        df_prediccion.loc[ts, TARGET_LLAMADAS] = pred_llamadas
+        
+        dow_actual = ts.dayofweek
+        hour_actual = ts.hour
+        tmo_estable_para_paso = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
+        df_prediccion.loc[ts, TARGET_TMO] = tmo_estable_para_paso
+        
+        df_prediccion.loc[ts, 'pred_tmo_final'] = prediccion[1]
 
-    bad_geo = df_locations[(df_locations["lat"].abs() > 90) | (df_locations["lon"].abs() > 180)]
-    if not bad_geo.empty:
-        bad_geo.to_csv(ERR_GEO_CSV, index=False, encoding="utf-8")
-        print(f"⚠️ Coordenadas fuera de rango guardadas en {ERR_GEO_CSV} (se excluirán).")
-        df_locations = df_locations[~df_locations.index.isin(bad_geo.index)].reset_index(drop=True)
+    df_resultado = df_prediccion.loc[future_timestamps, [TARGET_LLAMADAS, 'pred_tmo_final']]
+    df_resultado = df_resultado.rename(columns={'pred_tmo_final': TARGET_TMO})
+    
+    return df_resultado
 
-    df_locations = df_locations.drop_duplicates(subset=["comuna", "lat", "lon"]).reset_index(drop=True)
-    print(f"📍 Ubicaciones válidas a procesar: {len(df_locations)}")
+# =======================================================================
+# Funciones de post-procesamiento
+# =======================================================================
+def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
+    d = df_hist.copy()
+    if len(d) == 0:
+        return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
+    end = d.index.max()
+    start = end - pd.Timedelta(weeks=weeks)
+    d = d.loc[d.index >= start]
+    d = add_time_features(d[[col]])
+    med_dow_hour = d.groupby(["dow","hour"])[col].median()
+    med_hour     = d.groupby("hour")[col].median()
+    weights = {}
+    for dow in range(7):
+        for h in range(24):
+            num = med_dow_hour.get((dow,h), np.nan)
+            den = med_hour.get(h, np.nan)
+            w = 1.0
+            if not np.isnan(num) and not np.isnan(den) and den != 0:
+                w = float(num / den)
+            weights[(dow,h)] = float(np.clip(w, clip_min, clip_max))
+    return weights
 
-    cache_session = requests_cache.CachedSession(".openmeteo_cache", expire_after=3600*24*7)
-    retry_session = retry(cache_session, retries=3, backoff_factor=0.6)
-    om_client = openmeteo_requests.Client(session=retry_session)
+def apply_seasonal_weights(df_future, weights):
+    df = add_time_features(df_future.copy())
+    idx = list(zip(df["dow"].values, df["hour"].values))
+    w = np.array([weights.get(key, 1.0) for key in idx], dtype=float)
+    df["pred_llamadas"] = (df["pred_llamadas"].astype(float) * w).round().astype(int)
+    return df.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
 
-    wb = Workbook(); wb.remove(wb.active)
-    fallidas, reintentadas_ok = [], []
-    header_ya_escrito = False
-
-    # <-- CAMBIO: Generar rangos de fechas anuales para hacer las peticiones en trozos
-    date_chunks = pd.date_range(start=OVERALL_START_DATE, end=OVERALL_END_DATE, freq='AS') # AS = Año-Start
-    date_ranges = []
-    for i, start_date in enumerate(date_chunks):
-        end_date = date_chunks[i+1] - dt.timedelta(days=1) if i + 1 < len(date_chunks) else pd.to_datetime(OVERALL_END_DATE)
-        date_ranges.append((start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d')))
-
-
-    for i, row in df_locations.iterrows():
-        comuna, lat, lon = row["comuna"], row["lat"], row["lon"]
-        print(f"[{i+1}/{len(df_locations)}] Processing {comuna}...")
-
-        all_data_for_location = [] # <-- Lista para guardar los dataframes de cada año
-        fuente_exitosa_final = "N/A"
-
-        # <-- CAMBIO: Bucle anidado para iterar sobre cada rango de fechas (cada año)
-        for start_chunk, end_chunk in date_ranges:
-            print(f"  ↳ Obteniendo datos para el período: {start_chunk} a {end_chunk}")
-            df_chunk, fuente_exitosa, necesito_log_reintento = None, None, False
-            delay = BASE_SLEEP_S
-
-            # --- 1) Intentar Open-Meteo (Archive API) ---
-            for attempt in range(1, MAX_RETRIES + 1):
-                try:
-                    df_chunk = build_from_openmeteo(fetch_openmeteo_archive(om_client, lat, lon, start_chunk, end_chunk), comuna)
-                    fuente_exitosa = "OM-Archive"
-                    if attempt > 1: necesito_log_reintento = True
-                    break
-                except requests.exceptions.HTTPError as e:
-                    status = getattr(e.response, "status_code", None)
-                    if status == 429:
-                        print(f"    - OM-Archive Límite API. Esperando {COOL_DOWN_429}s…")
-                        time.sleep(COOL_DOWN_429)
-                    else:
-                        print(f"    - OM-Archive HTTP {status}. Reintento {attempt}/{MAX_RETRIES} en {delay:.1f}s…")
-                        time.sleep(delay); delay *= BACKOFF_FACTOR
-                except Exception as e:
-                    print(f"    - OM-Archive Error: {e}. Reintento {attempt}/{MAX_RETRIES} en {delay:.1f}s…")
-                    time.sleep(delay); delay *= BACKOFF_FACTOR
-
-            # --- 2) Si falló, intentar con Meteostat ---
-            if df_chunk is None:
-                print(f"    ↳ OM-Archive falló. Intentando fallback con Meteostat...")
-                try:
-                    df_ms = fetch_meteostat(lat, lon, start_chunk, end_chunk)
-                    if df_ms is not None and not df_ms.empty:
-                        df_chunk, fuente_exitosa = build_from_meteostat(df_ms, comuna), "Meteostat"
-                except Exception as e:
-                    print(f"    ↳ MS ERROR: {e}")
-
-            if df_chunk is not None:
-                all_data_for_location.append(df_chunk)
-                fuente_exitosa_final = fuente_exitosa
-                if necesito_log_reintento and comuna not in reintentadas_ok:
-                    reintentadas_ok.append(comuna)
-
-            time.sleep(BASE_SLEEP_S) # Pausa entre cada petición anual
-
-        # --- 3) Procesar el resultado final para la comuna ---
-        if all_data_for_location:
-            # <-- CAMBIO: Concatenar todos los trozos anuales en un solo DataFrame
-            df_final = pd.concat(all_data_for_location, ignore_index=True)
-            header_ya_escrito = guardar_datos(df_final, comuna, wb, not header_ya_escrito)
-            print(f"[{i+1}/{len(df_locations)}] ✅ OK ({fuente_exitosa_final}): {comuna} ({lat:.5f},{lon:.5f}) - {len(df_final)} filas obtenidas.")
-        else:
-            print(f"[{i+1}/{len(df_locations)}] ❌ FALLÓ: {comuna} con ambos proveedores para todos los períodos.")
-            fallidas.append(comuna)
-
-    # --- Guardar archivos finales y logs ---
-    wb.save(OUT_XLSX)
-    if fallidas: pd.DataFrame({"comuna": fallidas}).to_csv(FAILED_CSV, index=False, encoding="utf-8")
-    if reintentadas_ok: pd.DataFrame({"comuna": reintentadas_ok}).to_csv(RETRIED_CSV, index=False, encoding="utf-8")
-
-    print("\n✅ Proceso finalizado.")
-    print(f" - CSV combinado: {OUT_CSV}")
-    print(f" - Excel multi-hojas: {OUT_XLSX}")
-    if fallidas: print(f" - Fallidas: {FAILED_CSV} ({len(fallidas)})")
-    if reintentadas_ok: print(f" - Reintentadas y OK: {RETRIED_CSV} ({len(reintentadas_ok)})")
-
-    files.download(OUT_CSV); files.download(OUT_XLSX)
-    if fallidas: files.download(FAILED_CSV)
-    if reintentadas_ok: files.download(RETRIED_CSV)
-    if not bad_geo.empty: files.download(ERR_GEO_CSV)
-
-if __name__ == "__main__":
-    main()
+def baseline_from_history(df_hist, col):
+    d = add_time_features(df_hist[[col]].copy())
+    g = d.groupby(["dow", "hour"])[col]
+    base = g.median().rename("med").to_frame()
+    mad = g.apply(lambda x: np.median(np.abs(x - np.median(x)))).rename("mad")
+    q95 = g.quantile(0.95).rename("q95")
+    base = base.join([mad, q95])
+    if base["mad"].isna().all():
+        base["mad"] = 0
+    base["mad"] = base["mad"].replace(0, base["mad"].median() if not np.isnan(
