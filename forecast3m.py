@@ -1,8 +1,8 @@
 # =======================================================================
 # forecast3m.py
 # DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA (120 DÍAS),
-# RECALIBRACIÓN ESTACIONAL (DOW-HOUR), AJUSTE POR FERIADOS
-# y SUAVIZADO ROBUSTO BASADO EN HISTÓRICO
+# RECALIBRACIÓN ESTACIONAL (DOW-HOUR), AJUSTE POR FERIADOS,
+# SUAVIZADO ROBUSTO BASADO EN HISTÓRICO y DIMENSIONAMIENTO ERLANG-C
 # =======================================================================
 
 import os, json
@@ -23,6 +23,7 @@ OUT_CSV_DATAOUT = "public/predicciones.csv"
 OUT_JSON_PUBLIC = "public/predicciones.json"
 OUT_CSV_DAILY = "public/llamadas_por_dia.csv"
 STAMP_JSON = "public/last_update.json"
+OUT_JSON_ERLANG = "public/erlang_forecast.json"
 
 ASSET_LLAMADAS = "modelo_llamadas_nn.h5"
 ASSET_SCALER_LLAMADAS = "scaler_llamadas.pkl"
@@ -35,14 +36,23 @@ TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
 
 # Horizonte de predicción (DÍAS)
-HORIZON_DAYS = 120  # <---- ACTUALIZADO A 120 DÍAS
+HORIZON_DAYS = 120  # <---- 120 días
 
 # Suavizado (menos agresivo)
 MAD_K = 5.0            # K base (lunes-viernes)
 MAD_K_WEEKEND = 6.5    # K fin de semana
-SUAVIZADO = "cap"      # (compatibilidad)
 
-# -------------------- Utilidades de fecha/tiempo -----------------------
+# -------------------- Parámetros Erlang / Dimensionamiento -------------
+SLA_TARGET        = 0.90   # nivel de servicio objetivo
+ASA_TARGET_S      = 22     # ASA objetivo (segundos)
+INTERVAL_S        = 3600   # duración del intervalo (1 hora)
+MAX_OCC           = 0.85   # ocupación máxima deseada
+SHRINKAGE         = 0.30   # shrinkage (pausas, capacitaciones, etc.)
+ABSENTEEISM_RATE  = 0.23   # ausentismo esperado
+
+# =======================================================================
+# Utilidades de fecha/tiempo
+# =======================================================================
 def ensure_datetime(df, col_fecha="fecha", col_hora="hora"):
     df = df.copy()
     df["fecha_dt"] = pd.to_datetime(df[col_fecha], errors="coerce", dayfirst=True)
@@ -88,7 +98,9 @@ def rolling_features(df, target_col):
     df_copy[f"{target_col}_ma168"]  = df_copy[target_col].shift(1).rolling(24*7, min_periods=1).mean()
     return df_copy
 
-# -------------------- Features para inferencia NN ----------------------
+# =======================================================================
+# Features para inferencia NN
+# =======================================================================
 def build_feature_matrix_nn(df, training_columns, target_col):
     df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
     base_feats = [
@@ -101,18 +113,18 @@ def build_feature_matrix_nn(df, training_columns, target_col):
         X[c] = 0
     return X[training_columns].fillna(0)
 
-# -------------------- Recalibración estacional (NUEVO) -----------------
+# =======================================================================
+# Recalibración estacional (dow-hour)
+# =======================================================================
 def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
     """
-    Calcula pesos multiplicativos por (dow,hour) que reintroducen el perfil semanal:
-      w(dow,h) = mediana_hist(dow,h) / mediana_hist_por_hora(h)
-    Usa por defecto las últimas 'weeks' semanas del histórico (si hay).
+    w(dow,h) = mediana_hist(dow,h) / mediana_hist_por_hora(h)
+    Usa por defecto las últimas 'weeks' semanas (si hay suficientes datos).
     """
     d = df_hist.copy()
     if len(d) == 0:
         return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
 
-    # filtrar histórico reciente si es posible
     end = d.index.max()
     start = end - pd.Timedelta(weeks=weeks)
     d = d.loc[d.index >= start]
@@ -133,16 +145,15 @@ def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30
     return weights
 
 def apply_seasonal_weights(df_future, weights):
-    """
-    Aplica pesos multiplicativos por (dow,hour) a la columna 'pred_llamadas'.
-    """
     df = add_time_features(df_future.copy())
     idx = list(zip(df["dow"].values, df["hour"].values))
     w = np.array([weights.get(key, 1.0) for key in idx], dtype=float)
     df["pred_llamadas"] = (df["pred_llamadas"].astype(float) * w).round().astype(int)
     return df.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
 
-# -------------------- Suavizado robusto (igual que tu versión previa) --
+# =======================================================================
+# Suavizado robusto basado en histórico
+# =======================================================================
 def baseline_from_history(df_hist, col):
     d = add_time_features(df_hist[[col]].copy())
     g = d.groupby(["dow", "hour"])[col]
@@ -167,27 +178,9 @@ def apply_peak_smoothing_history(df_future, col, base, k_weekday=MAD_K, k_weeken
     df.loc[mask, col] = upper_cap[mask]
     return df.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
 
-# -------------------- (Compat) funciones previas de suavizado ----------
-def robust_baseline_by_dow_hour(df, col):
-    grouped = df.groupby(["dow", "hour"])[col].agg(["median"])
-    grouped.rename(columns={"median": "med"}, inplace=True)
-    grouped["mad"] = df.groupby(["dow", "hour"])[col].apply(
-        lambda x: np.median(np.abs(x - np.median(x)))
-    ).values
-    return grouped
-
-def apply_peak_smoothing(df, col, mad_k=1.5, method="cap"):
-    baseline = robust_baseline_by_dow_hour(df, col)
-    df = df.merge(baseline, left_on=["dow", "hour"], right_index=True, how="left")
-    df["upper_cap"] = df["med"] + mad_k * df["mad"].replace(0, df["mad"].median())
-    df["is_peak"] = (df[col] > df["upper_cap"]).astype(int)
-    if method == "cap":
-        df[col] = np.where(df["is_peak"] == 1, df["upper_cap"], df[col])
-    elif method == "med":
-        df[col] = np.where(df["is_peak"] == 1, df["med"], df[col])
-    return df.drop(columns=["med","mad","upper_cap","is_peak"], errors="ignore")
-
-# -------------------- Feriados: lectura y ajuste -----------------------
+# =======================================================================
+# Feriados: lectura y ajuste
+# =======================================================================
 def load_holidays(csv_path, tz=TIMEZONE):
     if not os.path.exists(csv_path):
         print(f"ADVERTENCIA: No se encontró archivo de feriados en {csv_path}. No se aplicarán ajustes.")
@@ -246,7 +239,49 @@ def apply_holiday_adjustment(df_future, holidays_set, factors_calls_by_hour, fac
     df.loc[is_hol, "pred_tmo_seg"]  = (df.loc[is_hol, "pred_tmo_seg"].astype(float)  * tmo_f[is_hol]).round().astype(int)
     return df[["pred_llamadas", "pred_tmo_seg"]]
 
-# -------------------- Predicción iterativa ------------------------------
+# =======================================================================
+# Erlang C helpers
+# =======================================================================
+def erlang_c_prob_wait(agents, load_erlangs):
+    if agents <= 0:
+        return 1.0
+    if load_erlangs <= 0:
+        return 0.0
+    rho = load_erlangs / agents
+    if rho >= 1.0:
+        return 1.0
+    # Suma estable por recurrencia
+    summation = 0.0
+    term = 1.0
+    for n in range(0, agents):
+        if n > 0:
+            term *= load_erlangs / n
+        summation += term
+    pn = term * (load_erlangs / agents) / (1 - rho)
+    p_wait = pn / (summation + pn)
+    return float(np.clip(p_wait, 0.0, 1.0))
+
+def required_agents(arrivals, aht_s, asa_target_s=ASA_TARGET_S, sla_target=SLA_TARGET, interval_s=INTERVAL_S, max_occ=MAX_OCC):
+    """ Devuelve (agents_productivos, carga_erlangs) cumpliendo SLA/ASA con cap de ocupación. """
+    aht = max(float(aht_s), 1.0)
+    lam = max(float(arrivals), 0.0)
+    load = lam * aht / interval_s  # Erlangs
+    base = max(int(np.ceil(load / max_occ)), 1)  # mínimo por ocupación
+    agents = base
+    for _ in range(2000):
+        p_wait = erlang_c_prob_wait(agents, load)
+        # ASA (Erlang C)
+        asa = (p_wait * aht) / max(agents - load, 1e-9)
+        # SLA aproximado para ASA target
+        sla = 1.0 - p_wait * np.exp(-(agents - load) * (asa_target_s / aht))
+        if sla >= sla_target and asa <= asa_target_s:
+            break
+        agents += 1
+    return agents, load
+
+# =======================================================================
+# Predicción iterativa
+# =======================================================================
 def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timestamps):
     training_columns = scaler.get_feature_names_out()
     df_prediccion = df_hist.copy()
@@ -261,7 +296,9 @@ def predecir_futuro_iterativo(df_hist, modelo, scaler, target_col, future_timest
         df_prediccion.loc[ts, target_col] = prediccion
     return df_prediccion.loc[future_timestamps, target_col]
 
-# -------------------- Main ---------------------------------------------
+# =======================================================================
+# Main
+# =======================================================================
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs("public", exist_ok=True)
@@ -307,12 +344,12 @@ def main():
     pred_tmo = predecir_futuro_iterativo(df_hist, model_tmo, scaler_tmo, TARGET_TMO, future_ts)
     df_final["pred_tmo_seg"] = np.maximum(0, np.round(pred_tmo)).astype(int)
 
-    # === Paso 1: Recalibración estacional (dow-hour) sobre TODO el horizonte ===
+    # Recalibración estacional (dow-hour)
     print("Aplicando recalibración estacional (dow-hour) basada en histórico reciente...")
     seasonal_w = compute_seasonal_weights(df_hist, TARGET_LLAMADAS, weeks=8, clip_min=0.75, clip_max=1.30)
     df_final = apply_seasonal_weights(df_final, seasonal_w)
 
-    # === Paso 2: Suavizado robusto basado en HISTÓRICO (sólo recorta outliers) ===
+    # Suavizado robusto (sólo recorta outliers)
     print("Aplicando suavizado robusto (baseline histórico)...")
     base_hist = baseline_from_history(df_hist, TARGET_LLAMADAS)
     df_tmp = df_final.copy()
@@ -323,7 +360,7 @@ def main():
     )
     df_final_smoothed["pred_llamadas"] = df_final_smoothed["pred_llamadas"].round().astype(int)
 
-    # === Paso 3: Ajuste por feriados ===
+    # Ajuste por feriados
     if holidays_set:
         print("Calculando factores de ajuste por feriados a partir del histórico...")
         f_calls_by_hour, f_tmo_by_hour, g_calls, g_tmo = compute_holiday_factors(df_hist, holidays_set)
@@ -339,8 +376,8 @@ def main():
         print("No hay feriados cargados; se omite ajuste por feriados.")
         df_final_adj = df_final_smoothed[["pred_llamadas", "pred_tmo_seg"]]
 
-    # Guardar outputs
-    print("Guardando archivos de salida...")
+    # Guardar predicciones
+    print("Guardando archivos de salida (predicciones)...")
     out = df_final_adj.reset_index().rename(columns={"index": "ts"})
     out["ts"] = out["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
     out.to_csv(OUT_CSV_DATAOUT, index=False)
@@ -353,12 +390,43 @@ def main():
                .rename(columns={"pred_llamadas": "total_llamadas"}))
     daily.to_csv(OUT_CSV_DAILY, index=False)
 
+    # =================== ERLANG: dimensionamiento por hora ===================
+    print("Generando erlang_forecast.json...")
+    df_er = df_final_adj.copy()
+    df_er = df_er.rename(columns={"pred_llamadas": "calls", "pred_tmo_seg": "aht_s"})
+    df_er["agents_prod"] = 0
+    df_er["erlangs"] = 0.0
+
+    for ts in df_er.index:
+        agents, load = required_agents(
+            arrivals=float(df_er.at[ts, "calls"]),
+            aht_s=float(df_er.at[ts, "aht_s"]),
+            asa_target_s=ASA_TARGET_S,
+            sla_target=SLA_TARGET,
+            interval_s=INTERVAL_S,
+            max_occ=MAX_OCC,
+        )
+        df_er.at[ts, "agents_prod"] = int(agents)
+        df_er.at[ts, "erlangs"] = float(load)
+
+    # Programación de agentes (shrinkage + ausentismo)
+    df_er["agents_sched"] = np.ceil(
+        df_er["agents_prod"] / max(1e-9, (1 - SHRINKAGE)) / max(1e-9, (1 - ABSENTEEISM_RATE))
+    ).astype(int)
+
+    erjson = (df_er.reset_index()
+                    .rename(columns={"index": "ts"})
+                    .assign(ts=lambda d: d["ts"].dt.strftime("%Y-%m-%d %H:%M:%S"))
+                    .to_dict(orient="records"))
+    with open(OUT_JSON_ERLANG, "w", encoding="utf-8") as f:
+        json.dump(erjson, f, ensure_ascii=False, indent=2)
+
     # Timestamp
     json.dump(
         {"generated_at_utc": pd.Timestamp.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")},
         open(STAMP_JSON, "w")
     )
-    print("✔ Inferencia completada con éxito.")
+    print("✔ Inferencia + Erlang completadas con éxito.")
 
 if __name__ == "__main__":
     main()
