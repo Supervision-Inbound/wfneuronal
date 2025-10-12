@@ -1,7 +1,6 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN FINAL: Corregido el NameError pasando los targets como argumentos
-# a la función de predicción.
+# VERSIÓN FINAL: Corregido el NameError por un error de tipeo.
 # =======================================================================
 
 import os
@@ -30,7 +29,7 @@ ASSET_SCALER_UNIFICADO = "scaler_unificado.pkl"
 ASSET_COLUMNAS = "training_columns_unificado.json"
 
 TIMEZONE = "America/Santiago"
-FREQ = "h" # Corregido de 'H' a 'h' para evitar FutureWarning
+FREQ = "h"
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
 
@@ -103,9 +102,6 @@ def build_feature_matrix_nn(df, training_columns):
     X = pd.concat([df[feature_cols], df_dummies], axis=1)
     return X.reindex(columns=training_columns, fill_value=0)
 
-# =======================================================================
-# FUNCIÓN DE PREDICCIÓN CORREGIDA
-# =======================================================================
 def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps, target_calls_col, target_tmo_col):
     df_prediccion = df_hist.copy()
     df_hist_con_tiempo = add_time_features(df_hist)
@@ -134,9 +130,6 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
         
     return df_prediccion.loc[future_timestamps, [target_calls_col, target_tmo_col]]
 
-# =======================================================================
-# Funciones de post-procesamiento
-# =======================================================================
 def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
     d = df_hist.copy()
     if len(d) == 0: return { (dow,h): 1.0 for dow in range(7) for h in range(24) }
@@ -281,7 +274,9 @@ def main():
     df_hist_raw.columns = df_hist_raw.columns.str.strip().str.lower()
     df_hist_raw[TARGET_TMO] = df_hist_raw["tmo (segundos)"].apply(parse_tmo_to_seconds)
     df_hist = ensure_datetime(df_hist_raw)
-    df_hist = df_hist[[TARGET_LLAMadas, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
+    
+    # === LÍNEA CORREGIDA ===
+    df_hist = df_hist[[TARGET_LLAMADAS, TARGET_TMO]].dropna(subset=[TARGET_LLAMADAS])
 
     print(f"Cargando feriados desde {HOLIDAYS_FILE}...")
     holidays_set = load_holidays(HOLIDAYS_FILE)
@@ -293,7 +288,6 @@ def main():
     print(f"Se predecirán {len(future_ts)} horas (≈ {HORIZON_DAYS} días).")
 
     print("Realizando predicción iterativa con modelo causal...")
-    # --- CAMBIO CLAVE: Pasar los nombres de las columnas a la función ---
     predicciones = predecir_futuro_unificado(
         df_hist, model_unificado, scaler_unificado, training_columns, future_ts, TARGET_LLAMADAS, TARGET_TMO
     )
