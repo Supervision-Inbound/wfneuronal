@@ -1,6 +1,6 @@
 # =======================================================================
 # forecast3m.py
-# DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA,
+# DESCARGA DE RELEASE, PREDICCIÓN ITERATIVA (120 DÍAS),
 # RECALIBRACIÓN ESTACIONAL (DOW-HOUR), AJUSTE POR FERIADOS
 # y SUAVIZADO ROBUSTO BASADO EN HISTÓRICO
 # =======================================================================
@@ -33,6 +33,9 @@ TIMEZONE = "America/Santiago"
 FREQ = "H"
 TARGET_LLAMADAS = "recibidos"
 TARGET_TMO = "tmo_seg"
+
+# Horizonte de predicción (DÍAS)
+HORIZON_DAYS = 120  # <---- ACTUALIZADO A 120 DÍAS
 
 # Suavizado (menos agresivo)
 MAD_K = 5.0            # K base (lunes-viernes)
@@ -287,12 +290,12 @@ def main():
     print(f"Cargando feriados desde {HOLIDAYS_FILE}...")
     holidays_set = load_holidays(HOLIDAYS_FILE)
 
-    # Horizonte de predicción
+    # Horizonte de predicción (120 días exactos desde la última hora conocida)
     last_known_date = df_hist.index.max()
     start_pred = last_known_date + pd.Timedelta(hours=1)
-    end_pred = (last_known_date.to_period('M') + 3).to_timestamp(how='end').tz_localize(TIMEZONE)
+    end_pred = (start_pred + pd.Timedelta(days=HORIZON_DAYS)) - pd.Timedelta(hours=1)
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ, tz=TIMEZONE)
-    print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred}.")
+    print(f"Se predecirán {len(future_ts)} horas desde {start_pred} hasta {end_pred} (≈ {HORIZON_DAYS} días).")
 
     # Predicción iterativa
     print("Realizando predicción iterativa de llamadas...")
