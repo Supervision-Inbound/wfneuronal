@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast3m.py
-# VERSIÓN FINAL CORREGIDA: Se neutraliza la influencia del TMO en la inferencia
-# para asegurar que no afecte el pronóstico de llamadas.
+# VERSIÓN FINAL CORREGIDA: Se añade safe_mode=False para cargar el modelo
+# con capas Lambda y se neutraliza la influencia del TMO en la inferencia.
 # =======================================================================
 
 import os
@@ -97,33 +97,24 @@ def rolling_features(df, target_col):
     df_copy[f"{target_col}_ma168"]  = df_copy[target_col].shift(1).rolling(168, min_periods=1).mean()
     return df_copy
 
-def build_feature_matrix_nn(df, training_columns, target_cols):
+def build_feature_matrix_nn(df, training_columns):
+    # Ya no necesita target_cols, usa todas las columnas de df
     df_dummies = pd.get_dummies(df[["dow", "month"]], drop_first=False, dtype=int)
-    base_feats = ["sin_hour", "cos_hour", "sin_dow", "cos_dow"]
-    rolling_feats = []
-    for target_col in target_cols:
-        rolling_feats.extend([
-            f"{target_col}_lag24", f"{target_col}_lag48", f"{target_col}_lag72",
-            f"{target_col}_ma24", f"{target_col}_ma72", f"{target_col}_ma168"
-        ])
-    existing_feats = [feat for feat in base_feats + rolling_feats if feat in df.columns]
-    X = pd.concat([df[existing_feats], df_dummies], axis=1)
+    
+    # Lista de todas las posibles features (excepto dummies) que podrían existir
+    feature_cols = [col for col in training_columns if col not in df_dummies.columns and col in df.columns]
+    
+    X = pd.concat([df[feature_cols], df_dummies], axis=1)
+    
+    # Reindex asegura que el orden y la presencia de columnas sea idéntico al entrenamiento
     return X.reindex(columns=training_columns, fill_value=0)
 
 # =======================================================================
-# FUNCIÓN DE PREDICCIÓN CON NEUTRALIZACIÓN DE TMO
+# FUNCIÓN DE PREDICCIÓN (Simplificada)
 # =======================================================================
 def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_timestamps):
     df_prediccion = df_hist.copy()
-    target_cols = [TARGET_LLAMADAS, TARGET_TMO]
-
-    # --- INICIO DE LA MODIFICACIÓN CLAVE ---
-    # Identificar los índices de las columnas de TMO para neutralizarlas
-    tmo_col_name_base = TARGET_TMO.split(' ')[0] # Usar 'tmo' como base
-    tmo_indices = [i for i, col in enumerate(training_columns) if col.startswith(tmo_col_name_base)]
-    print(f"Se neutralizarán {len(tmo_indices)} características de TMO durante la inferencia.")
-    # --- FIN DE LA MODIFICACIÓN CLAVE ---
-
+    
     # Relleno estable para el TMO en el bucle
     df_hist_con_tiempo = add_time_features(df_hist)
     tmo_historico_estable = df_hist_con_tiempo.groupby(['dow', 'hour'])[TARGET_TMO].median()
@@ -132,32 +123,27 @@ def predecir_futuro_unificado(df_hist, modelo, scaler, training_columns, future_
     for ts in future_timestamps:
         temp_df = pd.DataFrame(index=[ts])
         df_completo = pd.concat([df_prediccion, temp_df])
-        df_features = add_time_features(df_completo)
         
-        # Retroalimentamos el TMO estable para los cálculos de features
+        # Retroalimentamos el TMO estable para los cálculos de features del TMO
         dow_actual, hour_actual = ts.dayofweek, ts.hour
         tmo_estable = tmo_historico_estable.get((dow_actual, hour_actual), tmo_global_fallback)
-        df_completo.loc[ts, TARGET_TMO] = tmo_estable
-        
-        # Creamos features para ambos, ya que el modelo los espera
-        for col in target_cols:
-            df_features = rolling_features(df_features, col)
+        df_completo.loc[ts, TARGET_TMO] = tmo_estable # Usamos TMO estable para crear features
 
-        X_step = build_feature_matrix_nn(df_features.tail(1), training_columns, target_cols)
+        df_features = add_time_features(df_completo)
+        df_features = rolling_features(df_features, TARGET_CALLS)
+        df_features = rolling_features(df_features, TARGET_TMO)
+
+        X_step = build_feature_matrix_nn(df_features.tail(1), training_columns)
         X_step_scaled = scaler.transform(X_step)
-        
-        # --- NEUTRALIZACIÓN ---
-        # Forzamos a cero las características de TMO para que no influyan en la predicción
-        X_step_scaled[:, tmo_indices] = 0
-        # --- FIN DE NEUTRALIZACIÓN ---
         
         prediccion = modelo.predict(X_step_scaled, verbose=0)[0]
         
-        # Guardamos ambas predicciones, pero solo la de llamadas se retroalimentará
-        df_prediccion.loc[ts, TARGET_LLAMADAS] = prediccion[0]
-        df_prediccion.loc[ts, TARGET_TMO] = prediccion[1] # Guardamos la predicción real para el output
+        # Guardamos la predicción de llamadas para la siguiente iteración
+        df_prediccion.loc[ts, TARGET_CALLS] = prediccion[0]
+        # Guardamos la predicción de TMO del modelo solo para el output final
+        df_prediccion.loc[ts, TARGET_TMO] = prediccion[1]
         
-    return df_prediccion.loc[future_timestamps, target_cols]
+    return df_prediccion.loc[future_timestamps, [TARGET_CALLS, TARGET_TMO]]
 
 # =======================================================================
 # Funciones de post-procesamiento
@@ -300,10 +286,15 @@ def main():
         download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
 
     print("Cargando modelo unificado, scaler y columnas de entrenamiento...")
-    model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}")
+    # --- LÍNEA MODIFICADA ---
+    model_unificado = tf.keras.models.load_model(f"{MODELS_DIR}/{ASSET_MODELO_UNIFICADO}", safe_mode=False)
+    
     scaler_unificado = joblib.load(f"{MODELS_DIR}/{ASSET_SCALER_UNIFICADO}")
+    
+    # El json ahora es un diccionario, cargamos solo la lista de todas las columnas
     with open(f"{MODELS_DIR}/{ASSET_COLUMNAS}", "r") as f:
-        training_columns = json.load(f)
+        training_artifacts = json.load(f)
+        training_columns = training_artifacts["all_training_cols"]
 
     print(f"Cargando datos históricos desde {DATA_FILE}...")
     df_hist_raw = pd.read_csv(DATA_FILE, delimiter=';')
@@ -321,7 +312,7 @@ def main():
     future_ts = pd.date_range(start=start_pred, end=end_pred, freq=FREQ, tz=TIMEZONE)
     print(f"Se predecirán {len(future_ts)} horas (≈ {HORIZON_DAYS} días).")
 
-    print("Realizando predicción iterativa con neutralización de TMO...")
+    print("Realizando predicción iterativa con modelo causal...")
     predicciones = predecir_futuro_unificado(
         df_hist, model_unificado, scaler_unificado, training_columns, future_ts
     )
