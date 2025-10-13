@@ -1,8 +1,10 @@
 # =======================================================================
-# forecast_alertas.py  (con DEBUG)
+# forecast_alertas.py  — Inferencia IA de alertas climáticas por comuna
+# Genera JSON con: comuna, ts, llamadas_estimadas, porcentaje_incremento, alerta
+# Requisitos (requirements.txt): requests-cache, retry-requests, tensorflow, pandas, numpy, scikit-learn, joblib
 # =======================================================================
 
-import os, json, time, sys
+import os, json, time
 import pandas as pd
 import numpy as np
 import joblib
@@ -16,9 +18,10 @@ from datetime import datetime
 MODEL_NAME = "modelo_alertas_clima.h5"
 SCALER_NAME = "scaler_alertas_clima.pkl"
 COLS_NAME = "training_columns_alertas_clima.json"
+
 LOC_CSV = "data/Comunas_Cordenadas.csv"
 OUT_JSON = "public/alertas_clima.json"
-DEBUG_LOG = "public/alertas_debug.txt"
+DEBUG_LOG = "public/alertas_debug.txt"  # archivo de depuración opcional
 
 CLIMA_API_URL = "https://api.open-meteo.com/v1/forecast"
 TIMEZONE = "America/Santiago"
@@ -27,13 +30,12 @@ HOURLY_VARS = ["temperature_2m", "precipitation", "rain", "wind_speed_10m", "win
 UNITS = {"temperature_unit": "celsius", "wind_speed_unit": "kmh", "precipitation_unit": "mm"}
 
 FORECAST_DAYS = 8
-ALERTA_THRESHOLD = 0.40
-BASE_SLEEP_S = 1.0
+ALERTA_THRESHOLD = 0.40     # 40% de aumento vs baseline del propio horizonte
+BASE_SLEEP_S = 1.2          # pausa entre comunas para ser amables con la API
 MAX_RETRIES = 3
 BACKOFF_FACTOR = 1.8
 COOL_DOWN_429 = 60
-
-DEBUG = True
+DEBUG = True                # poner False para silenciar logs
 
 # ---------------- Debug helpers ----------------
 def _now():
@@ -57,7 +59,7 @@ def section(title):
     dbg(title)
     dbg(line)
 
-# ---------------- Utilidades ----------------
+# ---------------- Utilidades de features ----------------
 def add_time_features(df):
     df["dow"] = df["ts"].dt.dayofweek
     df["hour"] = df["ts"].dt.hour
@@ -78,8 +80,9 @@ def process_clima_json(data, comuna):
     df["comuna"] = comuna
     return df
 
+# ---------------- HTTP con cache + retry ----------------
 def build_http_client():
-    cache_session = requests_cache.CachedSession(".openmeteo_cache_forecast", expire_after=3600)
+    cache_session = requests_cache.CachedSession(".openmeteo_cache_forecast", expire_after=3600)  # 1h
     return retry(cache_session, retries=MAX_RETRIES, backoff_factor=BACKOFF_FACTOR)
 
 def fetch_forecast(client, lat, lon):
@@ -101,24 +104,52 @@ def fetch_forecast(client, lat, lon):
     r.raise_for_status()
     return r.json()
 
-# --- lector robusto para CSV de coordenadas ---
+# ---------------- Lector robusto de CSV coords ----------------
 def read_csv_smart(path):
+    """
+    Lee CSV probando encodings y detecta si quedó en 1 columna tipo 'comuna;lat;lon'.
+    Si pasa eso, reintenta con separadores candidatos (';', '|', '\\t', ',').
+    """
     encodings = ("utf-8", "utf-8-sig", "latin1", "cp1252")
-    seps = (None, ",", ";", "\t", "|")
+    candidate_delims = [";", "|", "\t", ","]
     last_err = None
+
     for enc in encodings:
-        for sep in seps:
-            try:
-                if sep is None:
-                    df = pd.read_csv(path, encoding=enc, engine="python")
-                else:
-                    df = pd.read_csv(path, encoding=enc, sep=sep)
-                dbg(f"CSV leído con encoding={enc} sep={sep or 'auto'} shape={df.shape}")
+        # 1) Autodetect con engine='python'
+        try:
+            df = pd.read_csv(path, encoding=enc, engine="python")
+            if df.shape[1] == 1 and isinstance(df.columns[0], str):
+                header = df.columns[0]
+                for d in candidate_delims:
+                    if d in header:
+                        try:
+                            df2 = pd.read_csv(path, encoding=enc, sep=d)
+                            if df2.shape[1] > 1:
+                                dbg(f"CSV leído con encoding={enc} sep='{d}' shape={df2.shape}")
+                                return df2
+                        except Exception as e2:
+                            last_err = e2
+                            continue
+            else:
+                dbg(f"CSV leído con encoding={enc} sep=auto shape={df.shape}")
                 return df
+        except Exception as e:
+            last_err = e
+
+        # 2) Intentos explícitos por separador
+        for sep in candidate_delims:
+            try:
+                df = pd.read_csv(path, encoding=enc, sep=sep)
+                if df.shape[1] > 1:
+                    dbg(f"CSV leído con encoding={enc} sep='{sep}' shape={df.shape}")
+                    return df
             except Exception as e:
                 last_err = e
                 continue
-    raise last_err or ValueError(f"No pude leer {path} con encodings/separadores estándar.")
+
+    if last_err:
+        raise last_err
+    raise ValueError(f"No pude leer {path} con encodings/separadores estándar.")
 
 def _pick_col(cols, candidates):
     cols_map = {c.lower().strip(): c for c in cols}
@@ -129,6 +160,9 @@ def _pick_col(cols, candidates):
     return None
 
 def normalize_location_columns(df):
+    """
+    Normaliza a columnas: comuna, lat, lon (acepta alias y arregla comas decimales).
+    """
     comuna_cands = ["comuna", "municipio", "localidad", "ciudad", "name", "nombre"]
     lat_cands    = ["lat", "latitude", "latitud", "y"]
     lon_cands    = ["lon", "lng", "long", "longitude", "longitud", "x"]
@@ -144,12 +178,14 @@ def normalize_location_columns(df):
 
     df = df.rename(columns={comuna_col: "comuna", lat_col: "lat", lon_col: "lon"}).copy()
 
+    # arreglar comas decimales si vienen como string con ','
     for c in ["lat", "lon"]:
         if df[c].dtype == object:
             df[c] = df[c].astype(str).str.replace(",", ".", regex=False).str.strip()
 
     df["lat"] = pd.to_numeric(df["lat"], errors="coerce")
     df["lon"] = pd.to_numeric(df["lon"], errors="coerce")
+
     before = len(df)
     df = df.dropna(subset=["lat", "lon"])
     df = df[(df["lat"].between(-90, 90)) & (df["lon"].between(-180, 180))]
@@ -161,6 +197,7 @@ def normalize_location_columns(df):
 def main():
     section("LOAD ARTIFACTS")
     print("📦 Cargando modelo y artefactos...")
+    # compile=False evita problemas de deserialización de métricas, no afecta inferencia
     model = tf.keras.models.load_model(f"models/{MODEL_NAME}", compile=False)
     scaler = joblib.load(f"models/{SCALER_NAME}")
     with open(f"models/{COLS_NAME}", "r") as f:
@@ -203,13 +240,13 @@ def main():
             ]]
             X = pd.get_dummies(X, columns=["dow", "hour", "month"], drop_first=False)
 
-            # Column alignment debug
+            # Alinear con columnas de entrenamiento
             missing = [c for c in training_cols if c not in X.columns]
             extra   = [c for c in X.columns if c not in training_cols]
             if missing:
-                dbg(f"{comuna}: faltan {len(missing)} cols respecto a training (se rellenan con 0). Ej: {missing[:5]}")
+                dbg(f"{comuna}: faltan {len(missing)} cols (se rellenan con 0). Ej: {missing[:5]}")
             if extra:
-                dbg(f"{comuna}: sobran {len(extra)} cols respecto a training (se ignoran). Ej: {extra[:5]}")
+                dbg(f"{comuna}: sobran {len(extra)} cols (se ignoran). Ej: {extra[:5]}")
 
             for col in training_cols:
                 if col not in X.columns:
@@ -224,6 +261,7 @@ def main():
                 dbg(f"{comuna}: pred no finita, salto.")
                 continue
 
+            # Baseline simple del propio horizonte de esa comuna
             baseline = float(np.nanmean(y_pred)) if np.isfinite(y_pred).any() else 1e-6
             if baseline <= 0:
                 baseline = 1e-6
@@ -254,9 +292,10 @@ def main():
         for e in errores[:10]:
             dbg(" -", e)
 
+    os.makedirs("public", exist_ok=True)
+
     if not all_preds:
-        dbg("No se generaron predicciones. Escribo JSON vacío para no romper el flujo.")
-        os.makedirs("public", exist_ok=True)
+        # Genera JSON vacío para no romper el flujo, pero deja log
         with open(OUT_JSON, "w", encoding="utf-8") as f:
             json.dump([], f, ensure_ascii=False, indent=2)
         print("✅ JSON generado (vacío):", OUT_JSON)
@@ -272,10 +311,10 @@ def main():
     df_all["porcentaje_incremento"] = (pd.to_numeric(df_all["porcentaje_incremento"], errors="coerce") * 100).round(1)
     df_all["alerta"] = df_all["alerta"].astype(bool)
 
-    os.makedirs("public", exist_ok=True)
     df_all.to_json(OUT_JSON, orient="records", indent=2, force_ascii=False)
     print("✅ JSON generado:", OUT_JSON)
-    print("ℹ️ Log de depuración en:", DEBUG_LOG)
+    if DEBUG:
+        print("ℹ️ Log de depuración en:", DEBUG_LOG)
 
 if __name__ == "__main__":
     main()
