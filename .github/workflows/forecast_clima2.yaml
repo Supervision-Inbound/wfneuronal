@@ -1,15 +1,15 @@
-name: forecast_unificado120
+name: forecast_llamadas120_baseline2
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "20 6 * * *"   # todos los días 06:20 UTC
+    - cron: "15 6 * * *"   # 06:15 UTC todos los días (ajusta si quieres)
 
 permissions:
   contents: write
 
 jobs:
-  run-forecast-unificado:
+  run-forecast:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,32 +26,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install pandas numpy scikit-learn==1.2.2 joblib python-dateutil requests tensorflow requests-cache retry-requests
-          fi
+          # Usa tus versiones probadas
+          pip install pandas==2.2.2 numpy==1.26.4 scikit-learn==1.2.2 joblib==1.4.2 \
+                      python-dateutil==2.9.0.post0 requests==2.32.3 requests-cache==1.2.0 \
+                      retry-requests==2.0.0 tensorflow
 
-      - name: Run unified inference
+      - name: Run inference (solo llamadas, sin clima)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python forecast_clima120_baseline2.py
+          python forecast_llamadas120_baseline2.py
 
-      - name: Commit & push output files
+      - name: Commit & push output files (force add)
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Fuerza agregar solo los JSON de salida (sin tocar .gitignore)
-          git add -f public/predicciones2.json public/llamadas_por_dia2.json || true
-
-          # Si no hay cambios, no fallar
-          if git diff --staged --quiet; then
-            echo "No hay cambios para commitear."
-            exit 0
-          fi
-
-          git commit -m "chore(unificado): actualización automática predicciones2 y llamadas_por_dia2"
+          git add -f public/predicciones2.json public/llamadas_por_dia2.json
+          git commit -m "chore(forecast): generados predicciones2.json y llamadas_por_dia2.json" --allow-empty
           git push
-
