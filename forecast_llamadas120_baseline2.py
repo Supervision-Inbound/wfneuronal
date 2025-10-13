@@ -1,7 +1,8 @@
 # =======================================================================
 # forecast_llamadas120_baseline2.py
 # PREDICCIÓN DE LLAMADAS (SIN CLIMA) POR 120 DÍAS (HORARIO + DIARIO)
-# - Descarga modelos desde Release (unificado-core o legacy llamadas)
+# - Descarga modelos desde Release (solo "core" del último entrenamiento)
+# - Carga modelo con compile=False (evita error 'keras.metrics.mae')
 # - Predicción iterativa 1 paso
 # - Recalibración estacional (dow-hour)
 # - Suavizado robusto de picos por baseline histórico
@@ -209,46 +210,27 @@ def predict_iterative(df_hist_idxed, model, scaler, training_columns, target_col
         df_pred.loc[ts, target_col] = yhat
     return df_pred.loc[future_index, target_col]
 
-# -------------------- Carga de artefactos ------------------------------
-def try_load_assets():
-    """
-    Prioriza activos del modelo unificado (core). Si faltan, intenta legacy llamadas.
-    Devuelve: (model, scaler, training_columns, label)
-    """
-    # Unificado (core)
-    assets_core = {
-        "model":  "modelo_unificado.h5",
-        "scaler": "scaler_core.pkl",
-        "cols":   "training_columns_core.json",
-    }
-    # Legacy llamadas
-    assets_legacy = {
-        "model":  "modelo_llamadas_nn.h5",
-        "scaler": "scaler_llamadas.pkl",
-        "cols":   "training_columns_llamadas.json",
-    }
-    for aset, tag in [(assets_core,"core"), (assets_legacy,"legacy")]:
-        try:
-            download_asset_from_latest(OWNER, REPO, aset["model"],  MODELS_DIR)
-            download_asset_from_latest(OWNER, REPO, aset["scaler"], MODELS_DIR)
-            download_asset_from_latest(OWNER, REPO, aset["cols"],   MODELS_DIR)
-            print(f"Usando activos '{tag}': {aset}")
-            model  = tf.keras.models.load_model(os.path.join(MODELS_DIR, aset["model"]))
-            scaler = joblib.load(os.path.join(MODELS_DIR, aset["scaler"]))
-            with open(os.path.join(MODELS_DIR, aset["cols"]), "r", encoding="utf-8") as f:
-                training_columns = json.load(f)
-            return model, scaler, training_columns, tag
-        except Exception as e:
-            print(f"Intento '{tag}' falló: {e}")
-    raise FileNotFoundError("No fue posible cargar ni los activos 'core' ni los 'legacy'.")
-
 # =============================== MAIN ==================================
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs("public", exist_ok=True)
 
-    print("Descargando/cargando modelos...")
-    model, scaler, training_columns, tag = try_load_assets()
+    print("Descargando activos core del Release...")
+    ASSET_MODEL = "modelo_unificado.h5"
+    ASSET_SCALER = "scaler_core.pkl"
+    ASSET_COLS = "training_columns_core.json"
+    download_asset_from_latest(OWNER, REPO, ASSET_MODEL,  MODELS_DIR)
+    download_asset_from_latest(OWNER, REPO, ASSET_SCALER, MODELS_DIR)
+    download_asset_from_latest(OWNER, REPO, ASSET_COLS,   MODELS_DIR)
+
+    print("Cargando modelo y scaler (compile=False)...")
+    model  = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_MODEL), compile=False)
+    scaler = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER))
+    with open(os.path.join(MODELS_DIR, ASSET_COLS), "r", encoding="utf-8") as f:
+        training_columns = json.load(f)
+    # por si viene como dict { "columns": [...] }
+    if isinstance(training_columns, dict) and "columns" in training_columns:
+        training_columns = training_columns["columns"]
 
     print(f"Cargando histórico: {DATA_FILE}")
     df_raw = read_csv_semicolon(DATA_FILE)
@@ -256,31 +238,26 @@ def main():
     df_hist = ensure_datetime_calls(df_raw)
 
     if TARGET not in df_hist.columns:
-        # intentar normalizar nombre (ej: 'recibidos ' o mayúsculas)
         lowmap = {c.lower(): c for c in df_hist.columns}
         if TARGET in lowmap:
             df_hist.rename(columns={lowmap[TARGET]: TARGET}, inplace=True)
         else:
             raise KeyError(f"No encuentro columna '{TARGET}' en {list(df_hist.columns)}")
 
-    # Mantener sólo target y quedarnos con últimos valores válidos
     df_hist = df_hist[[TARGET]].dropna()
     if len(df_hist) < 24*14:
         print("ADVERTENCIA: histórico muy corto; resultados pueden ser inestables.")
 
-    # Horizonte (exacto 120 días desde última hora)
     last = df_hist.index.max()
     start = last + pd.Timedelta(hours=1)
     end   = start + pd.Timedelta(days=HORIZON_DAYS) - pd.Timedelta(hours=1)
     future_ts = pd.date_range(start=start, end=end, freq=FREQ, tz=TIMEZONE)
     print(f"Horizonte: {len(future_ts)} horas ({HORIZON_DAYS} días)")
 
-    # Predicción iterativa
     print("Prediciendo llamadas (sin clima)...")
     pred = predict_iterative(df_hist, model, scaler, training_columns, TARGET, future_ts)
     df_out = pd.DataFrame(index=future_ts, data={"pred_llamadas": np.maximum(0, np.round(pred)).astype(int)})
 
-    # Recalibración estacional + suavizado
     print("Aplicando recalibración estacional y suavizado...")
     w = compute_seasonal_weights(df_hist, TARGET, weeks=8, clip_min=0.75, clip_max=1.30)
     df_out = apply_seasonal_weights(df_out, w, col="pred_llamadas")
@@ -289,15 +266,12 @@ def main():
                                           k_weekday=MAD_K, k_weekend=MAD_K_WEEKEND)
     df_out["pred_llamadas"] = df_out["pred_llamadas"].round().astype(int)
 
-    # ---------------- Guardar salidas ----------------
     print("Guardando JSON horario y diario...")
-    # horario
     hourly = (df_out.reset_index()
                     .rename(columns={"index":"ts"}))
     hourly["ts"] = hourly["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
     hourly.to_json(OUT_JSON_HOURLY, orient="records", indent=2, force_ascii=False)
 
-    # diario
     daily = (df_out.copy()
                   .assign(date=lambda d: d.index.tz_convert(TIMEZONE).date)
                   .groupby("date", as_index=False)["pred_llamadas"].sum()
@@ -312,3 +286,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
