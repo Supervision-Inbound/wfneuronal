@@ -1,12 +1,11 @@
 # =======================================================================
 # forecast_llamadas120_baseline2.py
-# PREDICCIÓN DE LLAMADAS (SIN CLIMA) POR 120 DÍAS (HORARIO + DIARIO)
-# - Descarga modelos desde Release (solo "core" del último entrenamiento)
-# - Carga modelo con compile=False (evita error 'keras.metrics.mae')
-# - Predicción iterativa 1 paso
-# - Recalibración estacional (dow-hour)
-# - Suavizado robusto de picos por baseline histórico
-# - Salidas: public/predicciones2.json (horario) y public/llamadas_por_dia2.json (diario)
+# INFERENCIA SIN CLIMA usando modelo_unificado.h5 (2 inputs: core + weather)
+# - Descarga assets core + weather desde Release
+# - Carga con compile=False (evita error keras.metrics.*)
+# - Predicción iterativa 120 días por hora
+# - Recalibración estacional (dow-hour) + Suavizado robusto
+# - Salidas: public/predicciones2.json y public/llamadas_por_dia2.json
 # =======================================================================
 
 import os, json
@@ -15,7 +14,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-# ====== Fallback robusto si utils_release no exporta la función ======
+# ---------- Fallback de descarga si utils_release no exporta la función ----------
 try:
     from utils_release import download_asset_from_latest
 except Exception:
@@ -52,26 +51,25 @@ MODELS_DIR = "models"
 DATA_FILE  = "data/historical_data.csv"
 
 TIMEZONE = "America/Santiago"
-FREQ = "H"
+FREQ = "H"                  # freq horaria
 TARGET = "recibidos"
 HORIZON_DAYS = 120
 
-# Salidas (con sufijo "2")
+# Salidas (sufijo "2")
 OUT_JSON_HOURLY = "public/predicciones2.json"
 OUT_JSON_DAILY  = "public/llamadas_por_dia2.json"
 
 # Suavizado (picos)
-MAD_K         = 5.0   # lunes-viernes
-MAD_K_WEEKEND = 6.5   # sábado-domingo
+MAD_K         = 5.0
+MAD_K_WEEKEND = 6.5
 
-# -------------------- Utilidades de lectura ---------------------------
+# -------------------- IO helpers ---------------------------
 def read_csv_semicolon(path):
     encodings = ["utf-8", "latin1", "cp1252"]
     last = None
     for enc in encodings:
         try:
             df = pd.read_csv(path, sep=";", encoding=enc)
-            # reparar encabezado colapsado
             if df.shape[1] == 1 and ";" in df.columns[0]:
                 parts = df.columns[0].split(";")
                 df = pd.read_csv(path, sep=";", encoding=enc, header=None, names=parts)
@@ -84,7 +82,7 @@ def ensure_datetime_calls(df):
     d = df.copy()
     d.columns = [c.strip() for c in d.columns]
     low = {c.lower(): c for c in d.columns}
-    # 1) datetime directo
+    # 1) datetime / datatime directo
     for cand in ("datetime", "datatime"):
         if cand in low:
             ts = pd.to_datetime(d[low[cand]], errors="coerce", dayfirst=True)
@@ -101,7 +99,7 @@ def ensure_datetime_calls(df):
         d["ts"] = d["ts"].dt.tz_localize(TIMEZONE, ambiguous="NaT", nonexistent="NaT")
         d = d.dropna(subset=["ts"]).set_index("ts")
         return d
-    # 3) fallback: intentar parsear cualquier columna que parezca fecha/hora
+    # 3) fallback: cualquier columna que parezca timestamp
     for col in d.columns:
         try:
             ts = pd.to_datetime(d[col], errors="coerce", dayfirst=True)
@@ -114,7 +112,7 @@ def ensure_datetime_calls(df):
             pass
     raise ValueError("historical_data.csv debe tener 'datetime'/'datatime' o 'fecha' y 'hora'.")
 
-# -------------------- Ingeniería de features --------------------------
+# -------------------- Feature engineering -------------------
 def add_time_features(df_idxed):
     x = df_idxed.copy()
     x["dow"]   = x.index.dayofweek
@@ -133,7 +131,7 @@ def rolling_features(df_idxed, col):
     x[f"{col}_ma168"]  = x[col].shift(1).rolling(24*7, min_periods=1).mean()
     return x
 
-def build_feature_matrix_nn(df_idxed, training_columns, target_col):
+def build_feature_matrix_core(df_idxed, training_columns, target_col):
     d = add_time_features(df_idxed)
     d = rolling_features(d, target_col)
     dummies = pd.get_dummies(d[["dow","month"]], drop_first=False, dtype=int)
@@ -148,7 +146,16 @@ def build_feature_matrix_nn(df_idxed, training_columns, target_col):
     X = X[training_columns].replace([np.inf,-np.inf], np.nan).fillna(0)
     return X
 
-# -------------------- Recalibración / Suavizado -----------------------
+def build_feature_matrix_weather_zeros(training_columns_weather, index_like):
+    # matriz de clima en ceros (sin aportar señal)
+    Xw = pd.DataFrame(
+        np.zeros((len(index_like), len(training_columns_weather)), dtype=float),
+        index=index_like,
+        columns=training_columns_weather
+    )
+    return Xw
+
+# -------------------- Recalibración / Suavizado --------------
 def compute_seasonal_weights(df_hist, col, weeks=8, clip_min=0.75, clip_max=1.30):
     if len(df_hist) == 0:
         return {(dow,h):1.0 for dow in range(7) for h in range(24)}
@@ -198,39 +205,46 @@ def apply_peak_smoothing_history(df_future, col, base, k_weekday=MAD_K, k_weeken
     d.loc[mask, col] = upper[mask]
     return d.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
 
-# -------------------- Predicción iterativa ----------------------------
-def predict_iterative(df_hist_idxed, model, scaler, training_columns, target_col, future_index):
+# -------------------- Predicción iterativa -------------------
+def predict_iterative(df_hist_idxed, model, scaler_core, scaler_weather, cols_core, cols_weather, target_col, future_index):
     df_pred = df_hist_idxed.copy()
     for ts in future_index:
         tmp = pd.DataFrame(index=[ts])
         full = pd.concat([df_pred, tmp])
-        X = build_feature_matrix_nn(full, training_columns, target_col).tail(1)
-        Xs = scaler.transform(X)
-        yhat = model.predict(Xs, verbose=0).flatten()[0]
+        Xc = build_feature_matrix_core(full, cols_core, target_col).tail(1)
+        Xw = build_feature_matrix_weather_zeros(cols_weather, Xc.index)
+        Xc_s = scaler_core.transform(Xc)
+        Xw_s = scaler_weather.transform(Xw)
+        # IMPORTANTE: el modelo espera dict con nombres de input entrenados
+        yhat = model.predict({"X_core": Xc_s, "X_weather": Xw_s}, verbose=0).flatten()[0]
         df_pred.loc[ts, target_col] = yhat
     return df_pred.loc[future_index, target_col]
 
-# =============================== MAIN ==================================
+# =============================== MAIN ======================= 
 def main():
     os.makedirs(MODELS_DIR, exist_ok=True)
     os.makedirs("public", exist_ok=True)
 
-    print("Descargando activos core del Release...")
-    ASSET_MODEL = "modelo_unificado.h5"
-    ASSET_SCALER = "scaler_core.pkl"
-    ASSET_COLS = "training_columns_core.json"
-    download_asset_from_latest(OWNER, REPO, ASSET_MODEL,  MODELS_DIR)
-    download_asset_from_latest(OWNER, REPO, ASSET_SCALER, MODELS_DIR)
-    download_asset_from_latest(OWNER, REPO, ASSET_COLS,   MODELS_DIR)
+    print("Descargando assets del Release...")
+    ASSET_MODEL   = "modelo_unificado.h5"
+    ASSET_SC_CORE = "scaler_core.pkl"
+    ASSET_COL_CORE= "training_columns_core.json"
+    ASSET_SC_WTHR = "scaler_weather.pkl"
+    ASSET_COL_WTHR= "training_columns_weather.json"
 
-    print("Cargando modelo y scaler (compile=False)...")
-    model  = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_MODEL), compile=False)
-    scaler = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER))
-    with open(os.path.join(MODELS_DIR, ASSET_COLS), "r", encoding="utf-8") as f:
-        training_columns = json.load(f)
-    # por si viene como dict { "columns": [...] }
-    if isinstance(training_columns, dict) and "columns" in training_columns:
-        training_columns = training_columns["columns"]
+    for a in [ASSET_MODEL, ASSET_SC_CORE, ASSET_COL_CORE, ASSET_SC_WTHR, ASSET_COL_WTHR]:
+        download_asset_from_latest(OWNER, REPO, a, MODELS_DIR)
+
+    print("Cargando modelo y scalers...")
+    model   = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_MODEL), compile=False)
+    sc_core = joblib.load(os.path.join(MODELS_DIR, ASSET_SC_CORE))
+    sc_wthr = joblib.load(os.path.join(MODELS_DIR, ASSET_SC_WTHR))
+    with open(os.path.join(MODELS_DIR, ASSET_COL_CORE), "r", encoding="utf-8") as f:
+        cols_core = json.load(f)
+    with open(os.path.join(MODELS_DIR, ASSET_COL_WTHR), "r", encoding="utf-8") as f:
+        cols_wthr = json.load(f)
+    if isinstance(cols_core, dict) and "columns" in cols_core: cols_core = cols_core["columns"]
+    if isinstance(cols_wthr, dict) and "columns" in cols_wthr: cols_wthr = cols_wthr["columns"]
 
     print(f"Cargando histórico: {DATA_FILE}")
     df_raw = read_csv_semicolon(DATA_FILE)
@@ -251,11 +265,12 @@ def main():
     last = df_hist.index.max()
     start = last + pd.Timedelta(hours=1)
     end   = start + pd.Timedelta(days=HORIZON_DAYS) - pd.Timedelta(hours=1)
-    future_ts = pd.date_range(start=start, end=end, freq=FREQ, tz=TIMEZONE)
+    # evitar warning de 'H' deprecado en algunas versiones
+    future_ts = pd.date_range(start=start, end=end, freq="h", tz=TIMEZONE)
     print(f"Horizonte: {len(future_ts)} horas ({HORIZON_DAYS} días)")
 
-    print("Prediciendo llamadas (sin clima)...")
-    pred = predict_iterative(df_hist, model, scaler, training_columns, TARGET, future_ts)
+    print("Prediciendo llamadas (SIN clima: rama clima = 0)...")
+    pred = predict_iterative(df_hist, model, sc_core, sc_wthr, cols_core, cols_wthr, TARGET, future_ts)
     df_out = pd.DataFrame(index=future_ts, data={"pred_llamadas": np.maximum(0, np.round(pred)).astype(int)})
 
     print("Aplicando recalibración estacional y suavizado...")
@@ -286,4 +301,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
