@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-# ---------- Fallback de descarga si utils_release no exporta la función ----------
+# ---------- Fallback descarga si utils_release no exporta la función ----------
 try:
     from utils_release import download_asset_from_latest
 except Exception:
@@ -25,8 +25,7 @@ except Exception:
         if not token:
             print("ADVERTENCIA: GITHUB_TOKEN no encontrado. Las descargas pueden fallar.")
         latest_release_url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
-        r = requests.get(latest_release_url, headers=headers)
-        r.raise_for_status()
+        r = requests.get(latest_release_url, headers=headers); r.raise_for_status()
         assets = r.json().get("assets", [])
         url = None
         for a in assets:
@@ -51,7 +50,7 @@ MODELS_DIR = "models"
 DATA_FILE  = "data/historical_data.csv"
 
 TIMEZONE = "America/Santiago"
-FREQ = "H"                  # freq horaria
+FREQ = "h"                 # usar 'h' para evitar FutureWarning
 TARGET = "recibidos"
 HORIZON_DAYS = 120
 
@@ -99,7 +98,7 @@ def ensure_datetime_calls(df):
         d["ts"] = d["ts"].dt.tz_localize(TIMEZONE, ambiguous="NaT", nonexistent="NaT")
         d = d.dropna(subset=["ts"]).set_index("ts")
         return d
-    # 3) fallback: cualquier columna que parezca timestamp
+    # 3) fallback: cualquier columna con timestamp consistente
     for col in d.columns:
         try:
             ts = pd.to_datetime(d[col], errors="coerce", dayfirst=True)
@@ -206,6 +205,28 @@ def apply_peak_smoothing_history(df_future, col, base, k_weekday=MAD_K, k_weeken
     return d.drop(columns=["dow","month","hour","sin_hour","cos_hour","sin_dow","cos_dow"], errors="ignore")
 
 # -------------------- Predicción iterativa -------------------
+def _extract_yhat(pred_out):
+    """
+    Normaliza la salida de model.predict para obtener y_hat (llamadas).
+    - dict: intenta 'y_hat', si no existe toma el primer valor.
+    - list/tuple: toma el primer elemento.
+    - ndarray: lo usa tal cual.
+    Devuelve un float para el 1er registro (batch=1).
+    """
+    arr = None
+    if isinstance(pred_out, dict):
+        if "y_hat" in pred_out:
+            arr = pred_out["y_hat"]
+        else:
+            # primer valor del dict
+            arr = next(iter(pred_out.values()))
+    elif isinstance(pred_out, (list, tuple)):
+        arr = pred_out[0]
+    else:
+        arr = pred_out
+    # a escalar
+    return float(np.ravel(arr)[0])
+
 def predict_iterative(df_hist_idxed, model, scaler_core, scaler_weather, cols_core, cols_weather, target_col, future_index):
     df_pred = df_hist_idxed.copy()
     for ts in future_index:
@@ -215,8 +236,8 @@ def predict_iterative(df_hist_idxed, model, scaler_core, scaler_weather, cols_co
         Xw = build_feature_matrix_weather_zeros(cols_weather, Xc.index)
         Xc_s = scaler_core.transform(Xc)
         Xw_s = scaler_weather.transform(Xw)
-        # IMPORTANTE: el modelo espera dict con nombres de input entrenados
-        yhat = model.predict({"X_core": Xc_s, "X_weather": Xw_s}, verbose=0).flatten()[0]
+        pred_raw = model.predict({"X_core": Xc_s, "X_weather": Xw_s}, verbose=0)
+        yhat = _extract_yhat(pred_raw)
         df_pred.loc[ts, target_col] = yhat
     return df_pred.loc[future_index, target_col]
 
@@ -265,8 +286,7 @@ def main():
     last = df_hist.index.max()
     start = last + pd.Timedelta(hours=1)
     end   = start + pd.Timedelta(days=HORIZON_DAYS) - pd.Timedelta(hours=1)
-    # evitar warning de 'H' deprecado en algunas versiones
-    future_ts = pd.date_range(start=start, end=end, freq="h", tz=TIMEZONE)
+    future_ts = pd.date_range(start=start, end=end, freq=FREQ, tz=TIMEZONE)
     print(f"Horizonte: {len(future_ts)} horas ({HORIZON_DAYS} días)")
 
     print("Prediciendo llamadas (SIN clima: rama clima = 0)...")
