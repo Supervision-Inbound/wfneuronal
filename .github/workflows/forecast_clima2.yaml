@@ -1,9 +1,9 @@
-name: forecast_clima2
+name: forecast_clima120_baseline2
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "25 6 * * *"  # todos los días 06:25 UTC
+    - cron: "15 6 * * *"  # 06:15 UTC diario
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: true
@@ -23,22 +23,33 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # alineado a tus versiones que ya funcionan
-          pip install pandas==2.2.2 numpy==1.26.4 scikit-learn==1.2.2 joblib==1.4.2 python-dateutil==2.9.0.post0 requests==2.32.3 tensorflow requests-cache==1.2.0 retry-requests==2.0.0
+          # Usa tu requirements.txt del repo (recomendado)
+          pip install -r requirements.txt
+          # Si no tienes requirements.txt, comenta la línea anterior y descomenta estas:
+          # pip install pandas==2.2.2 numpy==1.26.4 scikit-learn==1.2.2 joblib==1.4.2 \
+          #             python-dateutil==2.9.0.post0 requests==2.32.3 tensorflow \
+          #             requests-cache==1.2.0 retry-requests==2.0.0
 
-      - name: Run clima baseline 120d (sin clima en forecast)
+      - name: Run forecast (clima120 baseline v2)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python forecast_clima120_baseline2.py
+          echo "Archivos generados:"
+          ls -l public/ || true
+          # Validación: si no existen, falla el job
+          test -f public/predicciones2.json
+          test -f public/llamadas_por_dia2.json
+          test -f public/alertas_clima2.json
 
-      - name: Commit & push outputs
+      - name: Commit & push output files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/predicciones2.json public/llamadas_por_dia2.json public/alertas_clima2.json
-          git commit -m "chore(clima2): predicciones2, llamadas_por_dia2 y alertas_clima2" --allow-empty
+          # Forzar el add de archivos ignorados por .gitignore
+          git add -f public/predicciones2.json public/llamadas_por_dia2.json public/alertas_clima2.json
+          git commit -m "chore(forecast-clima2): actualizar JSON (*2)" --allow-empty
           git push
