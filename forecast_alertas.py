@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast_alertas.py  — Inferencia IA de alertas climáticas por comuna
-# Genera JSON con: comuna, ts, llamadas_estimadas, porcentaje_incremento, alerta
-# Requisitos (requirements.txt): requests-cache, retry-requests, tensorflow, pandas, numpy, scikit-learn, joblib
+# Salida JSON ordenada por comunas con alerta>True primero, con rangos
+# de horas consecutivas y detalles horarios por comuna.
 # =======================================================================
 
 import os, json, time
@@ -35,7 +35,7 @@ BASE_SLEEP_S = 1.2          # pausa entre comunas para ser amables con la API
 MAX_RETRIES = 3
 BACKOFF_FACTOR = 1.8
 COOL_DOWN_429 = 60
-DEBUG = True                # poner False para silenciar logs
+DEBUG = False               # pon True si quieres log detallado
 
 # ---------------- Debug helpers ----------------
 def _now():
@@ -193,6 +193,68 @@ def normalize_location_columns(df):
     dbg(f"Normalizado coords: {before} -> {len(df)} filas válidas")
     return df
 
+# ---------------- Agrupación a rangos de horas ----------------
+def merge_consecutive_hours_same_day(df_alerts):
+    """
+    Recibe un DataFrame con columnas: ts (datetime64), porcentaje_incremento (float)
+    Devuelve lista de rangos por día: {fecha, desde, hasta, n_horas, incremento_promedio_pct, incremento_max_pct}
+    Considera consecutivas si la hora siguiente es +1 respecto a la anterior, mismo día.
+    """
+    if df_alerts.empty:
+        return []
+
+    df_alerts = df_alerts.copy()
+    df_alerts["fecha"] = df_alerts["ts"].dt.date
+    df_alerts["hora"] = df_alerts["ts"].dt.hour
+    df_alerts = df_alerts.sort_values(["fecha", "hora"])
+
+    rangos = []
+    cur_fecha = None
+    start_h = None
+    prev_h = None
+    vals = []
+
+    def push_range(fecha, h0, h1, vals_pct):
+        if fecha is None or h0 is None or h1 is None or not vals_pct:
+            return
+        n = (h1 - h0 + 1)
+        rng = {
+            "fecha": fecha.strftime("%Y-%m-%d"),
+            "desde": f"{h0:02d}:00",
+            "hasta": f"{h1:02d}:00",
+            "n_horas": int(n),
+            "incremento_promedio_pct": round(np.mean(vals_pct) * 100, 1),
+            "incremento_max_pct": round(np.max(vals_pct) * 100, 1)
+        }
+        rangos.append(rng)
+
+    for _, r in df_alerts.iterrows():
+        f = r["fecha"]
+        h = int(r["hora"])
+        pct = float(r["porcentaje_incremento"])  # en proporción (ej: 0.52)
+        if cur_fecha is None:
+            # primer punto
+            cur_fecha = f
+            start_h = h
+            prev_h = h
+            vals = [pct]
+            continue
+        if f == cur_fecha and h == prev_h + 1:
+            # consecutivo mismo día
+            prev_h = h
+            vals.append(pct)
+        else:
+            # cerramos rango anterior y abrimos nuevo
+            push_range(cur_fecha, start_h, prev_h, vals)
+            cur_fecha = f
+            start_h = h
+            prev_h = h
+            vals = [pct]
+
+    # último rango
+    push_range(cur_fecha, start_h, prev_h, vals)
+    return rangos
+
 # ---------------- Main ----------------
 def main():
     section("LOAD ARTIFACTS")
@@ -214,7 +276,6 @@ def main():
 
     client = build_http_client()
     all_preds = []
-    total_alerts = 0
     errores = []
 
     section("LOOP COMUNAS")
@@ -241,38 +302,23 @@ def main():
             X = pd.get_dummies(X, columns=["dow", "hour", "month"], drop_first=False)
 
             # Alinear con columnas de entrenamiento
-            missing = [c for c in training_cols if c not in X.columns]
-            extra   = [c for c in X.columns if c not in training_cols]
-            if missing:
-                dbg(f"{comuna}: faltan {len(missing)} cols (se rellenan con 0). Ej: {missing[:5]}")
-            if extra:
-                dbg(f"{comuna}: sobran {len(extra)} cols (se ignoran). Ej: {extra[:5]}")
-
             for col in training_cols:
                 if col not in X.columns:
                     X[col] = 0
             X = X[training_cols].fillna(0)
 
-            dbg(f"{comuna}: X shape={X.shape}")
             X_scaled = scaler.transform(X)
             y_pred = model.predict(X_scaled, verbose=0).flatten()
-
             if not np.isfinite(y_pred).any():
                 dbg(f"{comuna}: pred no finita, salto.")
                 continue
 
-            # Baseline simple del propio horizonte de esa comuna
             baseline = float(np.nanmean(y_pred)) if np.isfinite(y_pred).any() else 1e-6
             if baseline <= 0:
                 baseline = 1e-6
 
             pct = (y_pred / baseline) - 1.0
             alerts = (pct > ALERTA_THRESHOLD)
-            n_alerts = int(alerts.sum())
-            total_alerts += n_alerts
-
-            dbg(f"{comuna}: pred[min={y_pred.min():.4f} mean={np.mean(y_pred):.4f} max={y_pred.max():.4f}] "
-                f"baseline={baseline:.4f} alertas={n_alerts}/{len(y_pred)}")
 
             df_c["llamadas_estimadas"] = y_pred
             df_c["porcentaje_incremento"] = pct
@@ -287,34 +333,64 @@ def main():
             dbg("⚠️", err)
 
     section("FINALIZE")
-    if errores:
-        dbg("Errores ocurridos:", len(errores))
-        for e in errores[:10]:
-            dbg(" -", e)
-
     os.makedirs("public", exist_ok=True)
 
     if not all_preds:
-        # Genera JSON vacío para no romper el flujo, pero deja log
         with open(OUT_JSON, "w", encoding="utf-8") as f:
             json.dump([], f, ensure_ascii=False, indent=2)
         print("✅ JSON generado (vacío):", OUT_JSON)
-        print("ℹ️ Revisa", DEBUG_LOG, "para el detalle de depuración.")
+        if errores:
+            dbg("Errores ocurridos:", len(errores))
         return
 
+    # ---------------- Construcción de salida limpia ----------------
     df_all = pd.concat(all_preds, ignore_index=True)
-    dbg("Total filas pronóstico:", len(df_all), "Total alertas TRUE:", int(df_all["alerta"].sum()))
 
-    df_all = df_all[["comuna", "ts", "llamadas_estimadas", "porcentaje_incremento", "alerta"]]
-    df_all["ts"] = pd.to_datetime(df_all["ts"]).dt.strftime("%Y-%m-%d %H:%M:%S")
-    df_all["llamadas_estimadas"] = pd.to_numeric(df_all["llamadas_estimadas"], errors="coerce").round(1)
-    df_all["porcentaje_incremento"] = (pd.to_numeric(df_all["porcentaje_incremento"], errors="coerce") * 100).round(1)
-    df_all["alerta"] = df_all["alerta"].astype(bool)
+    # Mantener ts como datetime para armar rangos, y también generar detalles
+    df_all["ts"] = pd.to_datetime(df_all["ts"])
+    df_all["fecha"] = df_all["ts"].dt.date
+    df_all["hora_str"] = df_all["ts"].dt.strftime("%H:%M")
 
-    df_all.to_json(OUT_JSON, orient="records", indent=2, force_ascii=False)
+    # Lista de comunas y si tienen alguna alerta True
+    resumen = []
+    for comuna, dfg in df_all.groupby("comuna"):
+        dfg = dfg.sort_values("ts").copy()
+
+        # Rangos solo con alerta True (mismo día y horas consecutivas)
+        dfg_alerts = dfg[dfg["alerta"] == True][["ts", "porcentaje_incremento"]]
+        rangos = merge_consecutive_hours_same_day(dfg_alerts)
+
+        # Detalles por hora (sin repetir comuna en cada item)
+        detalles = (dfg.assign(
+                        llamadas_estimadas=lambda x: x["llamadas_estimadas"].astype(float).round(1),
+                        porcentaje_incremento=lambda x: (x["porcentaje_incremento"].astype(float) * 100).round(1),
+                        alerta=lambda x: x["alerta"].astype(bool)
+                    )[["ts", "hora_str", "llamadas_estimadas", "porcentaje_incremento", "alerta"]]
+                    .assign(ts=lambda x: x["ts"].dt.strftime("%Y-%m-%d %H:%M:%S"))
+                    .to_dict(orient="records"))
+
+        resumen.append({
+            "comuna": comuna,
+            "tiene_alertas": bool(len(rangos) > 0),
+            "rango_alertas": rangos,
+            "detalles": detalles
+        })
+
+    # Ordenar: primero comunas con alertas True
+    resumen.sort(key=lambda x: (not x["tiene_alertas"], x["comuna"]))
+
+    # Quitar flag interna y guardar
+    salida = []
+    for item in resumen:
+        salida.append({
+            "comuna": item["comuna"],
+            "rango_alertas": item["rango_alertas"],
+            "detalles": item["detalles"]
+        })
+
+    with open(OUT_JSON, "w", encoding="utf-8") as f:
+        json.dump(salida, f, ensure_ascii=False, indent=2)
+
     print("✅ JSON generado:", OUT_JSON)
-    if DEBUG:
-        print("ℹ️ Log de depuración en:", DEBUG_LOG)
-
-if __name__ == "__main__":
-    main()
+    if DEBUG and errores:
+        dbg("Errores ocurridos:", len(errores))
