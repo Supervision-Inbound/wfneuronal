@@ -1,7 +1,7 @@
 # =======================================================================
 # forecast_unificado120.py
 # INFERENCIA 120 días con MODELO UNIFICADO (base + clima)
-# - Uplift de clima desactivado (X_weather = 0) para comparar con el modelo original
+# - Uplift de clima desactivado (X_weather = 0) para comparación
 # - Recalibración estacional (dow-hour)
 # - Ajuste por feriados
 # - Suavizado robusto (cap por MAD)
@@ -34,7 +34,7 @@ OUT_JSON_HOURLY = "public/predicciones2.json"
 OUT_JSON_DAILY  = "public/llamadas_por_dia2.json"
 
 TIMEZONE = "America/Santiago"
-FREQ     = "h"       # pandas recomienda 'h' (minúscula)
+FREQ     = "h"
 TARGET   = "recibidos"
 HORIZON_DAYS = 120
 
@@ -66,14 +66,12 @@ def download_asset_from_latest(owner, repo, asset_name, target_dir):
 
 # ============== Lectura robusta CSV (;) ==============
 def read_csv_semicolon(path):
-    # intenta varios encodings; si header viene colapsado "a;b;c", lo reexpande
     encodings = ("utf-8", "utf-8-sig", "latin1", "cp1252")
     last = None
     for enc in encodings:
         try:
             df = pd.read_csv(path, sep=";", encoding=enc, low_memory=False)
             if df.shape[1] == 1 and ";" in df.columns[0]:
-                # reintenta autodetect
                 text = open(path, "r", encoding=enc, errors="ignore").read()
                 df = pd.read_csv(io.StringIO(text), sep=";", low_memory=False)
             return df
@@ -86,23 +84,16 @@ def ensure_datetime_calls(df, col_fecha="fecha", col_hora="hora"):
     d = df.copy()
     d.columns = [c.strip() for c in d.columns]
     low = {c.lower(): c for c in d.columns}
-    if col_fecha not in low or col_hora not in low:
-        # intenta deducir
-        f = next((c for c in d.columns if "fecha" in c.lower()), None)
-        h = next((c for c in d.columns if c.lower()=="hora" or c.lower().startswith("hora")), None)
-        if f is None or h is None:
-            raise ValueError("historical_data.csv debe tener columnas 'fecha' y 'hora'.")
-        col_fecha, col_hora = f, h
-    else:
-        col_fecha, col_hora = low[col_fecha], low[col_hora]
-
-    fecha_dt = pd.to_datetime(d[col_fecha], errors="coerce", dayfirst=True)
+    # localizar columnas fecha/hora
+    f = low.get(col_fecha, next((c for c in d.columns if "fecha" in c.lower()), None))
+    h = low.get(col_hora,  next((c for c in d.columns if c.lower()=="hora" or c.lower().startswith("hora")), None))
+    if f is None or h is None:
+        raise ValueError("historical_data.csv debe tener columnas 'fecha' y 'hora'.")
+    fecha_dt = pd.to_datetime(d[f], errors="coerce", dayfirst=True)
     if fecha_dt.isna().mean() > 0.5:
-        fecha_dt = pd.to_datetime(d[col_fecha], errors="coerce", dayfirst=False)
-
-    hora_str = (d[col_hora].astype(str)
-                .str.extract(r'(\d{1,2}:\d{1,2}(?::\d{1,2})?)', expand=False)
-                .fillna("00:00").str.slice(0,5))
+        fecha_dt = pd.to_datetime(d[f], errors="coerce", dayfirst=False)
+    hora_str = (d[h].astype(str).str.extract(r'(\d{1,2}:\d{1,2}(?::\d{1,2})?)', expand=False)
+                          .fillna("00:00").str.slice(0,5))
     ts = pd.to_datetime(fecha_dt.dt.date.astype(str) + " " + hora_str, errors="coerce")
     d["ts"] = ts
     d = d.dropna(subset=["ts"]).sort_values("ts")
@@ -229,7 +220,6 @@ def apply_holiday_adjustment(df_future, holidays_set, col="pred_llamadas"):
 def iterative_forecast_unified(df_hist, model, scaler_core, scaler_w, cols_core, cols_wea, target_col, future_ts):
     df_pred = df_hist.copy()
     out_vals = []
-    # matriz meteorológica nula -> uplift = 0
     zeros_weather = pd.DataFrame(np.zeros((1, len(cols_wea))), columns=cols_wea)
     for ts in future_ts:
         temp = pd.DataFrame(index=[ts])
@@ -256,7 +246,8 @@ def main():
         download_asset_from_latest(OWNER, REPO, asset, MODELS_DIR)
 
     print("Cargando modelo y scalers...")
-    model   = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_MODEL))
+    # 🔧 CLAVE: compile=False para evitar deserializar métricas/pérdidas antiguas
+    model   = tf.keras.models.load_model(os.path.join(MODELS_DIR, ASSET_MODEL), compile=False)
     sc_core = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_CORE))
     sc_wea  = joblib.load(os.path.join(MODELS_DIR, ASSET_SCALER_WEAT))
     cols_core = json.load(open(os.path.join(MODELS_DIR, ASSET_COLS_CORE), "r", encoding="utf-8"))
@@ -266,7 +257,6 @@ def main():
     df_hist_raw = read_csv_semicolon(DATA_FILE)
     df_hist_raw.columns = [c.strip() for c in df_hist_raw.columns]
     if TARGET not in [c.lower() for c in df_hist_raw.columns]:
-        # buscar 'recibidos' con mayúsculas/espacios raros
         rec_col = next((c for c in df_hist_raw.columns if c.strip().lower()=="recibidos"), None)
         if rec_col is None:
             raise ValueError("No encuentro columna 'recibidos' en historical_data.csv")
@@ -275,45 +265,44 @@ def main():
     df_hist = ensure_datetime_calls(df_hist_raw, col_fecha="fecha", col_hora="hora")
     df_hist = df_hist[[TARGET]].astype(float)
 
-    # Horizonte de predicción
+    # Horizonte
     last = df_hist.index.max()
     start = last + pd.Timedelta(hours=1)
     end   = (start + pd.Timedelta(days=HORIZON_DAYS)) - pd.Timedelta(hours=1)
     future_ts = pd.date_range(start=start, end=end, freq=FREQ, tz=TIMEZONE)
-    print(f"Horizonte: {len(future_ts)} horas ({HORIZON_DAYS} días) desde {start} hasta {end}")
+    print(f"Horizonte: {len(future_ts)} horas ({HORIZON_DAYS} días)")
 
-    # Predicción iterativa (clima desactivado)
+    # Predicción
     print("Prediciendo (uplift clima = 0)...")
     pred_ll = iterative_forecast_unified(df_hist, model, sc_core, sc_wea, cols_core, cols_wea, TARGET, future_ts)
     df_fut = pd.DataFrame(index=future_ts)
     df_fut["pred_llamadas"] = np.maximum(0, np.round(pred_ll)).astype(int)
 
-    # Recalibración estacional
+    # Estacional
     print("Aplicando recalibración estacional...")
     w = compute_seasonal_weights(df_hist, TARGET, weeks=8, clip_min=0.75, clip_max=1.30)
     df_fut = apply_seasonal_weights(df_fut, w)
 
-    # Suavizado robusto (cap por MAD)
+    # Suavizado MAD
     print("Aplicando suavizado robusto...")
     base = baseline_from_history(df_hist, TARGET)
     df_tmp = df_fut.copy().astype(float)
     df_smooth = apply_peak_smoothing_history(df_tmp, "pred_llamadas", base, MAD_K, MAD_K_WEEKEND)
     df_smooth["pred_llamadas"] = df_smooth["pred_llamadas"].round().astype(int)
 
-    # Ajuste por feriados
+    # Feriados
     print("Aplicando ajuste por feriados...")
     holidays = load_holidays(HOLIDAYS_FILE)
     df_adj = apply_holiday_adjustment(df_smooth, holidays, col="pred_llamadas")
     df_adj = df_adj.rename(columns={"pred_llamadas": "llamadas"})
 
-    # Salida por hora
+    # Salidas
     out_h = (df_adj.rename(columns={"llamadas":"pred_llamadas"})
                     .reset_index()
                     .rename(columns={"index":"ts"}))
     out_h["ts"] = out_h["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")
     out_h.to_json(OUT_JSON_HOURLY, orient="records", indent=2, force_ascii=False)
 
-    # Salida por día
     out_d = (df_adj.copy()
                     .assign(fecha=lambda d: d.index.tz_convert(TIMEZONE).date)
                     .groupby("fecha", as_index=False)["llamadas"].sum()
