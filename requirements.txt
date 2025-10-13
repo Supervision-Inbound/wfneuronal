@@ -5,3 +5,5 @@ joblib==1.4.2
 python-dateutil==2.9.0.post0
 requests==2.32.3
 tensorflow
+requests-cache==1.2.0
+retry-requests==2.0.0
