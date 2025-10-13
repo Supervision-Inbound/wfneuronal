@@ -5,8 +5,8 @@
 #   • Alertas por comuna CON clima (rangos por horas consecutivas) -> *2.json
 #
 # Requiere:
-#   - data/historical_data.csv   (SEPARADO POR ;  -> este script lo fuerza)
-#   - data/Comunas_Cordenadas.csv
+#   - data/historical_data.csv   (SEPARADO POR ; -> este script lo fuerza)
+#   - data/Comunas_Cordenadas.csv (SEPARADO POR ; -> ahora también lo forzamos)
 #   - modelos de alertas en Release:
 #       modelo_alertas_clima.h5, scaler_alertas_clima.pkl, training_columns_alertas_clima.json
 # =======================================================================
@@ -31,7 +31,7 @@ COLS_NAME = "training_columns_alertas_clima.json"
 
 # --------- Datos de entrada ---------
 HIST_CALLS = "data/historical_data.csv"       # ; separador
-LOC_CSV    = "data/Comunas_Cordenadas.csv"
+LOC_CSV    = "data/Comunas_Cordenadas.csv"    # ; separador
 
 # --------- Salidas (terminadas en 2) ---------
 OUT_HOURLY_JSON = "public/predicciones2.json"          # por hora
@@ -40,7 +40,7 @@ OUT_ALERTAS     = "public/alertas_clima2.json"         # alertas por comuna
 
 # --------- Parámetros de horizonte / zona horaria ---------
 HORIZON_DAYS = 120
-FREQ = "H"
+FREQ = "h"  # <— usar minúscula para evitar FutureWarning
 TIMEZONE = "America/Santiago"
 
 # --------- API clima (para Alertas) ---------
@@ -61,7 +61,6 @@ ALERTA_THRESHOLD = 0.40   # >40% sobre baseline del propio horizonte de la comun
 # =======================================================================
 
 def download_asset_from_latest(owner, repo, asset_name, target_dir):
-    """Descarga un asset desde el último release si no existe localmente."""
     os.makedirs(target_dir, exist_ok=True)
     target_path = os.path.join(target_dir, asset_name)
     if os.path.exists(target_path):
@@ -99,7 +98,6 @@ def read_csv_historical_semicolon(path):
     for enc in encodings:
         try:
             df = pd.read_csv(path, sep=";", encoding=enc)
-            # sanity check: que haya más de 1 columna
             if df.shape[1] == 1 and ";" in df.columns[0]:
                 raise ValueError("Header sigue colapsado; encoding incorrecto.")
             return df
@@ -108,21 +106,41 @@ def read_csv_historical_semicolon(path):
             continue
     raise last or ValueError(f"No pude leer {path} con sep=';'")
 
-def read_csv_smart_any(path):
-    """Para coordenadas: separador/encoding flexible."""
+def read_csv_coords_semicolon(path):
+    """Lee coordenadas FORZANDO ';' y repara si quedó en una sola columna."""
     encodings = ("utf-8","utf-8-sig","latin1","cp1252")
-    seps = [None,";","|","\t",","]
     last = None
     for enc in encodings:
-        for sep in seps:
-            try:
-                if sep is None:
-                    return pd.read_csv(path, encoding=enc, engine="python")
-                return pd.read_csv(path, encoding=enc, sep=sep)
-            except Exception as e:
-                last = e
-                continue
-    raise last or ValueError(f"No pude leer {path}")
+        try:
+            df = pd.read_csv(path, sep=";", encoding=enc)
+            # Si vino una sola columna 'comuna;lat;lon', intentar expandir
+            if df.shape[1] == 1 and ";" in df.columns[0]:
+                colname = df.columns[0]
+                tmp = df[colname].astype(str).str.split(";", expand=True)
+                # primer fila podría ser header real
+                # si la primera fila contiene strings no numéricos en lat/lon, usarla como header
+                if tmp.shape[1] >= 3:
+                    maybe_header = tmp.iloc[0].tolist()
+                    # heurística: si campos 1 y 2 no son numéricos -> tratar como header
+                    def is_num(x):
+                        try:
+                            float(str(x).replace(",", "."))
+                            return True
+                        except:
+                            return False
+                    if (not is_num(maybe_header[1])) or (not is_num(maybe_header[2])):
+                        tmp.columns = [c.strip().lower() for c in maybe_header[:tmp.shape[1]]]
+                        tmp = tmp.iloc[1:].reset_index(drop=True)
+                    else:
+                        tmp.columns = ["comuna","lat","lon"] + [f"extra_{i}" for i in range(tmp.shape[1]-3)]
+                    df = tmp
+                else:
+                    raise ValueError("El archivo de coordenadas no tiene formato esperable.")
+            return df
+        except Exception as e:
+            last = e
+            continue
+    raise last or ValueError(f"No pude leer {path} con sep=';'")
 
 def normalize_loc(df):
     df = df.copy()
@@ -149,11 +167,6 @@ def normalize_loc(df):
     return df.drop_duplicates(subset=["comuna"]).reset_index(drop=True)
 
 def ensure_datetime_calls(df):
-    """
-    Construye índice temporal desde:
-      - columna única tipo datetime: ['datetime','datatime','ts','timestamp','fecha_hora','fechahora', 'fechaHora', 'fecha y hora']
-      - o combinación de ['fecha'|'date'] + ['hora'|'time'|'hour'|'hr'].
-    """
     original_cols = df.columns.tolist()
     df = df.copy()
     df.columns = [c.strip() for c in df.columns]
@@ -161,7 +174,7 @@ def ensure_datetime_calls(df):
     cols_low = [c.lower() for c in df.columns]
 
     # 1) datetime directo
-    dt_candidates = ["datetime","datatime","ts","timestamp","fecha_hora","fechahora","fechahora","fechayhora","fecha y hora"]
+    dt_candidates = ["datetime","datatime","ts","timestamp","fecha_hora","fechahora","fechayhora","fecha y hora"]
     dt_col = next((lowmap[c] for c in dt_candidates if c in lowmap), None)
     if dt_col is not None:
         ts = pd.to_datetime(df[dt_col], errors="coerce", dayfirst=True)
@@ -184,12 +197,10 @@ def ensure_datetime_calls(df):
     fecha_col = lowmap[fecha_candidates[0]]
     hora_col  = lowmap[hora_candidates[0]]
 
-    # parse fecha (dayfirst y fallback)
     fecha_dt = pd.to_datetime(df[fecha_col], errors="coerce", dayfirst=True).dt.date
     if pd.isna(fecha_dt).mean() > 0.5:
         fecha_dt = pd.to_datetime(df[fecha_col], errors="coerce", dayfirst=False).dt.date
 
-    # normalizar hora a HH:MM
     hora_str = df[hora_col].astype(str).str.strip()
     hora_str = hora_str.str.extract(r'(\d{1,2}:\d{1,2}(?::\d{1,2})?)', expand=False)
     hora_str = hora_str.fillna("00:00").str.slice(0,5)
@@ -303,7 +314,7 @@ def main():
     os.makedirs("public", exist_ok=True)
     os.makedirs(MODELS_DIR, exist_ok=True)
 
-    # Asegurar modelos de alertas (para generar alertas)
+    # Asegurar modelos de alertas
     download_asset_from_latest(OWNER, REPO, MODEL_NAME, MODELS_DIR)
     download_asset_from_latest(OWNER, REPO, SCALER_NAME, MODELS_DIR)
     download_asset_from_latest(OWNER, REPO, COLS_NAME, MODELS_DIR)
@@ -314,13 +325,12 @@ def main():
         train_cols = json.load(f)
 
     # ===================== Pronóstico 120d SIN clima (nacional) =====================
-    # 1) Histórico (FORZAMOS sep=';')
+    # 1) Histórico (;)
     df_hist = read_csv_historical_semicolon(HIST_CALLS)
     df_hist = df_hist.rename(columns=lambda c: c.strip())
     print("Columnas historical_data.csv:", df_hist.columns.tolist())
     df_hist = ensure_datetime_calls(df_hist)
 
-    # columna 'recibidos' (case-insensitive)
     lowmap = {c.lower(): c for c in df_hist.columns}
     if "recibidos" not in lowmap:
         raise ValueError(f"En historical_data.csv no encuentro columna 'recibidos'. Columnas: {df_hist.columns.tolist()}")
@@ -332,9 +342,9 @@ def main():
     end   = start + pd.Timedelta(days=HORIZON_DAYS) - pd.Timedelta(hours=1)
     future_ts = pd.date_range(start=start, end=end, freq=FREQ, tz=TIMEZONE)
 
-    # 3) Base reciente por hora (mediana) y pesos estacionales (dow,hour)
+    # 3) Base reciente por hora (mediana) y pesos estacionales
     recent = df_hist.loc[df_hist.index >= (df_hist.index.max() - pd.Timedelta(weeks=2))]
-    base_hour_med = recent.resample("H")[col_rec].median()
+    base_hour_med = recent.resample("h")[col_rec].median()
     base_hour_med = base_hour_med.reindex(future_ts, method=None).fillna(base_hour_med.median())
     weights = seasonal_weights(df_hist[[col_rec]].rename(columns={col_rec:"recibidos"}), col="recibidos", weeks=8, clip=(0.75,1.30))
     y120 = apply_seasonal(base_hour_med, weights).clip(lower=0).round().astype(int)
@@ -350,8 +360,8 @@ def main():
                  .rename(columns={"date":"fecha","pred_llamadas":"total_llamadas"}))
     out_daily.to_json(OUT_DAILY_JSON, orient="records", indent=2)
 
-    # ===================== Alertas CON clima (igual que antes) =====================
-    df_loc = normalize_loc(read_csv_smart_any(LOC_CSV))
+    # ===================== Alertas CON clima =====================
+    df_loc = normalize_loc(read_csv_coords_semicolon(LOC_CSV))
     client = http_client()
     alert_items = []
 
@@ -367,6 +377,7 @@ def main():
             X = d[["temperature_2m","precipitation","rain","wind_speed_10m","wind_gusts_10m",
                    "sin_hour","cos_hour","sin_dow","cos_dow","dow","hour","month"]]
             X = pd.get_dummies(X, columns=["dow","hour","month"], drop_first=False)
+            # asegurar columnas del entrenamiento
             for c in train_cols:
                 if c not in X.columns: X[c]=0
             X = X[train_cols].fillna(0)
@@ -409,4 +420,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
