@@ -29,14 +29,14 @@ jobs:
           if [ -f requirements.txt ]; then
             pip install -r requirements.txt
           else
-            pip install pandas numpy scikit-learn joblib python-dateutil requests tensorflow requests-cache retry-requests
+            pip install pandas numpy scikit-learn==1.2.2 joblib python-dateutil requests tensorflow requests-cache retry-requests
           fi
 
       - name: Run unified inference
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python forecast_unificado120.py
+          python forecast_clima120_baseline2.py
 
       - name: Commit & push output files
         run: |
@@ -54,3 +54,4 @@ jobs:
 
           git commit -m "chore(unificado): actualización automática predicciones2 y llamadas_por_dia2"
           git push
+
