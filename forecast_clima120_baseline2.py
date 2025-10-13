@@ -5,12 +5,10 @@
 #   • Alertas por comuna CON clima (rangos por horas consecutivas) -> *2.json
 #
 # Requiere:
-#   - data/historical_data.csv         (separador flexible; detecta columnas)
-#   - data/Comunas_Cordenadas.csv      (encabezados flexibles: comuna/lat/lon)
-#   - Modelos de alertas en Release:
-#       modelo_alertas_clima.h5
-#       scaler_alertas_clima.pkl
-#       training_columns_alertas_clima.json
+#   - data/historical_data.csv   (SEPARADO POR ;  -> este script lo fuerza)
+#   - data/Comunas_Cordenadas.csv
+#   - modelos de alertas en Release:
+#       modelo_alertas_clima.h5, scaler_alertas_clima.pkl, training_columns_alertas_clima.json
 # =======================================================================
 
 import os, json, time
@@ -21,7 +19,6 @@ import tensorflow as tf
 import requests
 import requests_cache
 from retry_requests import retry
-from datetime import timedelta
 
 # --------- Repo para descargar modelos si faltan ----------
 OWNER = "Supervision-Inbound"
@@ -33,7 +30,7 @@ SCALER_NAME = "scaler_alertas_clima.pkl"
 COLS_NAME = "training_columns_alertas_clima.json"
 
 # --------- Datos de entrada ---------
-HIST_CALLS = "data/historical_data.csv"
+HIST_CALLS = "data/historical_data.csv"       # ; separador
 LOC_CSV    = "data/Comunas_Cordenadas.csv"
 
 # --------- Salidas (terminadas en 2) ---------
@@ -95,7 +92,24 @@ def download_asset_from_latest(owner, repo, asset_name, target_dir):
     print(f"⬇️  Descargado: {target_path}")
     return target_path
 
-def read_csv_smart(path):
+def read_csv_historical_semicolon(path):
+    """Lee el histórico FORZANDO separador ';' y probando encodings típicos."""
+    encodings = ("utf-8","utf-8-sig","latin1","cp1252")
+    last = None
+    for enc in encodings:
+        try:
+            df = pd.read_csv(path, sep=";", encoding=enc)
+            # sanity check: que haya más de 1 columna
+            if df.shape[1] == 1 and ";" in df.columns[0]:
+                raise ValueError("Header sigue colapsado; encoding incorrecto.")
+            return df
+        except Exception as e:
+            last = e
+            continue
+    raise last or ValueError(f"No pude leer {path} con sep=';'")
+
+def read_csv_smart_any(path):
+    """Para coordenadas: separador/encoding flexible."""
     encodings = ("utf-8","utf-8-sig","latin1","cp1252")
     seps = [None,";","|","\t",","]
     last = None
@@ -136,10 +150,9 @@ def normalize_loc(df):
 
 def ensure_datetime_calls(df):
     """
-    Construye índice temporal robusto a partir de:
-      - columna única tipo datetime: ['datetime', 'datatime', 'ts', 'timestamp', 'fecha_hora', 'fechahora']
-      - o combinación de ['fecha' | 'date'] + ['hora' | 'time' | 'hour' | 'hr']
-    Admite formatos 'DD-MM-YYYY' o 'YYYY-MM-DD' y horas 'HH:MM'/'HH:MM:SS'.
+    Construye índice temporal desde:
+      - columna única tipo datetime: ['datetime','datatime','ts','timestamp','fecha_hora','fechahora', 'fechaHora', 'fecha y hora']
+      - o combinación de ['fecha'|'date'] + ['hora'|'time'|'hour'|'hr'].
     """
     original_cols = df.columns.tolist()
     df = df.copy()
@@ -148,20 +161,10 @@ def ensure_datetime_calls(df):
     cols_low = [c.lower() for c in df.columns]
 
     # 1) datetime directo
-    dt_candidates = ["datetime","datatime","ts","timestamp","fecha_hora","fechahora","fecha y hora","fecha hora"]
+    dt_candidates = ["datetime","datatime","ts","timestamp","fecha_hora","fechahora","fechahora","fechayhora","fecha y hora"]
     dt_col = next((lowmap[c] for c in dt_candidates if c in lowmap), None)
-    if dt_col is None:
-        # buscar algo que contenga 'fecha' y 'hora' en el mismo nombre (ej: 'FechaHora')
-        for c in df.columns:
-            lc = c.lower().replace(" ", "")
-            if ("fecha" in lc or "date" in lc) and ("hora" in lc or "time" in lc):
-                dt_col = c
-                break
-
     if dt_col is not None:
-        # parse directo
         ts = pd.to_datetime(df[dt_col], errors="coerce", dayfirst=True)
-        # si falló mucho, intenta sin dayfirst
         if ts.isna().mean() > 0.5:
             ts = pd.to_datetime(df[dt_col], errors="coerce", dayfirst=False)
         ts = ts.dropna()
@@ -181,25 +184,20 @@ def ensure_datetime_calls(df):
     fecha_col = lowmap[fecha_candidates[0]]
     hora_col  = lowmap[hora_candidates[0]]
 
-    # parse fecha (intenta dayfirst y luego no-dayfirst)
+    # parse fecha (dayfirst y fallback)
     fecha_dt = pd.to_datetime(df[fecha_col], errors="coerce", dayfirst=True).dt.date
     if pd.isna(fecha_dt).mean() > 0.5:
         fecha_dt = pd.to_datetime(df[fecha_col], errors="coerce", dayfirst=False).dt.date
 
     # normalizar hora a HH:MM
     hora_str = df[hora_col].astype(str).str.strip()
-    # si vienen como 'H' o 'H:M', normaliza
     hora_str = hora_str.str.extract(r'(\d{1,2}:\d{1,2}(?::\d{1,2})?)', expand=False)
     hora_str = hora_str.fillna("00:00").str.slice(0,5)
 
     ts = pd.to_datetime(pd.Series(fecha_dt).astype(str) + " " + hora_str, errors="coerce")
-    out = df.assign(ts=ts).dropna(subset=["ts"]).sort_values("ts")
-    out = out.set_index("ts")
+    out = df.assign(ts=ts).dropna(subset=["ts"]).sort_values("ts").set_index("ts")
     if out.empty:
-        raise ValueError(
-            f"No pude construir 'ts' desde '{fecha_col}' + '{hora_col}'. "
-            f"Columnas originales: {original_cols}"
-        )
+        raise ValueError(f"No pude construir 'ts' desde '{fecha_col}' + '{hora_col}'. Columnas originales: {original_cols}")
     print(f"✔ detectado en historical_data.csv -> fecha='{fecha_col}', hora='{hora_col}'  (filas válidas: {len(out)})")
     return out
 
@@ -316,20 +314,17 @@ def main():
         train_cols = json.load(f)
 
     # ===================== Pronóstico 120d SIN clima (nacional) =====================
-    # 1) Histórico
-    df_hist = read_csv_smart(HIST_CALLS)
+    # 1) Histórico (FORZAMOS sep=';')
+    df_hist = read_csv_historical_semicolon(HIST_CALLS)
     df_hist = df_hist.rename(columns=lambda c: c.strip())
     print("Columnas historical_data.csv:", df_hist.columns.tolist())
     df_hist = ensure_datetime_calls(df_hist)
-    if "recibidos" not in [c.lower() for c in df_hist.columns]:
-        # intenta mapear nombre parecido
-        cols_map = {c.lower(): c for c in df_hist.columns}
-        if "recibidos" in cols_map:
-            col_rec = cols_map["recibidos"]
-        else:
-            raise ValueError(f"En historical_data.csv no encuentro columna 'recibidos'. Columnas: {df_hist.columns.tolist()}")
-    else:
-        col_rec = {c.lower(): c for c in df_hist.columns}["recibidos"]
+
+    # columna 'recibidos' (case-insensitive)
+    lowmap = {c.lower(): c for c in df_hist.columns}
+    if "recibidos" not in lowmap:
+        raise ValueError(f"En historical_data.csv no encuentro columna 'recibidos'. Columnas: {df_hist.columns.tolist()}")
+    col_rec = lowmap["recibidos"]
 
     # 2) Horizonte futuro
     last_known = df_hist.index.max()
@@ -340,7 +335,6 @@ def main():
     # 3) Base reciente por hora (mediana) y pesos estacionales (dow,hour)
     recent = df_hist.loc[df_hist.index >= (df_hist.index.max() - pd.Timedelta(weeks=2))]
     base_hour_med = recent.resample("H")[col_rec].median()
-    # reindex a futuro con relleno mediano global si faltan
     base_hour_med = base_hour_med.reindex(future_ts, method=None).fillna(base_hour_med.median())
     weights = seasonal_weights(df_hist[[col_rec]].rename(columns={col_rec:"recibidos"}), col="recibidos", weeks=8, clip=(0.75,1.30))
     y120 = apply_seasonal(base_hour_med, weights).clip(lower=0).round().astype(int)
@@ -357,7 +351,7 @@ def main():
     out_daily.to_json(OUT_DAILY_JSON, orient="records", indent=2)
 
     # ===================== Alertas CON clima (igual que antes) =====================
-    df_loc = normalize_loc(read_csv_smart(LOC_CSV))
+    df_loc = normalize_loc(read_csv_smart_any(LOC_CSV))
     client = http_client()
     alert_items = []
 
@@ -415,3 +409,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
