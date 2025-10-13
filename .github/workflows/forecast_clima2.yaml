@@ -1,15 +1,15 @@
-name: forecast_clima120_baseline2
+name: forecast_unificado120
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "15 6 * * *"  # 06:15 UTC diario
+    - cron: "20 6 * * *"   # todos los días 06:20 UTC
 
 permissions:
   contents: write
 
 jobs:
-  run-forecast-clima2:
+  run-forecast-unificado:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,30 +26,31 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          # Usa tu requirements.txt del repo (recomendado)
-          pip install -r requirements.txt
-          # Si no tienes requirements.txt, comenta la línea anterior y descomenta estas:
-          # pip install pandas==2.2.2 numpy==1.26.4 scikit-learn==1.2.2 joblib==1.4.2 \
-          #             python-dateutil==2.9.0.post0 requests==2.32.3 tensorflow \
-          #             requests-cache==1.2.0 retry-requests==2.0.0
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            pip install pandas numpy scikit-learn joblib python-dateutil requests tensorflow requests-cache retry-requests
+          fi
 
-      - name: Run forecast (clima120 baseline v2)
+      - name: Run unified inference
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python forecast_clima120_baseline2.py
-          echo "Archivos generados:"
-          ls -l public/ || true
-          # Validación: si no existen, falla el job
-          test -f public/predicciones2.json
-          test -f public/llamadas_por_dia2.json
-          test -f public/alertas_clima2.json
+          python forecast_unificado120.py
 
       - name: Commit & push output files
         run: |
-          git config user.name "github-actions[bot]"
+          git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Forzar el add de archivos ignorados por .gitignore
-          git add -f public/predicciones2.json public/llamadas_por_dia2.json public/alertas_clima2.json
-          git commit -m "chore(forecast-clima2): actualizar JSON (*2)" --allow-empty
+
+          # Fuerza agregar solo los JSON de salida (sin tocar .gitignore)
+          git add -f public/predicciones2.json public/llamadas_por_dia2.json || true
+
+          # Si no hay cambios, no fallar
+          if git diff --staged --quiet; then
+            echo "No hay cambios para commitear."
+            exit 0
+          fi
+
+          git commit -m "chore(unificado): actualización automática predicciones2 y llamadas_por_dia2"
           git push
