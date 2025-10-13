@@ -1,0 +1,46 @@
+name: forecast_alertas
+
+on:
+  workflow_dispatch:   # Permite ejecución manual desde GitHub
+  schedule:
+    - cron: "30 7 * * *"  # Corre todos los días a las 07:30 UTC (04:30 Chile)
+
+permissions:
+  contents: write
+
+jobs:
+  run-alertas:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Download model artifacts from Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python utils_release.py --owner Supervision-Inbound --repo wfneuronal --pattern "alertas_clima"
+
+      - name: Run forecast_alertas.py
+        run: |
+          python forecast_alertas.py
+
+      - name: Commit & Push JSON output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/alertas_clima.json
+          git commit -m "chore(alertas): actualización automática de alertas climáticas" --allow-empty
+          git push
