@@ -6,7 +6,7 @@
 #
 # Requiere:
 #   - data/historical_data.csv   (SEPARADO POR ; -> este script lo fuerza)
-#   - data/Comunas_Cordenadas.csv (SEPARADO POR ; -> ahora también lo forzamos)
+#   - data/Comunas_Cordenadas.csv (SEPARADO POR ; -> también lo forzamos)
 #   - modelos de alertas en Release:
 #       modelo_alertas_clima.h5, scaler_alertas_clima.pkl, training_columns_alertas_clima.json
 # =======================================================================
@@ -40,7 +40,7 @@ OUT_ALERTAS     = "public/alertas_clima2.json"         # alertas por comuna
 
 # --------- Parámetros de horizonte / zona horaria ---------
 HORIZON_DAYS = 120
-FREQ = "h"  # <— usar minúscula para evitar FutureWarning
+FREQ = "h"  # minúscula para evitar FutureWarning
 TIMEZONE = "America/Santiago"
 
 # --------- API clima (para Alertas) ---------
@@ -113,21 +113,17 @@ def read_csv_coords_semicolon(path):
     for enc in encodings:
         try:
             df = pd.read_csv(path, sep=";", encoding=enc)
-            # Si vino una sola columna 'comuna;lat;lon', intentar expandir
             if df.shape[1] == 1 and ";" in df.columns[0]:
                 colname = df.columns[0]
                 tmp = df[colname].astype(str).str.split(";", expand=True)
-                # primer fila podría ser header real
-                # si la primera fila contiene strings no numéricos en lat/lon, usarla como header
                 if tmp.shape[1] >= 3:
-                    maybe_header = tmp.iloc[0].tolist()
-                    # heurística: si campos 1 y 2 no son numéricos -> tratar como header
                     def is_num(x):
                         try:
                             float(str(x).replace(",", "."))
                             return True
                         except:
                             return False
+                    maybe_header = tmp.iloc[0].tolist()
                     if (not is_num(maybe_header[1])) or (not is_num(maybe_header[2])):
                         tmp.columns = [c.strip().lower() for c in maybe_header[:tmp.shape[1]]]
                         tmp = tmp.iloc[1:].reset_index(drop=True)
@@ -325,7 +321,6 @@ def main():
         train_cols = json.load(f)
 
     # ===================== Pronóstico 120d SIN clima (nacional) =====================
-    # 1) Histórico (;)
     df_hist = read_csv_historical_semicolon(HIST_CALLS)
     df_hist = df_hist.rename(columns=lambda c: c.strip())
     print("Columnas historical_data.csv:", df_hist.columns.tolist())
@@ -336,28 +331,28 @@ def main():
         raise ValueError(f"En historical_data.csv no encuentro columna 'recibidos'. Columnas: {df_hist.columns.tolist()}")
     col_rec = lowmap["recibidos"]
 
-    # 2) Horizonte futuro
     last_known = df_hist.index.max()
     start = last_known + pd.Timedelta(hours=1)
     end   = start + pd.Timedelta(days=HORIZON_DAYS) - pd.Timedelta(hours=1)
     future_ts = pd.date_range(start=start, end=end, freq=FREQ, tz=TIMEZONE)
 
-    # 3) Base reciente por hora (mediana) y pesos estacionales
     recent = df_hist.loc[df_hist.index >= (df_hist.index.max() - pd.Timedelta(weeks=2))]
     base_hour_med = recent.resample("h")[col_rec].median()
     base_hour_med = base_hour_med.reindex(future_ts, method=None).fillna(base_hour_med.median())
     weights = seasonal_weights(df_hist[[col_rec]].rename(columns={col_rec:"recibidos"}), col="recibidos", weeks=8, clip=(0.75,1.30))
     y120 = apply_seasonal(base_hour_med, weights).clip(lower=0).round().astype(int)
 
-    # 4) Guardar salidas SIN clima
+    # --- Guardar JSON por hora (ts string) ---
     out_hourly = (pd.DataFrame({"ts": y120.index.tz_convert(TIMEZONE), "pred_llamadas": y120.values})
                     .assign(ts=lambda d: d["ts"].dt.strftime("%Y-%m-%d %H:%M:%S")))
     out_hourly.to_json(OUT_HOURLY_JSON, orient="records", indent=2)
 
+    # --- Guardar JSON por día (fecha YYYY-MM-DD, no epoch) ---
     out_daily = (out_hourly
-                 .assign(date=pd.to_datetime(out_hourly["ts"]).dt.date)
-                 .groupby("date", as_index=False)["pred_llamadas"].sum()
-                 .rename(columns={"date":"fecha","pred_llamadas":"total_llamadas"}))
+                 .assign(fecha=pd.to_datetime(out_hourly["ts"]).dt.strftime("%Y-%m-%d"))
+                 .groupby("fecha", as_index=False)["pred_llamadas"]
+                 .sum()
+                 .rename(columns={"pred_llamadas":"total_llamadas"}))
     out_daily.to_json(OUT_DAILY_JSON, orient="records", indent=2)
 
     # ===================== Alertas CON clima =====================
@@ -377,7 +372,6 @@ def main():
             X = d[["temperature_2m","precipitation","rain","wind_speed_10m","wind_gusts_10m",
                    "sin_hour","cos_hour","sin_dow","cos_dow","dow","hour","month"]]
             X = pd.get_dummies(X, columns=["dow","hour","month"], drop_first=False)
-            # asegurar columnas del entrenamiento
             for c in train_cols:
                 if c not in X.columns: X[c]=0
             X = X[train_cols].fillna(0)
@@ -390,7 +384,6 @@ def main():
             d["porcentaje_incremento"]= (y / baseline) - 1.0
             d["alerta"]               = d["porcentaje_incremento"] > ALERTA_THRESHOLD
 
-            # RANGOS
             r = rangos_consecutivos(d[d["alerta"]==True][["ts","porcentaje_incremento"]])
 
             detalles = (d.assign(
@@ -420,3 +413,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
