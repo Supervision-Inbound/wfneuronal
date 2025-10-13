@@ -3,7 +3,7 @@ name: forecast_alertas
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 7 * * *"  # Todos los días a las 04:30 Chile (07:30 UTC)
+    - cron: "30 7 * * *"  # 07:30 UTC ≈ 04:30 Chile
 
 permissions:
   contents: write
@@ -21,15 +21,19 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install dependencies (base)
         run: |
           pip install -r requirements.txt
+          # SOLO este workflow eleva scikit-learn para compatibilidad del scaler de alertas
+          pip install --upgrade scikit-learn==1.6.1
+          python -c "import sys, sklearn, pandas, numpy; print('Py',sys.version); print('sklearn', sklearn.__version__); print('pandas',pandas.__version__); print('numpy',numpy.__version__)"
 
-      - name: Descargar modelo de alertas desde Release
+      - name: Descargar modelos de ALERTAS desde Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python utils_release.py --owner Supervision-Inbound --repo wfneuronal --pattern alertas_clima
+          # Usa tu utils_release con soporte de --pattern
+          python utils_release.py --owner Supervision-Inbound --repo wfneuronal --pattern alertas_clima --target models
 
       - name: Ejecutar inferencia climática
         run: |
@@ -42,3 +46,4 @@ jobs:
           git add public/alertas_clima.json
           git commit -m "chore(alertas): actualización automática de alertas climáticas" --allow-empty
           git push
+
