@@ -1,9 +1,9 @@
 name: forecast_alertas
 
 on:
-  workflow_dispatch:   # Permite ejecución manual desde GitHub
+  workflow_dispatch:
   schedule:
-    - cron: "30 7 * * *"  # Corre todos los días a las 07:30 UTC (04:30 Chile)
+    - cron: "30 7 * * *"  # Todos los días a las 04:30 Chile (07:30 UTC)
 
 permissions:
   contents: write
@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          lfs: true
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -27,17 +25,17 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Download model artifacts from Release
+      - name: Descargar modelo de alertas desde Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python utils_release.py --owner Supervision-Inbound --repo wfneuronal --pattern "alertas_clima"
+          python utils_release.py --owner Supervision-Inbound --repo wfneuronal --pattern alertas_clima
 
-      - name: Run forecast_alertas.py
+      - name: Ejecutar inferencia climática
         run: |
           python forecast_alertas.py
 
-      - name: Commit & Push JSON output
+      - name: Commit & Push JSON
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
