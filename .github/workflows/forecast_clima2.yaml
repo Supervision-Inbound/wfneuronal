@@ -1,0 +1,44 @@
+name: forecast_clima2
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "25 6 * * *"  # todos los días 06:25 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  run-forecast-clima2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          # alineado a tus versiones que ya funcionan
+          pip install pandas==2.2.2 numpy==1.26.4 scikit-learn==1.2.2 joblib==1.4.2 python-dateutil==2.9.0.post0 requests==2.32.3 tensorflow requests-cache==1.2.0 retry-requests==2.0.0
+
+      - name: Run clima baseline 120d (sin clima en forecast)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python forecast_clima120_baseline2.py
+
+      - name: Commit & push outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/predicciones2.json public/llamadas_por_dia2.json public/alertas_clima2.json
+          git commit -m "chore(clima2): predicciones2, llamadas_por_dia2 y alertas_clima2" --allow-empty
+          git push
