@@ -5,9 +5,8 @@
 #   • Alertas por comuna CON clima (rangos por horas consecutivas) -> *2.json
 #
 # Requiere:
-#   - data/historical_data.csv         (mismo de la IA anterior; separador ;)  [cols: fecha, hora, recibidos]
+#   - data/historical_data.csv         (separador flexible; detecta columnas)
 #   - data/Comunas_Cordenadas.csv      (encabezados flexibles: comuna/lat/lon)
-#   - (opcional) data/Feriados_Chilev2.csv  [col: Fecha DD-MM-YYYY] (NO usada por ahora)
 #   - Modelos de alertas en Release:
 #       modelo_alertas_clima.h5
 #       scaler_alertas_clima.pkl
@@ -36,7 +35,6 @@ COLS_NAME = "training_columns_alertas_clima.json"
 # --------- Datos de entrada ---------
 HIST_CALLS = "data/historical_data.csv"
 LOC_CSV    = "data/Comunas_Cordenadas.csv"
-# FERIADOS  = "data/Feriados_Chilev2.csv"   # (no usado por ahora)
 
 # --------- Salidas (terminadas en 2) ---------
 OUT_HOURLY_JSON = "public/predicciones2.json"          # por hora
@@ -137,15 +135,73 @@ def normalize_loc(df):
     return df.drop_duplicates(subset=["comuna"]).reset_index(drop=True)
 
 def ensure_datetime_calls(df):
+    """
+    Construye índice temporal robusto a partir de:
+      - columna única tipo datetime: ['datetime', 'datatime', 'ts', 'timestamp', 'fecha_hora', 'fechahora']
+      - o combinación de ['fecha' | 'date'] + ['hora' | 'time' | 'hour' | 'hr']
+    Admite formatos 'DD-MM-YYYY' o 'YYYY-MM-DD' y horas 'HH:MM'/'HH:MM:SS'.
+    """
+    original_cols = df.columns.tolist()
     df = df.copy()
-    df.columns = [c.strip().lower() for c in df.columns]
-    if "fecha" not in df.columns or "hora" not in df.columns:
-        raise ValueError("historical_data.csv debe tener columnas 'fecha' y 'hora'.")
-    fecha = pd.to_datetime(df["fecha"], errors="coerce", dayfirst=True).dt.date
-    hora = df["hora"].astype(str).str.slice(0,5)
-    ts = pd.to_datetime(pd.Series(fecha).astype(str) + " " + hora, errors="coerce")
-    df = df.assign(ts=ts).dropna(subset=["ts"]).sort_values("ts")
-    return df.set_index("ts")
+    df.columns = [c.strip() for c in df.columns]
+    lowmap = {c.lower(): c for c in df.columns}
+    cols_low = [c.lower() for c in df.columns]
+
+    # 1) datetime directo
+    dt_candidates = ["datetime","datatime","ts","timestamp","fecha_hora","fechahora","fecha y hora","fecha hora"]
+    dt_col = next((lowmap[c] for c in dt_candidates if c in lowmap), None)
+    if dt_col is None:
+        # buscar algo que contenga 'fecha' y 'hora' en el mismo nombre (ej: 'FechaHora')
+        for c in df.columns:
+            lc = c.lower().replace(" ", "")
+            if ("fecha" in lc or "date" in lc) and ("hora" in lc or "time" in lc):
+                dt_col = c
+                break
+
+    if dt_col is not None:
+        # parse directo
+        ts = pd.to_datetime(df[dt_col], errors="coerce", dayfirst=True)
+        # si falló mucho, intenta sin dayfirst
+        if ts.isna().mean() > 0.5:
+            ts = pd.to_datetime(df[dt_col], errors="coerce", dayfirst=False)
+        ts = ts.dropna()
+        if ts.empty:
+            raise ValueError(f"No pude parsear la columna '{dt_col}' como datetime. Columnas originales: {original_cols}")
+        out = df.assign(ts=ts).dropna(subset=["ts"]).sort_values("ts")
+        return out.set_index("ts")
+
+    # 2) fecha + hora por separado
+    fecha_candidates = [c for c in cols_low if ("fecha" in c) or (c=="date")]
+    hora_candidates  = [c for c in cols_low if (c=="hora") or ("hora_" in c) or (c=="hour") or (c=="time") or (c=="hr")]
+    if not fecha_candidates or not hora_candidates:
+        raise ValueError(
+            f"historical_data.csv debe tener 'datetime' o 'fecha'+'hora'. "
+            f"Se encontraron columnas: {original_cols}"
+        )
+    fecha_col = lowmap[fecha_candidates[0]]
+    hora_col  = lowmap[hora_candidates[0]]
+
+    # parse fecha (intenta dayfirst y luego no-dayfirst)
+    fecha_dt = pd.to_datetime(df[fecha_col], errors="coerce", dayfirst=True).dt.date
+    if pd.isna(fecha_dt).mean() > 0.5:
+        fecha_dt = pd.to_datetime(df[fecha_col], errors="coerce", dayfirst=False).dt.date
+
+    # normalizar hora a HH:MM
+    hora_str = df[hora_col].astype(str).str.strip()
+    # si vienen como 'H' o 'H:M', normaliza
+    hora_str = hora_str.str.extract(r'(\d{1,2}:\d{1,2}(?::\d{1,2})?)', expand=False)
+    hora_str = hora_str.fillna("00:00").str.slice(0,5)
+
+    ts = pd.to_datetime(pd.Series(fecha_dt).astype(str) + " " + hora_str, errors="coerce")
+    out = df.assign(ts=ts).dropna(subset=["ts"]).sort_values("ts")
+    out = out.set_index("ts")
+    if out.empty:
+        raise ValueError(
+            f"No pude construir 'ts' desde '{fecha_col}' + '{hora_col}'. "
+            f"Columnas originales: {original_cols}"
+        )
+    print(f"✔ detectado en historical_data.csv -> fecha='{fecha_col}', hora='{hora_col}'  (filas válidas: {len(out)})")
+    return out
 
 def seasonal_weights(df_hist, col="recibidos", weeks=8, clip=(0.75,1.30)):
     d = df_hist.copy()
@@ -263,9 +319,17 @@ def main():
     # 1) Histórico
     df_hist = read_csv_smart(HIST_CALLS)
     df_hist = df_hist.rename(columns=lambda c: c.strip())
+    print("Columnas historical_data.csv:", df_hist.columns.tolist())
     df_hist = ensure_datetime_calls(df_hist)
-    if "recibidos" not in df_hist.columns:
-        raise ValueError("En historical_data.csv falta columna 'recibidos'.")
+    if "recibidos" not in [c.lower() for c in df_hist.columns]:
+        # intenta mapear nombre parecido
+        cols_map = {c.lower(): c for c in df_hist.columns}
+        if "recibidos" in cols_map:
+            col_rec = cols_map["recibidos"]
+        else:
+            raise ValueError(f"En historical_data.csv no encuentro columna 'recibidos'. Columnas: {df_hist.columns.tolist()}")
+    else:
+        col_rec = {c.lower(): c for c in df_hist.columns}["recibidos"]
 
     # 2) Horizonte futuro
     last_known = df_hist.index.max()
@@ -275,10 +339,10 @@ def main():
 
     # 3) Base reciente por hora (mediana) y pesos estacionales (dow,hour)
     recent = df_hist.loc[df_hist.index >= (df_hist.index.max() - pd.Timedelta(weeks=2))]
-    base_hour_med = recent.resample("H")["recibidos"].median()
+    base_hour_med = recent.resample("H")[col_rec].median()
     # reindex a futuro con relleno mediano global si faltan
     base_hour_med = base_hour_med.reindex(future_ts, method=None).fillna(base_hour_med.median())
-    weights = seasonal_weights(df_hist, col="recibidos", weeks=8, clip=(0.75,1.30))
+    weights = seasonal_weights(df_hist[[col_rec]].rename(columns={col_rec:"recibidos"}), col="recibidos", weeks=8, clip=(0.75,1.30))
     y120 = apply_seasonal(base_hour_med, weights).clip(lower=0).round().astype(int)
 
     # 4) Guardar salidas SIN clima
